@@ -1,12 +1,13 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { Colors } from '../theme/color';
 
 export default function FileScreen() {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
-        <Text>File Screen</Text>
+        <Text>비어있음</Text>
       </View>
     </TouchableWithoutFeedback>
   );
@@ -17,6 +18,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FDFBFC',
+    backgroundColor: Colors.background,
   }
 });

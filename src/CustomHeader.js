@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '../theme/color';
 import { Keyboard, TouchableWithoutFeedback } from 'react-native';
@@ -25,9 +25,12 @@ const CustomHeader = ({ title, navigation }) => {
 
 const styles = StyleSheet.create({
   safeArea: {
-    backgroundColor: Colors.background, // 배경색 설정, 필요에 따라 수정 가능
+    backgroundColor: Colors.background,
   },
   headerContainer: {
+    marginTop: Platform.select({
+      android: 20,  // 안드로이드의 경우 marginTop을 15로 설정
+    }),
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',

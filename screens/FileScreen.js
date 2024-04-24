@@ -8,7 +8,7 @@ export default function FileScreen() {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
-        <Text>File Screen</Text>
+        <Text>비어있음</Text>
       </View>
     </TouchableWithoutFeedback>
   );
