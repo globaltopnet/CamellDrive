@@ -20,6 +20,7 @@ const SearchBar = ({ onSearch }) => {
           />
         </View>
       </View>
+      
     </TouchableWithoutFeedback>
   );
 };

@@ -2,13 +2,16 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Colors } from '../theme/color';
 import { Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { TabScreenHeader } from '../src/Tabs';  // TabScreenHeader 임포트
 
-
-export default function FavoriteScreen() {
+export default function FavoriteScreen({ navigation }) {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
-        <Text>비어있음</Text>
+        <TabScreenHeader title="즐겨찾기" navigation={navigation} />
+        <View style={styles.mainContainer}>
+            <Text>비어있음</Text>
+        </View>
       </View>
     </TouchableWithoutFeedback>
   );
@@ -17,8 +20,13 @@ export default function FavoriteScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+
     backgroundColor: Colors.background,
+  },
+  mainContainer: {
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignItems: 'center',
+    flex: 1,
   }
 });
