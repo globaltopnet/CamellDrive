@@ -23,14 +23,9 @@ const Page = () => {
         </Text>
       </View>
       <View style={styles.buttons}>
-        <Link href={'/login'} style={[defaultStyles.pillButton, { flex: 1, backgroundColor: Colors.dark }]} asChild>
+        <Link href={'/login'} style={[defaultStyles.pillButton, { flex: 1, backgroundColor: Colors.primary }]} asChild>
           <TouchableOpacity>
-            <Text style={{ color: 'white', fontSize: 22, fontWeight: '500' }}>로그인</Text>
-          </TouchableOpacity>
-        </Link>
-        <Link href={'/signup'} style={[defaultStyles.pillButton, { flex: 1, backgroundColor: '#fff' }]} asChild>
-          <TouchableOpacity>
-            <Text style={{ fontSize: 22, fontWeight: '500' }}>회원가입</Text>
+            <Text style={{ color: 'white', fontSize: 24, fontWeight: '900' }}>로그인</Text>
           </TouchableOpacity>
         </Link>
       </View>
