@@ -2,11 +2,14 @@ import Colors from '@/constants/Colors';
 import { defaultStyles } from '@/constants/Styles';
 import { useAssets } from 'expo-asset';
 import { ResizeMode, Video } from 'expo-av';
-import { Link } from 'expo-router';
+import { Link, SplashScreen } from 'expo-router';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 
 const Page = () => {
   const [ assets ] = useAssets([require('@/assets/videos/intro.mp4')]);
+
+  SplashScreen.hideAsync();
+
   return (
     <View style={styles.container}>
       { assets && (
@@ -19,11 +22,20 @@ const Page = () => {
       )}
       <View style={{ marginTop: 80, padding: 20 }}>
         <Text style={styles.header}>
-          앱을 사용한 이유에 대한 멘트 추가
+          Camell
+        </Text>
+        <Text style={styles.header}>
+          Drive
+        </Text>
+        <Text style={styles.header2}>
+          클라우드 스토리지
+        </Text>
+        <Text style={styles.header2}>
+          플렛폼
         </Text>
       </View>
       <View style={styles.buttons}>
-        <Link href={'/login'} style={[defaultStyles.pillButton, { flex: 1, backgroundColor: Colors.primary }]} asChild>
+        <Link href={'/login/login'} style={[defaultStyles.pillButton, { flex: 1, backgroundColor: Colors.primary }]} asChild>
           <TouchableOpacity>
             <Text style={{ color: 'white', fontSize: 24, fontWeight: '900' }}>로그인</Text>
           </TouchableOpacity>
@@ -44,6 +56,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   header: {
+    fontSize: 62,
+    fontWeight: '900',
+    textTransform: 'uppercase',
+    color: 'white'
+  },
+  header2: {
     fontSize: 36,
     fontWeight: '900',
     textTransform: 'uppercase',

@@ -1,43 +1,21 @@
+export { ErrorBoundary } from 'expo-router';
 import Colors from '@/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { useFonts } from 'expo-font';
 import { Link, Stack, useRouter } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import { TouchableOpacity } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-
-export {
-  ErrorBoundary,
-} from 'expo-router';
+import { TouchableOpacity, StyleSheet } from 'react-native';
 
 SplashScreen.preventAutoHideAsync();
 
 const InitialLayout = () => {
-  const [loaded, error] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-    ...FontAwesome.font,
-  });
   const router = useRouter();
-
-  useEffect(() => {
-    if (error) throw error;
-  }, [error]);
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
+    
   return (
     <Stack>
       <Stack.Screen name="index" options={{ headerShown: false }} />
 
       <Stack.Screen
-        name="login"
+        name="login/login"
         options={{
           title: '',
           headerBackTitle: '',
@@ -49,7 +27,7 @@ const InitialLayout = () => {
             </TouchableOpacity>
           ),
           headerRight: () => (
-            <Link href={'/help'} asChild>
+            <Link href={'/login/help'} asChild>
               <TouchableOpacity>
                 <Ionicons name="help-circle-outline" size={34} color={Colors.dark} />
               </TouchableOpacity>
@@ -58,18 +36,22 @@ const InitialLayout = () => {
         }}
       />
 
-      <Stack.Screen name="help" options={{ title: 'Help', presentation: 'modal' }} />
+      <Stack.Screen name="login/help" options={{ title: 'Help', presentation: 'modal' }} />
     </Stack>
   );
 };
 
-const RootLayoutNav = () => {
-  return (
-          <GestureHandlerRootView style={{ flex: 1 }}>
-            <StatusBar style="light" />
-            <InitialLayout />
-          </GestureHandlerRootView>
-  );
-};
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#E45E7E',
+  },
+  logo: {
+    width: 140,
+    height: 140,
+  },
+});
 
-export default RootLayoutNav;
+export default InitialLayout;

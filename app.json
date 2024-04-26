@@ -10,21 +10,23 @@
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#E45E7E"
     },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.CamellDrive"
+      "bundleIdentifier": "com.anonymous.CamellDrive",
+      "googleServicesFile": "./firebase/GoogleService-Info.plist"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.CamellDrive"
+      "package": "com.anonymous.CamellDrive",
+      "googleServicesFile": "./firebase/google-services.json"
     },
     "web": {
       "bundler": "metro",
@@ -33,10 +35,19 @@
     },
     "plugins": [
       "expo-router",
-      "expo-secure-store"
+      "expo-secure-store",
+      "@react-native-google-signin/google-signin"
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "a539a432-86b3-408b-84fb-bfb63105a5a7"
+      }
     }
   }
 }

@@ -77,10 +77,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   logo: {
-    marginTop: 10,
-    marginBottom: 10,
-    width: 250, 
-    height: 250,
+    marginTop: 40,
+    marginBottom: 40,
+    width: 200, 
+    height: 200,
   },
 });
 
