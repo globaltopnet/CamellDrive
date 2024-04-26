@@ -65,7 +65,7 @@ export default function App() {
       <Item 
         style={pinStyle}
         icon={<MaterialIcons name="note-add" size={35} color="white" />}
-        label="파일 업로드"
+        label="업로드"
       />
     </View>
   );

@@ -1,27 +1,22 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '../theme/color';
 import SearchBar from './SearchBar';
 
-const CustomHeader = ({ title, navigation, onViewModeChange }) => {
+const CustomHeader = ({ title, navigation }) => {
   const [sortType, setSortType] = useState('name');
   const [ascending, setAscending] = useState(true);
+  const [viewMode, setViewMode] = useState('list');
 
   const toggleSortType = (type) => {
     if (type === sortType) {
-      // 같은 타입을 클릭하면 오름차순/내림차순을 전환
       setAscending(!ascending);
     } else {
-      // 새로운 타입을 클릭하면, 그 타입을 내림차순으로 설정하고,
-      // 이전 타입은 오름차순으로 리셋됩니다.
       setSortType(type);
-      setAscending(false); // 새로운 타입은 즉시 내림차순으로 설정
+      setAscending(false);
     }
   };
-  
-  
-  
 
   const getIcon = (type) => {
     return type === sortType ? (ascending ? 'chevron-up-outline' : 'chevron-down-outline') : 'chevron-up-outline';
@@ -41,21 +36,23 @@ const CustomHeader = ({ title, navigation, onViewModeChange }) => {
       <SearchBar onSearch={(query) => console.log('Searching:', query)} />
       <View style={styles.controlsContainer}>
         <View style={styles.sortOptions}>
+          {/* 정렬 옵션 */}
           <TouchableOpacity style={styles.sortButton} onPress={() => toggleSortType('name')}>
             <Text style={styles.sortButtonText}>이름</Text>
-            <Ionicons name={getIcon('name')} size={15} color="black" />
+            <Ionicons name={getIcon('name')} size={20} color="black" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.sortButton} onPress={() => toggleSortType('date')}>
             <Text style={styles.sortButtonText}>날짜</Text>
-            <Ionicons name={getIcon('date')} size={15} color="black" />
+            <Ionicons name={getIcon('date')} size={20} color="black" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.sortButton} onPress={() => toggleSortType('size')}>
             <Text style={styles.sortButtonText}>크기</Text>
-            <Ionicons name={getIcon('size')} size={15} color="black" />
+            <Ionicons name={getIcon('size')} size={20} color="black" />
           </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.viewModeButton} onPress={onViewModeChange}>
-          <Ionicons name='grid-outline' size={20} color="black" />
+        {/* 뷰 모드 변경 버튼 */}
+        <TouchableOpacity style={styles.viewModeButton} onPress={() => setViewMode(viewMode === 'list' ? 'grid' : 'list')}>
+          <Ionicons name={viewMode === 'list' ? 'grid-outline' : 'list-outline'} size={20} color="black" />
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -67,6 +64,9 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
   },
   headerContainer: {
+    marginTop: Platform.select({
+      android: 24,  // 안드로이드의 경우 marginTop을 24로 설정
+    }),
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -86,8 +86,8 @@ const styles = StyleSheet.create({
   sortOptions: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-around', // 공간을 균등하게 분배
-    flex: 1, // 전체 사용 가능한 공간을 사용
+    justifyContent: 'space-around',
+    flex: 1,
   },
   sortButton: {
     flexDirection: 'row',
