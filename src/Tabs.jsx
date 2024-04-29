@@ -9,6 +9,7 @@ import MediaScreen from '../screens/MediaScreen';
 import PlusMenu from '../screens/PlusMenu';
 import FavoriteScreen from '../screens/FavoriteScreen';
 import ShareScreen from '../screens/ShareScreen';
+
 import TabScreenHeader from './TabScreenHeader';
 
 const Tab = createBottomTabNavigator();
@@ -67,7 +68,7 @@ function Tabs() {
           header: ({ navigation }) => <TabScreenHeader title="즐겨찾기" navigation={navigation} />
         }}
       />
-            <Tab.Screen 
+      <Tab.Screen 
         name="Share" 
         component={ShareScreen}
         options={{
@@ -76,6 +77,7 @@ function Tabs() {
           header: ({ navigation }) => <TabScreenHeader title="공유" navigation={navigation} />
         }}
       />
+
     </Tab.Navigator>
   );
 }

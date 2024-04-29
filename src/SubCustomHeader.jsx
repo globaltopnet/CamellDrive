@@ -1,26 +1,20 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '../theme/color';
-import { useNavigation, CommonActions } from '@react-navigation/native';
+import SearchBar from './SearchBar';
 
-const SubCustomHeader = ({ title }) => {
-  const navigation = useNavigation();
+const SubCustomHeader = ({ title, navigation }) => {
+  const [sortType, setSortType] = useState('name');
+  const [ascending, setAscending] = useState(true);
+  const [viewMode, setViewMode] = useState('list');
+
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.headerContainer}>
-        <TouchableOpacity onPress={() => {
-            navigation.dispatch(
-              CommonActions.navigate({
-                name: 'Tabs',  // TabNavigator 이름
-                params: {
-                  screen: 'File',  // 이동하고자 하는 스크린 이름
-                },
-              })
-            );
-          }}>
-          <Ionicons name="chevron-back-outline" size={30} color="black" />
+        <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
+          <Ionicons name="menu" size={30} color="black" />
         </TouchableOpacity>
         <Text style={styles.title}>{title}</Text>
         <TouchableOpacity onPress={() => console.log('Profile clicked')}>
@@ -36,6 +30,9 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
   },
   headerContainer: {
+    marginTop: Platform.select({
+      android: 24,  // 안드로이드의 경우 marginTop을 24로 설정
+    }),
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -45,6 +42,33 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
+  },
+  controlsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  sortOptions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    flex: 1,
+  },
+  sortButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: 20, // 좌우 마진을 증가
+    fontSize: 10,
+  },
+  sortButtonText: {
+    marginRight: 5,
+    fontSize: 12,
+  },
+  viewModeButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 10,
   },
 });
 

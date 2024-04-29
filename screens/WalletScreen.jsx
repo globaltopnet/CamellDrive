@@ -1,88 +1,126 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity,Image, FlatList } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity,Image, FlatList,  Clipboard } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons'; // Ionicons를 import합니다.
 import { Colors } from '../theme/color';
 import SubTabScreenHeader from '../src/SubTabScreenHeader';
+import RNPickerSelect from 'react-native-picker-select';
 
 // 버튼 텍스트와 매핑될 아이콘 이름
 const buttonIcons = {
   출금: 'exit-outline',
   입금: 'enter-outline',
-  차트: 'bar-chart-outline',
+  시세: 'bar-chart-outline',
   더보기: 'ellipsis-horizontal-outline'
 };
 
+// WalletScreen.jsx 내 handleButtonPress 수정
+const handleButtonPress = (buttonText, navigation) => {
+  switch (buttonText) {
+    case '입금':
+      navigation.navigate('DepositScreen'); // 직접 호출
+      break;
+    case '출금':
+      navigation.navigate('WithdrawalScreen'); // 직접 호출
+      break;
+    case '시세':
+      navigation.navigate('ChartScreen'); // 직접 호출
+      break;
+    case '더보기':
+      // 다른 화면으로 이동
+      break;
+    default:
+      break;
+  }
+};
+
+
+const copyToClipboard = (address) => {
+  Clipboard.setString(address);
+  alert('주소가 복사되었습니다!');
+};
+
+
+
+
 export default function WalletScreen({ navigation }) {
+  const [currency, setCurrency] = useState('KRW');
+  const currencies = [
+    // 백엔드 필요 !!
+    { label: '(USD)', value: 'USD' },
+    { label: '(KRW)', value: 'KRW' },
+    { label: '(EUR)', value: 'EUR' }
+  ];
 
   const transactions = [
+    // 백엔트 필요 !!
     {
       id: '1',
       profilePic: require('../src/img/camell_logo.png'),
-      walletAddress: '0xABC...1234',
+      walletAddress: 'TQsfB1J131GZV3PH8HyCaE8pzNmFnTYzQ5',
       date: '2024-04-26',
       amount: '100.00',
       type: 'deposit',
     },
     {
-      id: '1',
+      id: '2',
       profilePic: require('../src/img/camell_logo.png'),
-      walletAddress: '0xABC...1234',
+      walletAddress: 'TQsfB1J131GZV3PH8HyCaE8pzNmFnTYzQ5',
       date: '2024-04-26',
       amount: '100.00',
       type: 'withrow',
     },
     {
-      id: '1',
+      id: '3',
       profilePic: require('../src/img/camell_logo.png'),
-      walletAddress: '0xABC...1234',
+      walletAddress: 'TQsfB1J131GZV3PH8HyCaE8pzNmFnTYzQ5',
       date: '2024-04-26',
       amount: '100.00',
       type: 'deposit',
     },
     {
-      id: '1',
+      id: '4',
       profilePic: require('../src/img/camell_logo.png'),
-      walletAddress: '0xABC...1234',
+      walletAddress: 'TQsfB1J131GZV3PH8HyCaE8pzNmFnTYzQ5',
       date: '2024-04-26',
       amount: '100.00',
       type: 'withrow',
     },
     {
-      id: '1',
+      id: '5',
       profilePic: require('../src/img/camell_logo.png'),
-      walletAddress: '0xABC...1234',
+      walletAddress: 'TQsfB1J131GZV3PH8HyCaE8pzNmFnTYzQ5',
       date: '2024-04-26',
       amount: '100.00',
       type: 'deposit',
     },
     {
-      id: '1',
+      id: '6',
       profilePic: require('../src/img/camell_logo.png'),
-      walletAddress: '0xABC...1234',
+      walletAddress: 'TQsfB1J131GZV3PH8HyCaE8pzNmFnTYzQ5',
       date: '2024-04-26',
       amount: '100.00',
       type: 'deposit',
     },
     {
-      id: '1',
+      id: '7',
       profilePic: require('../src/img/camell_logo.png'),
-      walletAddress: '0xABC...1234',
+      walletAddress: 'TQsfB1J131GZV3PH8HyCaE8pzNmFnTYzQ5',
       date: '2024-04-26',
       amount: '100.00',
       type: 'deposit',
     },
     {
-      id: '1',
+      id: '8',
       profilePic: require('../src/img/camell_logo.png'),
-      walletAddress: '0xABC...1234',
+      walletAddress: 'TQsfB1J131GZV3PH8HyCaE8pzNmFnTYzQ5',
       date: '2024-04-26',
       amount: '100.00',
       type: 'deposit',
     },
     {
-      id: '1',
+      id: '9',
       profilePic: require('../src/img/camell_logo.png'),
-      walletAddress: '0xABC...1234',
+      walletAddress: 'TQsfB1J131GZV3PH8HyCaE8pzNmFnTYzQ5',
       date: '2024-04-26',
       amount: '100.00',
       type: 'deposit',
@@ -92,21 +130,25 @@ export default function WalletScreen({ navigation }) {
 
   const renderItem = ({ item }) => (
     <View style={styles.transactionRow}>
-      <Image source={item.profilePic} style={styles.profilePic} />
-      <View style={styles.transactionDetails}>
-        <Text style={styles.walletAddress}>{item.walletAddress}</Text>
-        <Text style={styles.date}>{item.date}</Text>
+    <Image source={item.profilePic} style={styles.profilePic} />
+    <View style={styles.transactionDetails}>
+      {/* 주소와 아이콘을 하나의 뷰 안에 배치 */}
+      <View style={styles.addressContainer}>
+        <Text style={styles.walletAddress}>
+          {`${item.walletAddress.slice(0, 6)}...${item.walletAddress.slice(-4)}`}
+        </Text>
+        <TouchableOpacity onPress={() => copyToClipboard(item.walletAddress)} style={styles.copyIcon}>
+          <Ionicons name="copy-outline" size={15} color="black" />
+        </TouchableOpacity>
       </View>
-      <Text style={[styles.amount, { color: item.type === 'deposit' ? 'green' : 'red' }]}>
-        {item.type === 'deposit' ? '+' : '-'}{item.amount} CAMT
-      </Text>
-      <Ionicons
-        name={item.type === 'deposit' ? 'enter-outline' : 'exit-outline'}
-        size={20}
-        color={item.type === 'deposit' ? 'green' : 'red'}
-      />
+      <Text style={styles.date}>{item.date}</Text>
     </View>
+    <Text style={[styles.amount, { color: item.type === 'deposit' ? 'green' : 'red' }]}>
+      {item.type === 'deposit' ? '+' : '-'}{item.amount} CAMT
+    </Text>
+  </View>
   );
+  
   
 
   return (
@@ -114,21 +156,115 @@ export default function WalletScreen({ navigation }) {
       <SubTabScreenHeader title="지갑" navigation={navigation} />
       <View style={styles.headContainer}>
         <View style={styles.balance}>
-        <Image
-            source={require('../src/img/camell_logo.png')}
-            style={styles.logo}
-          />
-          <View style={styles.balanceTexts}>
-            <Text style={styles.Camt}>0.0</Text>
-            <Text style={styles.value}>CAMT</Text>
+
+          <View style={styles.balanceTop}>
+            <View style={{flexDirection: 'row', alignItems: 'center',}}>
+            <Image
+                source={require('../src/img/camell_logo.png')}
+                style={styles.logo}
+            />
+            <Text style={styles.camell}>Camell</Text>
+            </View>
+            
+            <View>
+
+              <View style={styles.dropdown}>
+                <RNPickerSelect
+                  onValueChange={(value) => setCurrency(value)}
+                  items={currencies}
+                  style={{
+                    inputIOS: {
+                      fontSize: 13, // 폰트 크기 조정
+                      paddingVertical: 12,
+                      paddingHorizontal: 10,
+                      borderRadius: 4,
+                      color: 'gray', // 폰트 색상을 회색으로 변경
+                    },
+                    inputAndroid: {
+                      fontSize: 14, // 폰트 크기 조정
+                      paddingHorizontal: 10,
+                      paddingVertical: 8,
+                      color: 'gray', // 폰트 색상을 회색으로 변경
+                    },
+                    iconContainer: {
+                      top: 13,
+                      right: 10,
+                    },
+                  }}
+                  value={currency}
+                  useNativeAndroidPickerStyle={false}
+                  placeholder={{}}
+                  Icon={() => {
+                    return <Ionicons name="caret-down-outline" size={15} style={{ marginRight: -20, color: 'gray' }} />; // 아이콘을 오른쪽으로 이동시키기
+                  }}
+                />
+              </View>
+            </View>
+
+            <View style={styles.dropdown}>
+              <RNPickerSelect
+                onValueChange={(value) => setCurrency(value)}
+                items={currencies}
+                style={{
+                  inputIOS: {
+                    fontSize: 13, // 폰트 크기 조정
+                    paddingVertical: 15,
+                    paddingHorizontal: 15,
+                    borderRadius: 4,
+                    color: 'gray', // 폰트 색상을 회색으로 변경
+                  },
+                  inputAndroid: {
+                    fontSize: 14, // 폰트 크기 조정
+                    paddingHorizontal: 10,
+                    paddingVertical: 8,
+                    color: 'gray', // 폰트 색상을 회색으로 변경
+                  },
+                  iconContainer: {
+                    top: 13,
+                    right: 10,
+                  },
+                }}
+                value={currency}
+                useNativeAndroidPickerStyle={false}
+                placeholder={{}}
+                Icon={() => {
+                  return <Ionicons name="caret-down-outline" size={15} style={{ marginRight: -20, color: 'gray' }} />; // 아이콘을 오른쪽으로 이동시키기
+                }}
+              />
+            </View>
+
           </View>
+
+          <View style={styles.balanceMid}>
+
+                                    {/*  백엔드 필요 !!  */}
+            <Text style={styles.camtValue}>32.423123</Text>
+            <Text style={styles.camt}>CAMT</Text>
+          </View>
+          
+          <View style={styles.balanceBottom}>
+
+                            {/*  백엔드 필요 !!  */}
+          <Text style={styles.Won}>₩23,600</Text>
+          <View style={styles.balancePlusMinus}>
+
+                                          {/*  백엔드 필요 !!  */}
+            <Text style={styles.PlusMinusValue}>+ 2.53%</Text>
+          </View>
+
+          </View>
+
         </View>
         <View style={styles.buttonRow}>
           {Object.entries(buttonIcons).map(([buttonText, iconName]) => (
-            <TouchableOpacity key={buttonText} style={styles.buttonCircle}>
+             <TouchableOpacity
+              key={buttonText}
+              style={styles.buttonCircle}
+              onPress={() => handleButtonPress(buttonText, navigation)}
+             >
               <Ionicons name={iconName} size={30} color="#000" />
               <Text style={styles.buttonText}>{buttonText}</Text>
-            </TouchableOpacity>
+             </TouchableOpacity>
           ))}
         </View>
       </View>
@@ -137,6 +273,7 @@ export default function WalletScreen({ navigation }) {
           data={transactions}
           renderItem={renderItem}
           keyExtractor={item => item.id}
+          showsVerticalScrollIndicator={false}
         />
       </View>
     </View>
@@ -152,29 +289,86 @@ const styles = StyleSheet.create({
     flex: 1,
     marginBottom: 10,
   },
+
+
+
+
+
+  
   balance: {
     borderRadius: 20,
     margin: 11,
-    flex: 1.3,
+    marginHorizontal: 30,
+    flex: 1.4,
     backgroundColor: Colors.background,
+
+  },
+
+
+  logo: {
+    width: 47,
+    height: 47,
+  },
+
+
+
+  dropdown: {
     alignItems: 'center',
-
+    marginLeft: 160,
   },
 
-  balanceTexts: {
-  },
 
-  Camt: {
-    fontSize: 20,
-    textAlign: 'center',
-    bottom: -5,
-  },
-  value: {
-    textAlign: 'center',
-    fontSize: 20,
-    bottom: 10,
-    marginTop: 10,
-  },
+balanceTop: {
+  justifyContent: 'space-between',
+  flexDirection: 'row',
+  marginLeft: 15,
+  marginTop: 15,
+  marginBottom: 5,
+  alignItems: 'center',
+},
+camell: {
+  fontSize: 19,
+  marginLeft: 10,
+},
+
+balanceMid: {
+  flexDirection: 'row',
+  marginLeft: 15,
+},
+camtValue: {
+  fontSize: 27,
+},
+camt: {
+  fontSize: 27,
+  marginLeft: 10,
+},
+
+
+balanceBottom: {
+  flexDirection: 'row',
+  marginTop: 13,
+  marginLeft: 15,
+  justifyContent: 'space-between',
+},
+
+Won: {
+  fontSize: 15,
+  color: 'gray'
+},
+
+balancePlusMinus: {
+  backgroundColor: '#10ad2a',
+  marginRight: 15,
+  borderRadius: 15,
+  padding: 6,
+},
+PlusMinusValue: {
+  fontSize: 12,
+  color: 'white'
+},
+
+
+
   buttonRow: {
     flex: 1,
     flexDirection: 'row',
@@ -186,11 +380,13 @@ const styles = StyleSheet.create({
   buttonCircle: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: 70, // 원형 버튼의 폭과 높이
-    height: 70, // 원형 버튼의 폭과 높이
-    borderRadius: 35, // 버튼의 반지름을 폭과 높이의 절반으로 설정하여 원형 만들기
+    width: 70,
+    height: 70,
+    borderRadius: 35,
     padding: 10,
     backgroundColor: Colors.background,
+    shadowColor: '#000', shadowOffset: { width: 0, height: 0.5 }, shadowOpacity: 0.2, shadowRadius: 3, elevation: 1
+
   },
   buttonIconText: {
     // 아이콘을 위한 텍스트 스타일링, 실제 아이콘으로 교체 필요
@@ -238,10 +434,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
+  addressContainer: {
+    flexDirection: 'row', // 주소와 아이콘을 가로로 배치
+    alignItems: 'center', // 세로 중앙 정렬
+  },
 
-  logo: {
-    marginTop: 15,
-    width: 40,
-    height: 40,
-  }
+  copyIcon: {
+    marginLeft: 5, // 아이콘과 주소 사이 간격 조절
+  },
 });

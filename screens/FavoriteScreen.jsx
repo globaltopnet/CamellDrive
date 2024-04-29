@@ -2,8 +2,6 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Colors } from '../theme/color';
 import { Keyboard, TouchableWithoutFeedback } from 'react-native';
-import TabScreenHeader from '../src/TabScreenHeader';
-
 export default function FavoriteScreen({ navigation }) {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

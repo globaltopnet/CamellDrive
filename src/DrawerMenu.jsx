@@ -1,6 +1,6 @@
 import React from 'react';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
-import { View, Text, SafeAreaView, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, SafeAreaView, StyleSheet, Image, TouchableOpacity, Animated } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import * as Progress from 'react-native-progress';
 import { Colors } from '../theme/color';
@@ -14,12 +14,26 @@ import UpgradePlanScreen from '../screens/UpgradePlanScreen';
 import WalletScreen from '../screens/WalletScreen';
 import Tabs from './Tabs';
 import { NavigationContainer } from '@react-navigation/native';
+import DepositScreen from '../screens/DepositScreen';
+import WithdrawalScreen from '../screens/WithdrawalScreen';
+import ChartScreen from '../screens/ChartScreen';
 
 const Drawer = createDrawerNavigator();
 
 const rate = 30;
 
 const DrawerMenu = () => {
+  const navigateWithAnimation = (navigation, screenName) => {
+    Animated.timing(translateX, {
+      toValue: 100,
+      duration: 300,
+      useNativeDriver: true,
+    }).start(() => {
+      navigation.navigate(screenName);
+      translateX.setValue(0);
+    });
+  };
+
   return (
     <NavigationContainer independent={true}>
       <Drawer.Navigator
@@ -36,6 +50,34 @@ const DrawerMenu = () => {
           drawerItemStyle: { display: 'none' }
         }}
       />
+
+        <Drawer.Screen 
+          name="DepositScreen"
+          component={DepositScreen}
+          options={{
+            drawerLabel: '입금',
+            drawerItemStyle: {display: 'none'}
+          }}
+        />
+
+        <Drawer.Screen 
+          name="ChartScreen"
+          component={ChartScreen}
+          options={{
+            drawerLabel: '시세',
+            drawerItemStyle: {display: 'none'}
+          }}
+        />
+
+        <Drawer.Screen 
+          name="WithdrawalScreen"
+          component={WithdrawalScreen}
+          options={{
+            drawerLabel: '출금',
+            drawerItemStyle: {display: 'none'}
+          }}
+        />       
+
       <Drawer.Screen 
         name="FavoriteScreen"
         component={FavoriteScreen}
