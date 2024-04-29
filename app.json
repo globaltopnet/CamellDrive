@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "CamellDrive",
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/splash.png",
@@ -17,16 +17,14 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.CamellDrive",
-      "googleServicesFile": "./firebase/GoogleService-Info.plist"
+      "bundleIdentifier": "com.anonymous.CamellDrive"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.CamellDrive",
-      "googleServicesFile": "./firebase/google-services.json"
+      "package": "com.anonymous.CamellDrive"
     },
     "web": {
       "bundler": "metro",
