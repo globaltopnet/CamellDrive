@@ -5,7 +5,7 @@ import { ResizeMode, Video } from 'expo-av';
 import { Link, SplashScreen } from 'expo-router';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 
-const Page = () => {
+const Main = () => {
   const [ assets ] = useAssets([require('@/assets/videos/intro.mp4')]);
 
   SplashScreen.hideAsync();
@@ -75,4 +75,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   }
 });
-export default Page
+
+export default Main;

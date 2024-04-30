@@ -37,21 +37,9 @@ const InitialLayout = () => {
       />
 
       <Stack.Screen name="login/help" options={{ title: 'Help', presentation: 'modal' }} />
+      <Stack.Screen name="main/CustomHeader" options={{ headerShown: false }}/>
     </Stack>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#E45E7E',
-  },
-  logo: {
-    width: 140,
-    height: 140,
-  },
-});
 
 export default InitialLayout;
