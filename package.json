@@ -16,6 +16,7 @@
     "@clerk/clerk-expo": "^0.20.5",
     "@expo/vector-icons": "^14.0.0",
     "@firebase/auth": "^1.7.2",
+    "@noble/secp256k1": "^2.1.0",
     "@react-native-async-storage/async-storage": "1.21.0",
     "@react-native-firebase/app": "^19.2.2",
     "@react-native-firebase/auth": "^19.2.2",
@@ -25,6 +26,7 @@
     "@react-navigation/stack": "^6.3.29",
     "@shopify/react-native-skia": "^0.1.241",
     "@tanstack/react-query": "^5.24.8",
+    "crypto": "^1.0.1",
     "date-fns": "^3.3.1",
     "expo": "~50.0.6",
     "expo-application": "~5.8.4",
@@ -62,6 +64,7 @@
     "react-native-safe-area-context": "4.8.2",
     "react-native-screens": "~3.29.0",
     "react-native-web": "~0.19.6",
+    "tronweb": "^5.3.2",
     "victory-native": "^40.0.4",
     "zeego": "^1.9.1",
     "zustand": "^4.5.2"
