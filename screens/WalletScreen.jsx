@@ -201,37 +201,7 @@ export default function WalletScreen({ navigation }) {
               </View>
             </View>
 
-            <View style={styles.dropdown}>
-              <RNPickerSelect
-                onValueChange={(value) => setCurrency(value)}
-                items={currencies}
-                style={{
-                  inputIOS: {
-                    fontSize: 13, // 폰트 크기 조정
-                    paddingVertical: 15,
-                    paddingHorizontal: 15,
-                    borderRadius: 4,
-                    color: 'gray', // 폰트 색상을 회색으로 변경
-                  },
-                  inputAndroid: {
-                    fontSize: 14, // 폰트 크기 조정
-                    paddingHorizontal: 10,
-                    paddingVertical: 8,
-                    color: 'gray', // 폰트 색상을 회색으로 변경
-                  },
-                  iconContainer: {
-                    top: 13,
-                    right: 10,
-                  },
-                }}
-                value={currency}
-                useNativeAndroidPickerStyle={false}
-                placeholder={{}}
-                Icon={() => {
-                  return <Ionicons name="caret-down-outline" size={15} style={{ marginRight: -20, color: 'gray' }} />; // 아이콘을 오른쪽으로 이동시키기
-                }}
-              />
-            </View>
+            
 
           </View>
 
@@ -298,8 +268,8 @@ const styles = StyleSheet.create({
   balance: {
     borderRadius: 20,
     margin: 11,
-    marginHorizontal: 30,
-    flex: 1.4,
+    marginHorizontal: 15,
+    flex: 1.8,
     backgroundColor: Colors.background,
 
   },
@@ -314,7 +284,7 @@ const styles = StyleSheet.create({
 
   dropdown: {
     alignItems: 'center',
-    marginLeft: 160,
+    marginRight: 30
   },
 
 
@@ -358,7 +328,7 @@ Won: {
 
 balancePlusMinus: {
   backgroundColor: '#10ad2a',
-  marginRight: 15,
+  marginRight: 30,
   borderRadius: 15,
   padding: 6,
 },
@@ -370,7 +340,7 @@ PlusMinusValue: {
 
 
   buttonRow: {
-    flex: 1,
+    flex: 0.8,
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
