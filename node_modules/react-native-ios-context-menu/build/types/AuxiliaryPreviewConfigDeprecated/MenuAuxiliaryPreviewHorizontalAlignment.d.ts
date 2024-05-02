@@ -1,0 +1,2 @@
+export type MenuAuxiliaryPreviewHorizontalAlignment = 'stretchScreen' | 'stretchPreview' | 'previewLeading' | 'previewTrailing' | 'previewCenter';
+//# sourceMappingURL=MenuAuxiliaryPreviewHorizontalAlignment.d.ts.map

@@ -9,7 +9,6 @@ import {
 import "react-native-gesture-handler";
 import * as React from 'react';
 import { defaultStyles } from '@/constants/Styles';
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { auth } from "../../firebaseConfig";
 import {
 GoogleAuthProvider,
@@ -18,30 +17,15 @@ signInWithCredential,
 } from "firebase/auth";
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
-import Navigation from '../navigation/navigation'
 
 WebBrowser.maybeCompleteAuthSession();
 
 const Page = () => {
-  const [userInfo, setUserInfo] = React.useState();
   const [loading, setLoading] = React.useState(false);
   const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
     iosClientId: "795983066430-0d5a3vj9i2ncmt384icemckb714bcdqc.apps.googleusercontent.com",
     androidClientId: "795983066430-dqnfl5gkppmlvs364sb4jhemmf2c9cq4.apps.googleusercontent.com",
   });
-
-  const getLocalUser = async () => {
-    try {
-      setLoading(true);
-      const userJSON = await AsyncStorage.getItem("@user");
-      const userData = userJSON ? JSON.parse(userJSON) : null;
-      setUserInfo(userData);
-    } catch (e) {
-      console.log(e, "Error getting local user");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   React.useEffect(() => {
     if (response?.type === "success") {
@@ -52,18 +36,18 @@ const Page = () => {
   }, [response]);
 
   React.useEffect(() => {
-    getLocalUser();
-    const unsub = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        await AsyncStorage.setItem("@user", JSON.stringify(user));
-        console.log(JSON.stringify(user, null, 2));
-        setUserInfo(user);
-      } else {
-        console.log("user not authenticated");
-      }
-    });
-    return () => unsub();
-  }, []);
+    if (response?.type === 'success') {
+      const { id_token } = response.params;
+      const credential = GoogleAuthProvider.credential(id_token);
+      setLoading(true);
+      signInWithCredential(auth, credential)
+        .catch(error => {
+          console.error("Authentication error: ", error);
+        })
+        .finally(() => setLoading(false));
+    }
+  }, [response]);
+
 
   if (loading) {
     return (
@@ -73,7 +57,7 @@ const Page = () => {
     );
   }
 
-  return userInfo ? <Navigation /> : (
+  return (
     <View style={defaultStyles.container}>
       <Text style={defaultStyles.header}>Welcome Back to</Text>
       <Text style={defaultStyles.logo}>Camell Drive</Text>

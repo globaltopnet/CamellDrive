@@ -19,7 +19,7 @@ import DepositScreen from '../screens/DepositScreen';
 import WithdrawalScreen from '../screens/WithdrawalScreen';
 import ChartScreen from '../screens/ChartScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { router } from 'expo-router';
+import { Alert } from 'react-native';
 
 const Drawer = createDrawerNavigator();
 const rate = 30;
@@ -151,6 +151,28 @@ const DrawerMenu = () => {
 };
 
 const CustomDrawerContent = (props) => {
+  const handleLogout = async () => {
+    Alert.alert(
+      "로그아웃 확인",
+      "로그아웃 하시겠습니까?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Logout cancelled"),
+          style: "cancel",
+        },
+        {
+          text: "Logout",
+          onPress: async () => {
+            await signOut(auth);
+            await AsyncStorage.removeItem('@user');
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
   return (
     <DrawerContentScrollView {...props}>
       <SafeAreaView style={styles.drawerSafeArea}>
@@ -248,11 +270,7 @@ const CustomDrawerContent = (props) => {
     <View style={styles.menuItem3}>
       <DrawerItem
         label="로그아웃"
-        onPress={async () => {
-          await signOut(auth);
-          await AsyncStorage.removeItem('@user');
-          router.replace('/')
-        }}
+        onPress={handleLogout}
         icon={({ color, size }) => (
           <MaterialCommunityIcons name="logout" color={color} size={size} />
         )}
