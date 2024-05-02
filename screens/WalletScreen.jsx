@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity,Image, FlatList,  Clipboard } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, FlatList, Modal, Clipboard,
+  Button, TouchableWithoutFeedback,Keyboard, Alert} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons'; // Ionicons를 import합니다.
 import { Colors } from '../theme/color';
 import SubTabScreenHeader from '../src/SubTabScreenHeader';
 import RNPickerSelect from 'react-native-picker-select';
+import { TextInput } from 'react-native-gesture-handler';
+import QRCode from 'react-native-qrcode-svg';
+
 
 // 버튼 텍스트와 매핑될 아이콘 이름
 const buttonIcons = {
@@ -14,24 +18,7 @@ const buttonIcons = {
 };
 
 // WalletScreen.jsx 내 handleButtonPress 수정
-const handleButtonPress = (buttonText, navigation) => {
-  switch (buttonText) {
-    case '입금':
-      navigation.navigate('DepositScreen'); // 직접 호출
-      break;
-    case '출금':
-      navigation.navigate('WithdrawalScreen'); // 직접 호출
-      break;
-    case '시세':
-      navigation.navigate('ChartScreen'); // 직접 호출
-      break;
-    case '더보기':
-      // 다른 화면으로 이동
-      break;
-    default:
-      break;
-  }
-};
+
 
 
 const copyToClipboard = (address) => {
@@ -43,7 +30,54 @@ const copyToClipboard = (address) => {
 
 
 export default function WalletScreen({ navigation }) {
+
+  {/**실제 지갑 주소 */}
+  const walletAddress = "TNDcxm95uDiensNHpfHfn7q5kt2x1vtMfD";
+
+
+  const copyToClipboard = (address) => {
+    Clipboard.setString(address);
+    Alert.alert("알림", "주소가 클립보드에 복사되었습니다!");
+  };
+
+  const [inputText, setInputText] = useState('');
+
+// 초기 상태를 false로 설정
+const [depositModalVisible, setDepositModalVisible] = useState(false);
+const [withdrawalModalVisible, setWithdrawalModalVisible] = useState(false);
+const closeModal = () => {
+  setDepositModalVisible(false);
+};
+
+  
+
+const handleButtonPress = (buttonText) => {
+  switch (buttonText) {
+    case '입금':
+      closeModal();  // 먼저 모달을 강제로 닫고
+      setTimeout(() => setDepositModalVisible(true), 10);  // 소폭의 지연 후 모달을 열어 상태 변경이 반드시 일어나도록 함
+      break;
+    
+    case '출금':
+      setWithdrawalModalVisible(true);
+      break;
+
+    case '시세':
+      // 시세 관련 처리
+      break;
+    
+    case '더보기':
+      // 더보기 관련 처리
+      break;
+    
+    default:
+      break;
+  }
+};
+  
+
   const [currency, setCurrency] = useState('KRW');
+  
   const currencies = [
     // 백엔드 필요 !!
     { label: '(USD)', value: 'USD' },
@@ -130,30 +164,131 @@ export default function WalletScreen({ navigation }) {
 
   const renderItem = ({ item }) => (
     <View style={styles.transactionRow}>
-    <Image source={item.profilePic} style={styles.profilePic} />
-    <View style={styles.transactionDetails}>
-      {/* 주소와 아이콘을 하나의 뷰 안에 배치 */}
-      <View style={styles.addressContainer}>
-        <Text style={styles.walletAddress}>
-          {`${item.walletAddress.slice(0, 6)}...${item.walletAddress.slice(-4)}`}
-        </Text>
-        <TouchableOpacity onPress={() => copyToClipboard(item.walletAddress)} style={styles.copyIcon}>
-          <Ionicons name="copy-outline" size={15} color="black" />
-        </TouchableOpacity>
+      <Image source={item.profilePic} style={styles.profilePic} />
+      <View style={styles.transactionDetails}>
+        <View style={styles.addressContainer}>
+          <Text style={styles.walletAddress}>
+            {`${item.walletAddress.slice(0, 6)}...${item.walletAddress.slice(-4)}`}
+          </Text>
+          <TouchableOpacity onPress={() => copyToClipboard(item.walletAddress)} style={styles.copyIcon}>
+            <Ionicons name="copy-outline" size={15} color="black" />
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.date}>{item.date}</Text>
       </View>
-      <Text style={styles.date}>{item.date}</Text>
+      <Text style={[styles.amount, { color: item.type === 'deposit' ? 'green' : 'red' }]}>
+        {item.type === 'deposit' ? '+' : '-'}{item.amount} CAMT
+      </Text>
     </View>
-    <Text style={[styles.amount, { color: item.type === 'deposit' ? 'green' : 'red' }]}>
-      {item.type === 'deposit' ? '+' : '-'}{item.amount} CAMT
-    </Text>
-  </View>
   );
   
   
 
   return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+
     <View style={styles.container}>
       <SubTabScreenHeader title="지갑" navigation={navigation} />
+      <Modal
+  animationType="slide"
+  transparent={true}
+  visible={withdrawalModalVisible}
+  onRequestClose={() => {
+    setWithdrawalModalVisible(!withdrawalModalVisible);
+  }}
+>
+  <View style={styles.centeredView}>
+    <View style={styles.modalView}>
+      <TouchableOpacity
+        style={styles.closeButton}
+        onPress={() => setWithdrawalModalVisible(!withdrawalModalVisible)}
+      >
+        <Ionicons name="close-circle" size={40} color="#000" />
+      </TouchableOpacity>
+      <Text style={styles.modalText}>출금</Text>
+      <View style={styles.inputView}>
+        <View style={styles.inputForm}>
+          <View style={styles.won}>
+            <Text>출금 수량</Text>
+            <TextInput
+              style={styles.textInput}
+              onChangeText={(text) => setInputText(text)}
+              placeholder="최소 10 CAMT"
+              placeholderTextColor="#808080"
+            />
+            <Text style={styles.wonValue}>= 0 KRW</Text>
+          </View>
+          <Text>출금 대상</Text>
+          <TextInput
+            style={styles.textInput}
+            onChangeText={(text) => setInputText(text)}
+            placeholder="대상 주소 입력"
+            placeholderTextColor="#808080"
+          />
+          <View style={styles.network}>
+            <Text style={styles.networkText}>출금 네트워크</Text>
+            <View style={styles.networkValue}>
+              <Text style={styles.networkValueText}>Tron</Text>
+            </View>
+          </View>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.okButton}>
+              <Text style={styles.okButtonText}>확인</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </View>
+  </View>
+</Modal>
+
+
+
+
+
+<Modal
+  animationType="slide"
+  transparent={true}
+  visible={depositModalVisible}
+  onRequestClose={() => setDepositModalVisible(false)}
+>
+  <View style={styles.centeredView}>
+    <View style={styles.modalView}>
+      <TouchableOpacity
+        style={styles.closeButton}
+        onPress={() => setDepositModalVisible(false)}
+      >
+        <Ionicons name="close-circle" size={40} color="#000" />
+      </TouchableOpacity>
+      <Text style={styles.modalText}>입금</Text>
+      <View style={styles.qr}>
+      <QRCode
+            value={walletAddress}
+            size={230}
+            color="black"
+            backgroundColor="white"
+          />
+      </View>
+      <View style={styles.address}>
+        <Text style={{fontSize: 20, textAlign: 'center'}}>지갑 주소</Text>
+        <View style={{marginTop: 10}}>
+          <Text style={{fontSize: 17}}>TNDcxm95uDiensNHpfHfn7q5kt2x1vtMfD</Text>
+          <View style={{alignItems: 'center', marginTop: 30,}}>
+
+          <TouchableOpacity onPress={() => copyToClipboard(walletAddress)} style={styles.copyButton}>
+          <Ionicons name="copy-outline" size={50} color="black" />
+        </TouchableOpacity>
+
+          </View>
+        </View>
+      </View>
+    </View>
+  </View>
+</Modal>
+
+
+
+
       <View style={styles.headContainer}>
         <View style={styles.balance}>
 
@@ -164,6 +299,7 @@ export default function WalletScreen({ navigation }) {
                 style={styles.logo}
             />
             <Text style={styles.camell}>Camell</Text>
+
             </View>
             
             <View>
@@ -247,6 +383,8 @@ export default function WalletScreen({ navigation }) {
         />
       </View>
     </View>
+    </TouchableWithoutFeedback>
+
   );
 }
 
@@ -262,9 +400,6 @@ const styles = StyleSheet.create({
 
 
 
-
-
-  
   balance: {
     borderRadius: 20,
     margin: 11,
@@ -411,5 +546,133 @@ PlusMinusValue: {
 
   copyIcon: {
     marginLeft: 5, // 아이콘과 주소 사이 간격 조절
+  },
+
+
+  
+
+
+
+  centeredView: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: "center",
+    marginTop: 22
+  },
+  modalView: {
+    bottom: -15,
+    width: '100%',
+    height: '65%',
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 20,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+
+  
+  closeButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 6,
+    elevation: 2
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+    fontSize: 18
+  },
+
+  inputView:{
+    flex: 1,
+    width: '100%',
+  },
+  textInput: {
+    paddingLeft: 10,
+    borderWidth: 0.2,
+    marginBottom: 20,
+    borderRadius: 10,
+    height: 45,
+    marginTop: 5,
+  },
+
+  inpitForm: {
+    marginTop: 30,
+  },
+  network: {
+    marginTop: 10,
+  },
+  networkText: {
+    fontSize: 20,
+  },
+  networkValue: {
+    marginTop:5,
+    backgroundColor: '#f3f1f1',
+    borderRadius: 10,
+    height: 50,
+    justifyContent: 'center',
+    paddingLeft: 15,
+  },
+  networkValueText: {
+    fontSize: 22,
+  },
+
+  buttonContainer: {
+    backgroundColor: '',
+    marginTop: 100,
+    justifyContent: 'center',
+    height: 100,
+    alignItems: 'center',
+  },
+  okButton: {
+    alignItems: 'center',
+    height: 60,
+    justifyContent: 'center',
+    borderRadius: 15,
+    borderWidth: 0.2,
+    width: '60%',
+  },
+  okButtontext: {
+    fontSize: 20,
+  },
+  won: {
+  },
+  wonValue: {
+    top: -15,
+    fontSize: 12,
+    opacity: 0.5,
+  },
+
+  qr: {
+    marginTop: 20,
+    marginBottom: 40,
+  },
+
+  address: {
+    
+  },
+  addressText:{
+    fontSize: 20,
+    textAlign: 'center',
+  },
+
+  copyButton: {
+    borderWidth: 0.2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 80,
+    height: 80,
+    borderRadius: 40,
   },
 });

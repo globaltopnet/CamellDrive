@@ -14,8 +14,7 @@ import UpgradePlanScreen from '../screens/UpgradePlanScreen';
 import WalletScreen from '../screens/WalletScreen';
 import Tabs from './Tabs';
 import { NavigationContainer } from '@react-navigation/native';
-import DepositScreen from '../screens/DepositScreen';
-import WithdrawalScreen from '../screens/WithdrawalScreen';
+
 import ChartScreen from '../screens/ChartScreen';
 
 const Drawer = createDrawerNavigator();
@@ -50,16 +49,6 @@ const DrawerMenu = () => {
           drawerItemStyle: { display: 'none' }
         }}
       />
-
-        <Drawer.Screen 
-          name="DepositScreen"
-          component={DepositScreen}
-          options={{
-            drawerLabel: '입금',
-            drawerItemStyle: {display: 'none'}
-          }}
-        />
-
         <Drawer.Screen 
           name="ChartScreen"
           component={ChartScreen}
@@ -68,15 +57,6 @@ const DrawerMenu = () => {
             drawerItemStyle: {display: 'none'}
           }}
         />
-
-        <Drawer.Screen 
-          name="WithdrawalScreen"
-          component={WithdrawalScreen}
-          options={{
-            drawerLabel: '출금',
-            drawerItemStyle: {display: 'none'}
-          }}
-        />       
 
       <Drawer.Screen 
         name="FavoriteScreen"
