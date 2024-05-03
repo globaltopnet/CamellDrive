@@ -3,10 +3,8 @@ import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Platform } from
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '../theme/color';
 import SearchBar from './SearchBar';
-import { useNavigation } from '@react-navigation/native';
 
-const CustomHeader = ({ title}) => {
-  const navigation = useNavigation();
+const CustomHeader = ({ title, navigation }) => {
   const [sortType, setSortType] = useState('name');
   const [ascending, setAscending] = useState(true);
   const [viewMode, setViewMode] = useState('list');
