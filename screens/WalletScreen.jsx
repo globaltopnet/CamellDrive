@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, FlatList, Modal, Clipboard,
+import { View, Text, StyleSheet, TouchableOpacity, Image, FlatList, Modal,
   Button, TouchableWithoutFeedback,Keyboard, Alert} from 'react-native';
+import Clipboard from '@react-native-clipboard/clipboard';
 import Ionicons from 'react-native-vector-icons/Ionicons'; // Ionicons를 import합니다.
 import { Colors } from '../theme/color';
 import SubTabScreenHeader from '../src/SubTabScreenHeader';
