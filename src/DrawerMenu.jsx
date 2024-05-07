@@ -6,16 +6,14 @@ import * as Progress from 'react-native-progress';
 import { Colors } from '../theme/color';
 
 import BinScreen from '../screens/BinScreen';
+import WalletScreen from '../screens/WalletScreen';
 import FavoriteScreen from '../screens/FavoriteScreen';
 import HelpScreen from '../screens/HelpScreen';
 import SettingScreen from '../screens/SettingScreen';
 import ShareScreen from '../screens/ShareScreen';
 import UpgradePlanScreen from '../screens/UpgradePlanScreen';
-import WalletScreen from '../screens/WalletScreen';
 import Tabs from './Tabs';
 import { NavigationContainer } from '@react-navigation/native';
-import DepositScreen from '../screens/DepositScreen';
-import WithdrawalScreen from '../screens/WithdrawalScreen';
 import ChartScreen from '../screens/ChartScreen';
 
 const Drawer = createDrawerNavigator();
@@ -51,14 +49,6 @@ const DrawerMenu = () => {
         }}
       />
 
-        <Drawer.Screen 
-          name="DepositScreen"
-          component={DepositScreen}
-          options={{
-            drawerLabel: '입금',
-            drawerItemStyle: {display: 'none'}
-          }}
-        />
 
         <Drawer.Screen 
           name="ChartScreen"
@@ -68,15 +58,7 @@ const DrawerMenu = () => {
             drawerItemStyle: {display: 'none'}
           }}
         />
-
-        <Drawer.Screen 
-          name="WithdrawalScreen"
-          component={WithdrawalScreen}
-          options={{
-            drawerLabel: '출금',
-            drawerItemStyle: {display: 'none'}
-          }}
-        />       
+   
 
       <Drawer.Screen 
         name="FavoriteScreen"
