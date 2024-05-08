@@ -7,76 +7,47 @@ import {
   ActivityIndicator
 } from 'react-native';
 import "react-native-gesture-handler";
+import * as React from 'react';
 import { defaultStyles } from '@/constants/Styles';
 import { auth } from "../../firebaseConfig";
 import {
-  GoogleAuthProvider,
-  signInWithCredential,
+GoogleAuthProvider,
+onAuthStateChanged,
+signInWithCredential,
 } from "firebase/auth";
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
-import React, { useState, useEffect } from 'react';
 
 WebBrowser.maybeCompleteAuthSession();
 
-const LoginPage = () => {
-  const [loading, setLoading] = useState(false);
-  const [walletAddress, setWalletAddress] = useState(null);
+const Page = () => {
+  const [loading, setLoading] = React.useState(false);
   const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
     iosClientId: "795983066430-0d5a3vj9i2ncmt384icemckb714bcdqc.apps.googleusercontent.com",
-    androidClientId: "795983066430-dqnfl5gkppmlvs364sb4jhemmf2c9cq4.apps.googleusercontent.com"
+    androidClientId: "795983066430-dqnfl5gkppmlvs364sb4jhemmf2c9cq4.apps.googleusercontent.com",
   });
 
-  useEffect(() => {
-    const checkServerStatus = async () => {
-      try {
-        const response = await fetch('http://54.180.133.138:5000/api/ping');
-        if (response.ok) {
-          setServerStatus('Connected');
-        } else {
-          setServerStatus('Server not reachable');
-        }
-      } catch (error) {
-        console.error('Ping error:', error);
-        setServerStatus('Connection failed');
-      }
-    };
-    checkServerStatus();
-  }, []);
-
-  useEffect(() => {
+  React.useEffect(() => {
     if (response?.type === "success") {
       const { id_token } = response.params;
       const credential = GoogleAuthProvider.credential(id_token);
-      signInWithCredential(auth, credential)
-        .then(async (userCredential) => {
-          const user = userCredential.user;
-          const email = user.email;
-          console.log('User email:', email);
+      signInWithCredential(auth, credential);
+    }
+  }, [response]);
 
-          try {
-            const response = await fetch('http://54.180.133.138:5000/api/create-wallet', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({ email }),
-            });
-            const data = await response.json();
-            if (data.success) {
-              setWalletAddress(data.walletAddress);
-              console.log('Wallet created with address:', data.walletAddress);
-            } else {
-              console.error('Error creating wallet:', data.error);
-            }
-          } catch (error) {
-            console.error('API error:', error);
-          }
+  React.useEffect(() => {
+    if (response?.type === 'success') {
+      const { id_token } = response.params;
+      const credential = GoogleAuthProvider.credential(id_token);
+      setLoading(true);
+      signInWithCredential(auth, credential)
+        .catch(error => {
+          console.error("Authentication error: ", error);
         })
-        .catch((error) => console.error("Firebase auth error: ", error))
         .finally(() => setLoading(false));
     }
   }, [response]);
+
 
   if (loading) {
     return (
@@ -93,12 +64,6 @@ const LoginPage = () => {
       <Text style={defaultStyles.descriptionText}>
         Camell Drive에 오신 것을 환영합니다.
       </Text>
-
-      {walletAddress && (
-        <View>
-          <Text>Wallet Address: {walletAddress}</Text>
-        </View>
-      )}
 
       <View style={styles.logoContainer}>
         <Image
@@ -150,6 +115,7 @@ const LoginPage = () => {
         />
         <Text style={[defaultStyles.buttonText2, { color: '#FFF' }]}>Apple로 계속하기</Text>
       </TouchableOpacity>
+
     </View>
   );
 };
@@ -164,9 +130,9 @@ const styles = StyleSheet.create({
   logo: {
     marginTop: 40,
     marginBottom: 40,
-    width: 200,
+    width: 200, 
     height: 200,
   },
 });
 
-export default LoginPage;
+export default Page;
