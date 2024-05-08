@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Modal, View, Text, StyleSheet, TouchableOpacity, Animated, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '../theme/color';
 
 const ProfileModal = ({ visible, onClose, userData }) => {
   const slideAnim = useRef(new Animated.Value(-500)).current; // 시작 위치를 화면 위로 설정
@@ -10,7 +9,7 @@ const ProfileModal = ({ visible, onClose, userData }) => {
     if (visible) {
       Animated.timing(slideAnim, {
         toValue: 0,
-        duration: 230,
+        duration: 100,
         useNativeDriver: true
       }).start();
     } else {
@@ -60,10 +59,6 @@ const ProfileModal = ({ visible, onClose, userData }) => {
               <TouchableOpacity style={styles.menu} onPress={() => console.log('로그아웃')}>
                 <Ionicons name="log-out" size={20} color="#828282" />
                 <Text style={styles.menuText}>로그아웃</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.menu} onPress={() => console.log('회원 탈퇴')}>
-                <Ionicons name="exit" size={20} color="#828282" />
-                <Text style={styles.menuText}>회원 탈퇴</Text>
               </TouchableOpacity>
         </View>
 

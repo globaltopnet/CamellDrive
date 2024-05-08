@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "name": "camellproject",
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
@@ -9,7 +10,9 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@noble/secp256k1": "^2.1.0",
     "@rainbow-me/animated-charts": "^1.0.0-alpha.6",
+    "@react-native-picker/picker": "^2.7.5",
     "@react-navigation/bottom-tabs": "^6.5.20",
     "@react-navigation/drawer": "^6.6.15",
     "@react-navigation/native": "^6.1.17",
@@ -22,6 +25,7 @@
     "d3-time-format": "^4.1.0",
     "expo": "~50.0.14",
     "expo-status-bar": "~1.11.1",
+    "express": "^4.19.2",
     "moment": "^2.30.1",
     "react": "18.2.0",
     "react-native": "0.73.6",
@@ -35,7 +39,8 @@
     "react-native-screens": "~3.29.0",
     "react-native-svg": "^15.2.0",
     "react-native-vector-icons": "^10.0.3",
-    "react-native-webview": "^13.8.7"
+    "react-native-webview": "^13.8.7",
+    "tronweb": "^5.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

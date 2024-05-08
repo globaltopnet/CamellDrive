@@ -83,7 +83,7 @@ const DrawerMenu = () => {
         name="HelpScreen"
         component={HelpScreen}
         options={{
-          drawerLabel: '고객센터',
+          drawerLabel: '고객지원',
           headerShown: false,
           drawerItemStyle: {display: 'none'}
         }}
@@ -191,7 +191,7 @@ const CustomDrawerContent = (props) => {
         />
 
         <DrawerItem
-          label="고객센터"
+          label="고객지원"
           onPress={() => props.navigation.navigate('HelpScreen')}
           icon={({ color, size }) => (
             <MaterialCommunityIcons name="help-circle" color={color} size={size} />

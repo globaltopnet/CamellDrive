@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, FlatList, Modal, Clipboard,
-  Button, TouchableWithoutFeedback,Keyboard, Alert} from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons'; // Ionicons를 import합니다.
+  Button, TouchableWithoutFeedback,Keyboard, Platform, Alert} from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons'; 
 import { Colors } from '../theme/color';
 import SubTabScreenHeader from '../src/SubTabScreenHeader';
 import RNPickerSelect from 'react-native-picker-select';
-import { TextInput } from 'react-native-gesture-handler';
+import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import QRCode from 'react-native-qrcode-svg';
+import axios from 'axios';
 
 
-// 버튼 텍스트와 매핑될 아이콘 이름
+
 const buttonIcons = {
   출금: 'exit-outline',
   입금: 'enter-outline',
@@ -17,13 +18,13 @@ const buttonIcons = {
   더보기: 'ellipsis-horizontal-outline'
 };
 
-// WalletScreen.jsx 내 handleButtonPress 수정
+
 
 
 
 const copyToClipboard = (address) => {
   Clipboard.setString(address);
-  alert('주소가 복사되었습니다!');
+  alert('주소가 복사되었습니다');
 };
 
 
@@ -31,9 +32,23 @@ const copyToClipboard = (address) => {
 
 export default function WalletScreen({ navigation }) {
 
-  {/**실제 지갑 주소 */}
-  const walletAddress = "TNDcxm95uDiensNHpfHfn7q5kt2x1vtMfD";
+    // const [balance, setBalance] = useState('0');
 
+    // // useEffect 훅을 사용하여 컴포넌트 마운트 시 백엔드로부터 지갑 잔액 정보를 가져옵니다.
+    // useEffect(() => {
+    //   // 여기에서 백엔드 API를 호출하여 지갑 잔액을 가져옵니다.
+    //   axios.get('http://172.30.1.58:5000/wallet-balance')
+    //     .then(response => {
+    //       if (response.data.balance) {
+    //         setBalance(response.data.balance.toString());
+    //       } else if (response.data.error) {
+    //         Alert.alert('Error', response.data.error);
+    //       }
+    //     })
+    //     .catch(error => {
+    //       Alert.alert('Error', 'Failed to fetch balance');
+    //     });
+    // }, []); 
 
   const copyToClipboard = (address) => {
     Clipboard.setString(address);
@@ -42,7 +57,6 @@ export default function WalletScreen({ navigation }) {
 
   const [inputText, setInputText] = useState('');
 
-// 초기 상태를 false로 설정
 const [depositModalVisible, setDepositModalVisible] = useState(false);
 const [withdrawalModalVisible, setWithdrawalModalVisible] = useState(false);
 const closeModal = () => {
@@ -54,8 +68,8 @@ const closeModal = () => {
 const handleButtonPress = (buttonText) => {
   switch (buttonText) {
     case '입금':
-      closeModal();  // 먼저 모달을 강제로 닫고
-      setTimeout(() => setDepositModalVisible(true), 10);  // 소폭의 지연 후 모달을 열어 상태 변경이 반드시 일어나도록 함
+      closeModal();
+      setTimeout(() => setDepositModalVisible(true), 10);
       break;
     
     case '출금':
@@ -63,11 +77,10 @@ const handleButtonPress = (buttonText) => {
       break;
 
     case '시세':
-        navigation.navigate('ChartScreen');  // '시세' 선택 시 ChartScreen으로 네비게이트
+        navigation.navigate('ChartScreen');
       break;
     
     case '더보기':
-      // 더보기 관련 처리
       break;
     
     default:
@@ -86,7 +99,7 @@ const handleButtonPress = (buttonText) => {
   ];
 
   const transactions = [
-    // 백엔트 필요 !!
+    // // 백엔트 필요 !!
     {
       id: '1',
       profilePic: require('../src/img/camell_logo.png'),
@@ -159,7 +172,6 @@ const handleButtonPress = (buttonText) => {
       amount: '100.00',
       type: 'deposit',
     },
-    // ... 더 많은 내역 추가
   ];
 
   const renderItem = ({ item }) => (
@@ -181,22 +193,25 @@ const handleButtonPress = (buttonText) => {
       </Text>
     </View>
   );
+  const renderEmptyComponent = () => (
+    <View style={styles.emptyContainer}>
+      <Text style={styles.emptyText}>입출금 내역 없음</Text>
+    </View>
+  );
   
   
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-
     <View style={styles.container}>
       <SubTabScreenHeader title="지갑" navigation={navigation} />
       <Modal
-  animationType="slide"
-  transparent={true}
-  visible={withdrawalModalVisible}
-  onRequestClose={() => {
-    setWithdrawalModalVisible(!withdrawalModalVisible);
-  }}
->
+          animationType="slide"
+          transparent={true}
+          visible={withdrawalModalVisible}
+          onRequestClose={() => {
+            setWithdrawalModalVisible(!withdrawalModalVisible);
+          }}
+        >
   <View style={styles.centeredView}>
     <View style={styles.modalView}>
       <TouchableOpacity
@@ -262,12 +277,12 @@ const handleButtonPress = (buttonText) => {
       </TouchableOpacity>
       <Text style={styles.modalText}>입금</Text>
       <View style={styles.qr}>
-      <QRCode
+      {/* <QRCode
             value={walletAddress}
-            size={230}
+            size={Platform.OS === 'android' ? 200 : 230}
             color="black"
             backgroundColor="white"
-          />
+          /> */}
       </View>
       <View style={styles.address}>
         <Text style={{fontSize: 20, textAlign: 'center'}}>지갑 주소</Text>
@@ -344,7 +359,7 @@ const handleButtonPress = (buttonText) => {
           <View style={styles.balanceMid}>
 
                                     {/*  백엔드 필요 !!  */}
-            <Text style={styles.camtValue}>32.423123</Text>
+            <Text style={styles.camtValue}>{balance}</Text>
             <Text style={styles.camt}>CAMT</Text>
           </View>
           
@@ -375,15 +390,18 @@ const handleButtonPress = (buttonText) => {
         </View>
       </View>
       <View style={styles.bottomContainer}>
-        <FlatList
-          data={transactions}
-          renderItem={renderItem}
-          keyExtractor={item => item.id}
-          showsVerticalScrollIndicator={false}
+      <FlatList
+        alwaysBounceVertical={true} // iOS에서 항상 스크롤 가능하게
+        data={transactions}
+        renderItem={renderItem}
+        keyExtractor={item => item.id}
+        ListEmptyComponent={renderEmptyComponent} // 빈 목록 컴포넌트
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', minHeight: '100%' }}
         />
+
       </View>
     </View>
-    </TouchableWithoutFeedback>
 
   );
 }
@@ -404,7 +422,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     margin: 11,
     marginHorizontal: 15,
-    flex: 1.8,
+    flex: Platform.OS === 'android' ? 1.8 : 1.3,
+
     backgroundColor: Colors.background,
 
   },
@@ -550,9 +569,16 @@ PlusMinusValue: {
 
 
   
-
-
-
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyText: {
+    fontSize: 16,
+    color: 'gray',
+  },
+  
   centeredView: {
     flex: 1,
     justifyContent: 'flex-end',
@@ -562,7 +588,7 @@ PlusMinusValue: {
   modalView: {
     bottom: -15,
     width: '100%',
-    height: '65%',
+    height: Platform.OS === 'android' ? '70%' : '65%',
     margin: 20,
     backgroundColor: "white",
     borderRadius: 20,
@@ -629,7 +655,6 @@ PlusMinusValue: {
   },
 
   buttonContainer: {
-    backgroundColor: '',
     marginTop: 100,
     justifyContent: 'center',
     height: 100,
@@ -642,6 +667,7 @@ PlusMinusValue: {
     borderRadius: 15,
     borderWidth: 0.2,
     width: '60%',
+    bottom: Platform.OS === 'android' ? 60 : 0,
   },
   okButtontext: {
     fontSize: 20,
