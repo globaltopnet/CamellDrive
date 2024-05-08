@@ -16,53 +16,33 @@ import {
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
 import React, { useState, useEffect } from 'react';
-import TronWeb from 'tronweb';
-import randomBytes from 'react-native-randombytes';
 
 WebBrowser.maybeCompleteAuthSession();
 
-const generateRandomHex = (length) => {
-  return new Promise((resolve, reject) => {
-    randomBytes(length, (err, buffer) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(buffer.toString('hex'));
-      }
-    });
-  });
-};
-
-const generateTronWebInstance = async () => {
-  const privateKey = await generateRandomHex(32);
-  const tronWeb = new TronWeb({
-    fullHost: 'https://api.trongrid.io',
-    privateKey: privateKey
-  });
-  return { tronWeb, privateKey };
-};
-
-async function createTronAccount(tronWeb) {
-  try {
-    const account = await tronWeb.createAccount();
-    return {
-      address: account.address.base58,
-      privateKey: account.privateKey,
-    };
-  } catch (error) {
-    console.error('Error creating the wallet:', error);
-    return null;
-  }
-}
-
 const LoginPage = () => {
   const [loading, setLoading] = useState(false);
-  const [userIsNew, setUserIsNew] = useState(null);
-  const [wallet, setWallet] = useState({ address: null, privateKey: null });
+  const [walletAddress, setWalletAddress] = useState(null);
   const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
     iosClientId: "795983066430-0d5a3vj9i2ncmt384icemckb714bcdqc.apps.googleusercontent.com",
     androidClientId: "795983066430-dqnfl5gkppmlvs364sb4jhemmf2c9cq4.apps.googleusercontent.com"
   });
+
+  useEffect(() => {
+    const checkServerStatus = async () => {
+      try {
+        const response = await fetch('http://54.180.133.138:5000/api/ping');
+        if (response.ok) {
+          setServerStatus('Connected');
+        } else {
+          setServerStatus('Server not reachable');
+        }
+      } catch (error) {
+        console.error('Ping error:', error);
+        setServerStatus('Connection failed');
+      }
+    };
+    checkServerStatus();
+  }, []);
 
   useEffect(() => {
     if (response?.type === "success") {
@@ -73,49 +53,24 @@ const LoginPage = () => {
           const user = userCredential.user;
           const email = user.email;
           console.log('User email:', email);
-xw
-          // Check if the user is new via your existing API
-          const apiResponse = await fetch('http://54.180.133.138:5000/api/check-user', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email }),
-          });
-          const apiData = await apiResponse.json();
-          setUserIsNew(apiData.isNewUser);
 
-          if (apiData.isNewUser) {
-            const { tronWeb, privateKey } = await generateTronWebInstance();
-            const account = await createTronAccount(tronWeb);
-            if (account) {
-              setWallet({ address: account.address, privateKey: privateKey });
-
-              const walletPayload = {
-                email,
-                address: account.address,
-                privateKey: privateKey
-              };
-
-              try {
-                const apiAddResponse = await fetch('http://54.180.133.138:5000/api/add-wallet', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify(walletPayload),
-                });
-
-                const apiAddData = await apiAddResponse.json();
-                if (apiAddData.success) {
-                  console.log('Wallet successfully added to the database.');
-                } else {
-                  console.error('Error adding wallet:', apiAddData.error);
-                }
-              } catch (error) {
-                console.error('API error while adding wallet:', error);
-              }
+          try {
+            const response = await fetch('http://54.180.133.138:5000/api/create-wallet', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ email }),
+            });
+            const data = await response.json();
+            if (data.success) {
+              setWalletAddress(data.walletAddress);
+              console.log('Wallet created with address:', data.walletAddress);
+            } else {
+              console.error('Error creating wallet:', data.error);
             }
+          } catch (error) {
+            console.error('API error:', error);
           }
         })
         .catch((error) => console.error("Firebase auth error: ", error))
@@ -139,10 +94,9 @@ xw
         Camell Drive에 오신 것을 환영합니다.
       </Text>
 
-      {wallet.address && (
+      {walletAddress && (
         <View>
-          <Text>Wallet Address: {wallet.address}</Text>
-          <Text>Wallet Private Key: {wallet.privateKey}</Text>
+          <Text>Wallet Address: {walletAddress}</Text>
         </View>
       )}
 
@@ -168,6 +122,34 @@ xw
         />
         <Text style={[defaultStyles.buttonText, { color: '#000' }]}>Google로 계속하기</Text>
       </TouchableOpacity>
+
+      <TouchableOpacity
+        style={[defaultStyles.pillButton, {
+          flexDirection: 'row',
+          gap: 16,
+          marginTop: 20,
+          backgroundColor: '#F6F60A'
+        }]}>
+        <Image
+          source={require('@/assets/icons/kakao-icon.png')}
+          style={{ width: 24, height: 24 }}
+        />
+        <Text style={[defaultStyles.buttonText, { color: '#000' }]}>Kakao로 계속하기</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={[defaultStyles.pillButton, {
+          flexDirection: 'row',
+          gap: 16,
+          marginTop: 20,
+          backgroundColor: '#000000'
+        }]}>
+        <Image
+          source={require('@/assets/icons/apple-icon.png')}
+          style={{ width: 25, height: 25 }}
+        />
+        <Text style={[defaultStyles.buttonText2, { color: '#FFF' }]}>Apple로 계속하기</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -188,6 +170,3 @@ const styles = StyleSheet.create({
 });
 
 export default LoginPage;
-
-// iosClientId: "795983066430-0d5a3vj9i2ncmt384icemckb714bcdqc.apps.googleusercontent.com",
-// androidClientId: "795983066430-dqnfl5gkppmlvs364sb4jhemmf2c9cq4.apps.googleusercontent.com"
