@@ -1,24 +1,35 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Keyboard, TouchableWithoutFeedback, TouchableOpacity, Switch } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Modal, Keyboard, TouchableWithoutFeedback, TouchableOpacity, Switch } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from '../theme/color';
 import SubTabScreenHeader from '../src/SubTabScreenHeader';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons'; // 수정된 임포트
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 
 
 
 export default function SettingScreen({ navigation }) {
 
+  
+
   const [isDarkModeEnabled, setIsDarkModeEnabled] = useState(false);
+  const [languageModalVisible, setLanguageModalVisible] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState('언어');
 
   // 다크모드 스위치 토글 함수
   const toggleSwitch = () => setIsDarkModeEnabled(previousState => !previousState);
 
   const handleNavigation = (path) => {
     console.log(`Navigating to ${path}`);
-    // navigation.navigate(path); // Uncomment for actual navigation
+    navigation.navigate(path);
   };
+
+  const languages = [
+    { label: 'English', value: 'en' },
+    { label: '한국어', value: 'ko' },
+    { label: 'Español', value: 'es' },
+    { label: '日本語', value: 'ja' },
+  ];
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -29,12 +40,13 @@ export default function SettingScreen({ navigation }) {
           <View style={styles.plan}>
 
 
-            <TouchableOpacity onPress={() => handleNavigation('Language')}>
-              <View style={{justifyContent: 'space-between', flexDirection: 'row'}}>
-                <Text style={styles.planButtons}>업그레이드 플랜</Text>
-                <MaterialIcons paddingTop={10} paddingRight={10}  name="chevron-right" size={25} color="#000" />
-              </View>
-            </TouchableOpacity>
+          <TouchableOpacity onPress={() => handleNavigation('UpgradePlanScreen')}>
+            <View style={{justifyContent: 'space-between', flexDirection: 'row'}}>
+              <Text style={styles.planButtons}>업그레이드 플랜</Text>
+              <MaterialIcons paddingTop={10} paddingRight={10}  name="chevron-right" size={25} color="#000" />
+            </View>
+          </TouchableOpacity>
+
 
             <View style={styles.settingItem}>
               <Text style={styles.planButtons}>사용가능 용량</Text>     
@@ -62,10 +74,10 @@ export default function SettingScreen({ navigation }) {
 
           </View>
 
-            <TouchableOpacity onPress={() => handleNavigation('Language')}>
+          <TouchableOpacity onPress={() => setLanguageModalVisible(true)}>
               <View style={{justifyContent: 'space-between', flexDirection: 'row'}}>
                 <Text style={styles.planButtons}>언어</Text>
-                <MaterialIcons  paddingTop={10} paddingRight={10}  name="chevron-right" size={25} color="#000" />
+                <MaterialIcons paddingTop={10} paddingRight={10} name="chevron-right" size={25} color="#000" />
               </View>
             </TouchableOpacity>
 
@@ -87,9 +99,9 @@ export default function SettingScreen({ navigation }) {
              </View>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => handleNavigation('Language')}>
+            <TouchableOpacity onPress={() => handleNavigation('HelpScreen')}>
               <View style={{justifyContent: 'space-between', flexDirection: 'row'}}>
-                <Text style={styles.planButtons}>고객센터</Text>
+                <Text style={styles.planButtons}>고객지원</Text>
                 <MaterialIcons paddingTop={10} paddingRight={10}  name="chevron-right" size={25} color="#000" />
               </View>
             </TouchableOpacity>
@@ -131,12 +143,36 @@ export default function SettingScreen({ navigation }) {
           </View>
 
         </ScrollView>
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={languageModalVisible}
+          onRequestClose={() => {
+            setLanguageModalVisible(!languageModalVisible);
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              {languages.map((language, index) => (
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => {
+                    setSelectedLanguage(language.label);
+                    setLanguageModalVisible(false);
+                  }}
+                  style={styles.languageOption}
+                >
+                  <Text style={styles.languageText}>{language.label}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+        </Modal>
       </SafeAreaView>
     </TouchableWithoutFeedback>
   );
 }
 
-// 스타일은 이전과 동일
 
 const styles = StyleSheet.create({
   container: {
@@ -148,7 +184,7 @@ const styles = StyleSheet.create({
   },
   plan: {
     justifyContent: 'center',
-    borderBottomWidth: 0.2,  // 하단에만 테두리 적용
+    borderBottomWidth: 0.2,
     marginBottom: 10,
     borderTopWidth: 0.2,
   },
@@ -160,32 +196,37 @@ const styles = StyleSheet.create({
   },
   mode: {
     justifyContent: 'center',
-    borderBottomWidth: 0.2,  // 하단에만 테두리 적용
+    borderBottomWidth: 0.2,
     marginBottom: 10,
+  },
+  languageSelection: {
+    justifyContent: 'center',
+    borderBottomWidth: 0.2,
+    marginBottom: 10,
+    paddingVertical: 15,
+    paddingHorizontal: 20,
   },
   info: {
     justifyContent: 'center',
-    borderBottomWidth: 0.2,  // 하단에만 테두리 적용
+    borderBottomWidth: 0.2,
     marginBottom: 10,
   },
   help: {
     justifyContent: 'center',
-    borderBottomWidth: 0.2,  // 하단에만 테두리 적용
+    borderBottomWidth: 0.2,
     marginBottom: 10,
   },
   deleteAccount: {
     justifyContent: 'center',
     alignItems: 'center',
     height: 50,
-    borderBottomWidth: 0.2,  // 하단에만 테두리 적용
+    borderBottomWidth: 0.2,
     top : -5,
   },
   accountText: {
     color: 'red',
     fontSize: 16,
   },
-
-
   settingItem: {
     justifyContent: 'center',
   },
@@ -195,5 +236,34 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingBottom: 10,
     top: -5,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22
+  },
+  modalView: {
+    left : 150,
+    backgroundColor: "white",
+    borderRadius: 20,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+  languageOption: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+  languageText: {
+    fontSize: 18,
   },
 });

@@ -3,12 +3,26 @@ import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Platform } from
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '../theme/color';
 import SearchBar from './SearchBar';
+import ProfileModal from '../screens/ProfileModal';
 
 const SubCustomHeader = ({ title, navigation }) => {
+  const [modalVisible, setModalVisible] = useState(false);  // 모달 보이기 상태
   const [sortType, setSortType] = useState('name');
   const [ascending, setAscending] = useState(true);
   const [viewMode, setViewMode] = useState('list');
 
+  const toggleSortType = (type) => {
+    if (type === sortType) {
+      setAscending(!ascending);
+    } else {
+      setSortType(type);
+      setAscending(false);
+    }
+  };
+
+  const getIcon = (type) => {
+    return type === sortType ? (ascending ? 'chevron-up-outline' : 'chevron-down-outline') : 'chevron-up-outline';
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -17,9 +31,16 @@ const SubCustomHeader = ({ title, navigation }) => {
           <Ionicons name="menu" size={30} color="black" />
         </TouchableOpacity>
         <Text style={styles.title}>{title}</Text>
-        <TouchableOpacity onPress={() => console.log('Profile clicked')}>
+        <TouchableOpacity onPress={() => setModalVisible(true)}>
           <Ionicons name="person-circle" size={35} color="black" />
         </TouchableOpacity>
+      </View>
+      <View style={styles.controlsContainer}>
+        <ProfileModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        />
+
       </View>
     </SafeAreaView>
   );

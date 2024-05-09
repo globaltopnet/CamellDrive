@@ -3,10 +3,10 @@ import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Platform } from
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '../theme/color';
 import SearchBar from './SearchBar';
-import { useNavigation } from '@react-navigation/native';
+import ProfileModal from '../screens/ProfileModal';
 
-const CustomHeader = ({ title}) => {
-  const navigation = useNavigation();
+const CustomHeader = ({ title, navigation }) => {
+  const [modalVisible, setModalVisible] = useState(false);  // 모달 보이기 상태
   const [sortType, setSortType] = useState('name');
   const [ascending, setAscending] = useState(true);
   const [viewMode, setViewMode] = useState('list');
@@ -31,7 +31,7 @@ const CustomHeader = ({ title}) => {
           <Ionicons name="menu" size={30} color="black" />
         </TouchableOpacity>
         <Text style={styles.title}>{title}</Text>
-        <TouchableOpacity onPress={() => console.log('Profile clicked')}>
+        <TouchableOpacity onPress={() => setModalVisible(true)}>
           <Ionicons name="person-circle" size={35} color="black" />
         </TouchableOpacity>
       </View>
@@ -52,6 +52,10 @@ const CustomHeader = ({ title}) => {
             <Ionicons name={getIcon('size')} size={20} color="black" />
           </TouchableOpacity>
         </View>
+        <ProfileModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        />
         {/* 뷰 모드 변경 버튼 */}
         <TouchableOpacity style={styles.viewModeButton} onPress={() => setViewMode(viewMode === 'list' ? 'grid' : 'list')}>
           <Ionicons name={viewMode === 'list' ? 'grid-outline' : 'list-outline'} size={20} color="black" />

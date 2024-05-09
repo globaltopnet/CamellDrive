@@ -2,8 +2,6 @@ import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/
 import DrawerMenu from './DrawerMenu';
 import { NavigationContainer } from '@react-navigation/native';
 import WalletScreen from '../screens/WalletScreen';
-import DepositScreen from '../screens/DepositScreen';
-
 
 const Stack = createStackNavigator();
 
@@ -21,7 +19,6 @@ function Navigation() {
           }}
         />
       <Stack.Screen name="WalletScreen" component={WalletScreen} />
-      <Stack.Screen name="DepositScreen" component={DepositScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

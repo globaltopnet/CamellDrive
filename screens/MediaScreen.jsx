@@ -1,32 +1,31 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { Colors } from '../theme/color';
+import { Keyboard, TouchableWithoutFeedback } from 'react-native';
 import TabScreenHeader from '../src/TabScreenHeader';
-import SlideInScreen from '../src/SlideInScreen';
 
 export default function MediaScreen({ navigation }) {
   return (
-    <SlideInScreen>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.container}>
-          <TabScreenHeader title="미디어" navigation={navigation} />
-          <View style={styles.mainContainer}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
+        <View style={styles.mainContainer}>
             <Text>비어있음</Text>
-          </View>
         </View>
-      </TouchableWithoutFeedback>
-    </SlideInScreen>
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+
     backgroundColor: Colors.background,
   },
   mainContainer: {
-    flex: 1,
     justifyContent: 'center',
+    alignContent: 'center',
     alignItems: 'center',
+    flex: 1,
   }
 });

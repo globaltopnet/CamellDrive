@@ -6,15 +6,14 @@ import * as Progress from 'react-native-progress';
 import { Colors } from '../theme/color';
 
 import BinScreen from '../screens/BinScreen';
+import WalletScreen from '../screens/WalletScreen';
 import FavoriteScreen from '../screens/FavoriteScreen';
 import HelpScreen from '../screens/HelpScreen';
 import SettingScreen from '../screens/SettingScreen';
 import ShareScreen from '../screens/ShareScreen';
 import UpgradePlanScreen from '../screens/UpgradePlanScreen';
-import WalletScreen from '../screens/WalletScreen';
 import Tabs from './Tabs';
 import { NavigationContainer } from '@react-navigation/native';
-
 import ChartScreen from '../screens/ChartScreen';
 
 const Drawer = createDrawerNavigator();
@@ -49,6 +48,8 @@ const DrawerMenu = () => {
           drawerItemStyle: { display: 'none' }
         }}
       />
+
+
         <Drawer.Screen 
           name="ChartScreen"
           component={ChartScreen}
@@ -57,6 +58,7 @@ const DrawerMenu = () => {
             drawerItemStyle: {display: 'none'}
           }}
         />
+   
 
       <Drawer.Screen 
         name="FavoriteScreen"
@@ -81,7 +83,7 @@ const DrawerMenu = () => {
         name="HelpScreen"
         component={HelpScreen}
         options={{
-          drawerLabel: '고객센터',
+          drawerLabel: '고객지원',
           headerShown: false,
           drawerItemStyle: {display: 'none'}
         }}
@@ -189,7 +191,7 @@ const CustomDrawerContent = (props) => {
         />
 
         <DrawerItem
-          label="고객센터"
+          label="고객지원"
           onPress={() => props.navigation.navigate('HelpScreen')}
           icon={({ color, size }) => (
             <MaterialCommunityIcons name="help-circle" color={color} size={size} />

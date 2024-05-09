@@ -82,7 +82,6 @@ function Item({ style, icon, label }) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: Colors.background,
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
