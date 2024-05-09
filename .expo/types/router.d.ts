@@ -7,7 +7,7 @@ declare module "expo-router" {
   export * from 'expo-router/build';
 
   // prettier-ignore
-  type StaticRoutes = `/` | `/login/help` | `/login/login` | `/main/CustomHeader` | `/main/DrawerMenu` | `/main/SearchBar` | `/main/SubCustomHeader` | `/main/SubTabScreenHeader` | `/main/TabScreenHeader` | `/main/Tabs` | `/navigation/navigation` | `/screens/BinScreen` | `/screens/ChartScreen` | `/screens/DepositScreen` | `/screens/FavoriteScreen` | `/screens/FileScreen` | `/screens/HelpScreen` | `/screens/MediaScreen` | `/screens/PlusMenu` | `/screens/SettingScreen` | `/screens/ShareScreen` | `/screens/UpgradePlanScreen` | `/screens/WalletScreen` | `/screens/WithdrawalScreen`;
+  type StaticRoutes = `/` | `/.DS_Store` | `/login/help` | `/login/login` | `/main/CustomHeader` | `/main/DrawerMenu` | `/main/SearchBar` | `/main/SubCustomHeader` | `/main/SubTabScreenHeader` | `/main/TabScreenHeader` | `/main/Tabs` | `/navigation/navigation` | `/screens/BinScreen` | `/screens/ChartScreen` | `/screens/DepositScreen` | `/screens/FavoriteScreen` | `/screens/FileScreen` | `/screens/HelpScreen` | `/screens/MediaScreen` | `/screens/PlusMenu` | `/screens/SettingScreen` | `/screens/ShareScreen` | `/screens/UpgradePlanScreen` | `/screens/WalletScreen` | `/screens/WithdrawalScreen`;
   // prettier-ignore
   type DynamicRoutes<T extends string> = never;
   // prettier-ignore
