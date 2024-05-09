@@ -30,7 +30,7 @@ const LoginPage = () => {
   useEffect(() => {
     const checkServerStatus = async () => {
       try {
-        const response = await fetch('http://54.180.133.138:5000/api/ping');
+        const response = await fetch('http://54.180.133.138:8080/api/ping');
         if (response.ok) {
           setServerStatus('Connected');
         } else {
@@ -55,7 +55,7 @@ const LoginPage = () => {
           console.log('User email:', email);
 
           try {
-            const response = await fetch('http://54.180.133.138:5000/api/create-wallet', {
+            const response = await fetch('http://54.180.133.138:8080/api/create-wallet', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
