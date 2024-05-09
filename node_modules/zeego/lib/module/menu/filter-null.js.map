@@ -1,0 +1,1 @@
+{"version":3,"sources":["filter-null.tsx"],"names":["filterNull","t"],"mappings":"AAAA,OAAO,MAAMA,UAAU,GACrBC,CADwB,IAEA;AACxB,SAAOA,CAAC,IAAI,IAAZ;AACD,CAJM","sourcesContent":["export const filterNull = <T extends unknown | null | undefined>(\n  t: T\n): t is NonNullable<T> => {\n  return t != null\n}\n"]}
