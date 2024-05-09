@@ -1,7 +1,12 @@
 {
   "expo": {
+<<<<<<< HEAD
     "name": "CamellDrive",
     "slug": "CamellDrive",
+=======
+    "name": "CamellProject",
+    "slug": "CamellProject",
+>>>>>>> bin
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -27,6 +32,7 @@
       "package": "com.anonymous.CamellDrive"
     },
     "web": {
+<<<<<<< HEAD
       "bundler": "metro",
       "output": "static",
       "favicon": "./assets/images/favicon.png"
@@ -46,6 +52,9 @@
       "eas": {
         "projectId": "a539a432-86b3-408b-84fb-bfb63105a5a7"
       }
+=======
+      "favicon": "./assets/favicon.png"
+>>>>>>> bin
     }
   }
 }

@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "devices": [
     {
       "installationId": "4EFC34A7-A623-4BC6-9554-CFFEC3DE7FC1",
@@ -9,4 +10,7 @@
       "lastUsed": 1714439806577
     }
   ]
+=======
+  "devices": []
+>>>>>>> bin
 }
