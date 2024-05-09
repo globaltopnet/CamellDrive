@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, FlatList, Modal, Clipboard,
-  Button, TouchableWithoutFeedback,Keyboard, Platform, Alert} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, FlatList, Modal, Clipboard, Platform, Alert} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons'; 
 import { Colors } from '../theme/color';
 import SubTabScreenHeader from '../src/SubTabScreenHeader';
 import RNPickerSelect from 'react-native-picker-select';
-import { ScrollView, TextInput } from 'react-native-gesture-handler';
+import { TextInput } from 'react-native-gesture-handler';
 import QRCode from 'react-native-qrcode-svg';
 import axios from 'axios';
 
 
-
+// 버튼 아이콘
 const buttonIcons = {
   출금: 'exit-outline',
   입금: 'enter-outline',
@@ -21,56 +20,52 @@ const buttonIcons = {
 
 
 
-
-const copyToClipboard = (address) => {
-  Clipboard.setString(address);
-  alert('주소가 복사되었습니다');
-};
-
-
-
-
 export default function WalletScreen({ navigation }) {
 
+  const [inputText, setInputText] = useState('');
+  
+  const [depositModalVisible, setDepositModalVisible] = useState(false);
+  const [withdrawalModalVisible, setWithdrawalModalVisible] = useState(false);
 
-    const [balance, setBalance] = useState('0'); // 기본 0
-    const [walletAddress, setWalletAddress] = useState('TNDcxm95uDiensNHpfHfn7q5kt2x1vtMfD'); // 지갑주소
+  const [balance, setBalance] = useState('0');
+
+  const [walletAddress, setWalletAddress] = useState('TNDcxm95uDiensNHpfHfn7q5kt2x1vtMfD'); // 지갑주소
 
     // 지갑 잔액 코드
     useEffect(() => {
-        if (walletAddress) {        // ec2서버
-            axios.get(`http://54.180.133.138:5500/wallet-balance?wallet_address=${walletAddress}`)
-            .then(response => {
-                if (response.data.balance) {
-                    setBalance(response.data.balance.toString());
-                } else if (response.data.error) {
-                    Alert.alert('Error', response.data.error);
-                }
-            })
-            .catch(error => {
-                console.error("잔액을 불러오는데 실패했습니다.:", error);
-                Alert.alert('Error', '잔액을 불러오는데 실패했습니다.: ' + error.message);
-            });
-        }
-    }, [walletAddress]);
-
-    useEffect(() => {
       if (walletAddress) {
-        axios.get(`http://54.180.133.138:5500/wallet-transactions?wallet_address=${walletAddress}`)
-        .then(response => {
-          if (response.data.transactions) {
-            // setTransfers 대신 setTransactions 사용
-            setTransactions(response.data.transactions);
-          } else if (response.data.error) {
-            Alert.alert('Error', response.data.error);
-          }
-        })
-        .catch(error => {
-          console.error("Failed to fetch transactions:", error);
-          Alert.alert('Error', 'Failed to fetch transactions: ' + error.message);
-        });
+          axios.get(`http://54.180.133.138:5500/wallet-balance?wallet_address=${walletAddress}`)
+          .then(response => {
+              if (response.data.balance) {
+                  setBalance(response.data.balance.toString());
+              } else if (response.data.error) {
+                  Alert.alert('Error', response.data.error);
+              }
+          })
+          .catch(error => {
+              console.error("잔액을 불러오는데 실패했습니다.:", error);
+              Alert.alert('Error', '잔액을 불러오는데 실패했습니다.: ' + error.message);
+          });
       }
-    }, [walletAddress]);
+  }, [walletAddress]);
+
+  useEffect(() => {
+    if (walletAddress) {
+      axios.get(`http://54.180.133.138:5500/wallet-transactions?wallet_address=${walletAddress}`)
+      .then(response => {
+        if (response.data.transactions) {
+          // setTransfers 대신 setTransactions 사용
+          setTransactions(response.data.transactions);
+        } else if (response.data.error) {
+          Alert.alert('Error', response.data.error);
+        }
+      })
+      .catch(error => {
+        console.error("Failed to fetch transactions:", error);
+        Alert.alert('Error', 'Failed to fetch transactions: ' + error.message);
+      });
+    }
+  }, [walletAddress]);
     
 
 
@@ -80,10 +75,6 @@ export default function WalletScreen({ navigation }) {
     Alert.alert("알림", "주소가 클립보드에 복사되었습니다!");
   };
 
-  const [inputText, setInputText] = useState('');
-
-const [depositModalVisible, setDepositModalVisible] = useState(false);
-const [withdrawalModalVisible, setWithdrawalModalVisible] = useState(false);
 const closeModal = () => {
   setDepositModalVisible(false);
 };
@@ -128,30 +119,36 @@ const handleButtonPress = (buttonText) => {
 
   const renderItem = ({ item }) => (
     <View style={styles.transactionRow}>
-    <Image
-      source={require('../src/img/camell_logo.png')}
-      style={styles.profilePic}
-    />
+      <Image
+        source={require('../src/img/camell_logo.png')}
+        style={styles.profilePic}
+      />
       <View style={styles.transactionDetails}>
-        {/* 발신자 주소 */}
+        {/* 거래 유형에 따라 발신자 또는 수신자 주소 표시 */}
         <View style={styles.addressContainer}>
           <Text style={styles.walletAddress}>
-            {`${item.from.slice(0, 6)}...${item.from.slice(-4)}`}
+            {item.type === 'deposit' ? 
+              `${item.from.slice(0, 6)}...${item.from.slice(-4)}` : 
+              `${item.to.slice(0, 6)}...${item.to.slice(-4)}`}
           </Text>
-          <TouchableOpacity onPress={() => copyToClipboard(item.from)} style={styles.copyIcon}>
+          <TouchableOpacity 
+            onPress={() => copyToClipboard(item.type === 'deposit' ? item.from : item.to)} 
+            style={styles.copyIcon}
+          >
             <Ionicons name="copy-outline" size={15} color="black" />
           </TouchableOpacity>
         </View>
-
+  
         {/* 거래 시간: timestamp를 로컬 시간으로 변환하여 표시 */}
         <Text style={styles.date}>{formatDate(item.timestamp)}</Text>
       </View>
       {/* 금액과 토큰 이름 */}
       <Text style={[styles.amount, { color: item.type === 'deposit' ? 'green' : 'red' }]}>
-        {item.type === 'deposit' ? '+' : '-'}{parseFloat(item.amount).toLocaleString()} {item.token}
+        {item.type === 'deposit' ? '+' : '-'}{parseFloat(item.amount).toLocaleString()} CAMT
       </Text>
     </View>
   );
+  
   
   const renderEmptyComponent = () => (
     <View style={styles.emptyContainer}>
@@ -333,8 +330,10 @@ const handleButtonPress = (buttonText) => {
 
           <View style={styles.balanceMid}>
 
-                                    {/*  백엔드 필요 !!  */}
-            <Text style={styles.camtValue}>{balance}</Text>
+            <Text style={styles.camtValue}>
+              {parseFloat(balance).toLocaleString('ko-KR',)}
+            </Text>
+
             <Text style={styles.camt}>CAMT</Text>
           </View>
           
