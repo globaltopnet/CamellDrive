@@ -7,9 +7,7 @@ import { Colors } from '../theme/color';
 import FileScreen from '../screens/FileScreen';
 import MediaScreen from '../screens/MediaScreen';
 import PlusMenu from '../screens/PlusMenu';
-import FavoriteScreen from '../screens/FavoriteScreen';
-import ShareScreen from '../screens/ShareScreen';
-
+import HomeScreen from '../screens/HomeScreen';
 import TabScreenHeader from './TabScreenHeader';
 
 const Tab = createBottomTabNavigator();
@@ -59,7 +57,14 @@ function Tabs() {
           header: ({ navigation }) => <TabScreenHeader title="미디어" navigation={navigation} />
         }}
       />
-
+      <Tab.Screen 
+        name="Home" 
+        component={HomeScreen}
+        options={{
+          tabBarButton: () => null,  // 탭 버튼을 숨김
+          headerShown: false
+        }}
+      />
     </Tab.Navigator>
   );
 }

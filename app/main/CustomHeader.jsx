@@ -30,7 +30,14 @@ const CustomHeader = ({ title, navigation }) => {
         <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
           <Ionicons name="menu" size={30} color="black" />
         </TouchableOpacity>
+
         <Text style={styles.title}>{title}</Text>
+
+        <TouchableOpacity style={styles.homeButton} onPress={() => navigation.navigate('Home')}>
+  <Ionicons name="home" size={27} color="black" />
+</TouchableOpacity>
+
+
         <TouchableOpacity onPress={() => setModalVisible(true)}>
           <Ionicons name="person-circle" size={35} color="black" />
         </TouchableOpacity>
@@ -110,6 +117,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 10,
   },
+
+  homeButton: {
+    position: 'absolute',
+    left: 330,
+  }
 });
 
 export default CustomHeader;
