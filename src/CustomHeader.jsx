@@ -34,8 +34,8 @@ const CustomHeader = ({ title, navigation }) => {
         <Text style={styles.title}>{title}</Text>
 
         <TouchableOpacity style={styles.homeButton} onPress={() => navigation.navigate('Home')}>
-  <Ionicons name="home" size={27} color="black" />
-</TouchableOpacity>
+          <Ionicons name="home" size={27} color="black" />
+      </TouchableOpacity>
 
 
         <TouchableOpacity onPress={() => setModalVisible(true)}>

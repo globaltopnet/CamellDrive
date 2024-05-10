@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Colors } from '../theme/color';
+import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import SubTabScreenHeader from '../src/SubTabScreenHeader';
 
 export default function HomeScreen({ navigation }) {
@@ -17,20 +18,23 @@ export default function HomeScreen({ navigation }) {
 
             <View style={styles.topContainer}>
                 <View style={styles.storageCard}>
-                <View style={[styles.gauge, {justifyContent: 'center', alignItems: 'center'}]}>
-              {/* 게이지 안에 백분율을 표시합니다 */}
-              <Text style={styles.percentageText}>{percentage}%</Text>
+                <View style={styles.gauge}>
+              {/* 게이지 바로 진행 상태를 표시합니다 */}
+              <AnimatedCircularProgress
+                size={100}
+                width={10}
+                fill={percentage}
+                tintColor={Colors.primary}
+                backgroundColor="#3d5875">
+                {
+                  (fill) => (
+                    <Text style={styles.percentageText}>
+                      {Math.round(fill)}%
+                    </Text>
+                  )
+                }
+              </AnimatedCircularProgress>
             </View>
-
-                    <View style={styles.storageTextContainer}>
-                        <Text style={styles.storageTitle}>
-                            저장 공간
-                        </Text>
-
-                        <Text style={styles.storageText}>
-                            10 GB of 30 GB used
-                        </Text>
-                    </View>
                 </View>
             </View>
 
@@ -72,7 +76,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   gauge: {
-    backgroundColor: Colors.primary,
+    backgroundColor: blue,
     width: 100,
     height: 100,
     borderRadius: 50,

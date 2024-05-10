@@ -12,6 +12,27 @@ const files = [
   { id: '6', name: '사진.png', type: 'file', uploadDate: '2024-05-10', size: '2MB' },
   { id: '7', name: '사진.png', type: 'file', uploadDate: '2024-05-10', size: '2MB' },
   { id: '8', name: '사진.png', type: 'folder', uploadDate: '2024-05-10', size: '2MB' },
+  { id: '9', name: '사진.png', type: 'folder', uploadDate: '2024-05-10', size: '2MB' },
+  { id: '10', name: '사진.png', type: 'folder', uploadDate: '2024-05-10', size: '2MB' },
+  { id: '11', name: '사진.png', type: 'folder', uploadDate: '2024-05-10', size: '2MB' },
+  { id: '12', name: '사진.png', type: 'folder', uploadDate: '2024-05-10', size: '2MB' },
+  { id: '13', name: '사진.png', type: 'folder', uploadDate: '2024-05-10', size: '2MB' },
+  { id: '14', name: '사진.png', type: 'folder', uploadDate: '2024-05-10', size: '2MB' },
+  { id: '15', name: '사진.png', type: 'folder', uploadDate: '2024-05-10', size: '2MB' },
+  { id: '16', name: '사진.png', type: 'folder', uploadDate: '2024-05-10', size: '2MB' },
+  { id: '17', name: '사진.png', type: 'folder', uploadDate: '2024-05-10', size: '2MB' },
+  { id: '18', name: '사진.png', type: 'folder', uploadDate: '2024-05-10', size: '2MB' },
+  { id: '19', name: '사진.png', type: 'folder', uploadDate: '2024-05-10', size: '2MB' },
+  { id: '20', name: '사진.png', type: 'folder', uploadDate: '2024-05-10', size: '2MB' },
+  { id: '21', name: '사진.png', type: 'folder', uploadDate: '2024-05-10', size: '2MB' },
+  { id: '22', name: '사진.png', type: 'folder', uploadDate: '2024-05-10', size: '2MB' },
+  { id: '23', name: '사진.png', type: 'folder', uploadDate: '2024-05-10', size: '2MB' },
+  { id: '24', name: '사진.png', type: 'folder', uploadDate: '2024-05-10', size: '2MB' },
+  { id: '25', name: '사진.png', type: 'folder', uploadDate: '2024-05-10', size: '2MB' },
+  { id: '26', name: '사진.png', type: 'folder', uploadDate: '2024-05-10', size: '2MB' },
+  { id: '27', name: '사진.png', type: 'folder', uploadDate: '2024-05-10', size: '2MB' },
+  { id: '28', name: '사진.png', type: 'folder', uploadDate: '2024-05-10', size: '2MB' },
+
 ];
 
 export default function GridView() {
