@@ -1,15 +1,25 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Platform } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Platform, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '../theme/color';
 import SearchBar from './SearchBar';
 import ProfileModal from '../screens/ProfileModal';
+import { getAuth } from "firebase/auth";
 
 const CustomHeader = ({ title, navigation }) => {
-  const [modalVisible, setModalVisible] = useState(false);  // 모달 보이기 상태
+  const [modalVisible, setModalVisible] = useState(false);  // Modal visibility
   const [sortType, setSortType] = useState('name');
   const [ascending, setAscending] = useState(true);
   const [viewMode, setViewMode] = useState('list');
+  const [userPhoto, setUserPhoto] = useState(null);
+
+  useEffect(() => {
+    const auth = getAuth();
+    const currentUser = auth.currentUser;
+    if (currentUser) {
+      setUserPhoto(currentUser.photoURL);
+    }
+  }, []);
 
   const toggleSortType = (type) => {
     if (type === sortType) {
@@ -34,12 +44,15 @@ const CustomHeader = ({ title, navigation }) => {
         <Text style={styles.title}>{title}</Text>
 
         <TouchableOpacity style={styles.homeButton} onPress={() => navigation.navigate('Home')}>
-  <Ionicons name="home" size={27} color="black" />
-</TouchableOpacity>
-
+          <Ionicons name="home" size={27} color="black" />
+        </TouchableOpacity>
 
         <TouchableOpacity onPress={() => setModalVisible(true)}>
-          <Ionicons name="person-circle" size={35} color="black" />
+          {userPhoto ? (
+            <Image source={{ uri: userPhoto }} style={styles.profilePicture} />
+          ) : (
+            <Ionicons name="person-circle" size={35} color="black" />
+          )}
         </TouchableOpacity>
       </View>
       <SearchBar onSearch={(query) => console.log('Searching:', query)} />
@@ -60,8 +73,8 @@ const CustomHeader = ({ title, navigation }) => {
           </TouchableOpacity>
         </View>
         <ProfileModal
-        visible={modalVisible}
-        onClose={() => setModalVisible(false)}
+          visible={modalVisible}
+          onClose={() => setModalVisible(false)}
         />
         {/* 뷰 모드 변경 버튼 */}
         <TouchableOpacity style={styles.viewModeButton} onPress={() => setViewMode(viewMode === 'list' ? 'grid' : 'list')}>
@@ -121,6 +134,11 @@ const styles = StyleSheet.create({
   homeButton: {
     position: 'absolute',
     left: 330,
+  },
+  profilePicture: {
+    width: 35,
+    height: 35,
+    borderRadius: 17.5,
   }
 });
 

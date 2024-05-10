@@ -1,10 +1,11 @@
 import React from 'react';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
-import { View, Text, SafeAreaView, StyleSheet, Image, TouchableOpacity, Animated } from 'react-native';
+import { View, Text, SafeAreaView, StyleSheet, Image, TouchableOpacity, Animated, Alert } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import * as Progress from 'react-native-progress';
 import { Colors } from '../theme/color';
-
+import { signOut } from 'firebase/auth';
+import { auth } from '@/firebaseConfig';
 import BinScreen from '../screens/BinScreen';
 import WalletScreen from '../screens/WalletScreen';
 import FavoriteScreen from '../screens/FavoriteScreen';
@@ -15,6 +16,7 @@ import UpgradePlanScreen from '../screens/UpgradePlanScreen';
 import Tabs from './Tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import ChartScreen from '../screens/ChartScreen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Drawer = createDrawerNavigator();
 
@@ -131,6 +133,27 @@ const DrawerMenu = () => {
 };
 
 const CustomDrawerContent = (props) => {
+  const handleLogout = async () => {
+    Alert.alert(
+      "로그아웃 확인",
+      "로그아웃 하시겠습니까?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Logout cancelled"),
+          style: "cancel",
+        },
+        {
+          text: "Logout",
+          onPress: async () => {
+            await signOut(auth);
+            await AsyncStorage.removeItem('@user');
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  };
   return (
     <DrawerContentScrollView {...props}>
       <SafeAreaView style={styles.drawerSafeArea}>
@@ -244,7 +267,7 @@ const CustomDrawerContent = (props) => {
     <View style={styles.menuItem3}>
       <DrawerItem
         label="로그아웃"
-        onPress={() => alert('Link to logout')}
+        onPress={handleLogout}
         icon={({ color, size }) => (
           <MaterialCommunityIcons name="logout" color={color} size={size} />
         )}

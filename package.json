@@ -98,6 +98,7 @@
     "stream-browserify": "^1.0.0",
     "string_decoder": "^0.10.31",
     "text-encoding": "^0.7.0",
+    "text-encoding-polyfill": "^0.6.7",
     "timers-browserify": "^1.4.2",
     "tron": "^0.2.4",
     "tronweb": "^4.4.0",

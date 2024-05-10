@@ -1,71 +1,73 @@
-import React, { useEffect, useRef } from 'react';
-import { Modal, View, Text, StyleSheet, TouchableOpacity, Animated, Image } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { Modal, View, Text, StyleSheet, TouchableOpacity, Animated, Dimensions, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { getAuth } from "firebase/auth";
 
-const ProfileModal = ({ visible, onClose, userData }) => {
-  const slideAnim = useRef(new Animated.Value(-500)).current; // 시작 위치를 화면 위로 설정
+const { width, height } = Dimensions.get('window');
+
+const ProfileModal = ({ visible, onClose }) => {
+  const slideAnim = useRef(new Animated.Value(-height)).current;
+  const [userPhoto, setUserPhoto] = useState(null);
+  const [userEmail, setUserEmail] = useState('');
 
   useEffect(() => {
+    const auth = getAuth();
+    const currentUser = auth.currentUser
+    if (currentUser) {
+      setUserPhoto(currentUser.photoURL);
+      setUserEmail(currentUser.email);
+    }
     if (visible) {
       Animated.timing(slideAnim, {
         toValue: 0,
         duration: 100,
-        useNativeDriver: true
+        useNativeDriver: true,
       }).start();
     } else {
       Animated.timing(slideAnim, {
-        toValue: -500,
+        toValue: -height,
         duration: 500,
-        useNativeDriver: true
+        useNativeDriver: true,
       }).start();
     }
   }, [visible, slideAnim]);
 
   return (
-    <Modal
-      transparent={true}
-      visible={visible}
-      onRequestClose={onClose}
-    >
+    <Modal transparent visible={visible} onRequestClose={onClose}>
       <View style={styles.centeredView}>
         <Animated.View
           style={[styles.modalView, { transform: [{ translateY: slideAnim }] }]}
         >
           <View style={styles.header}>
-            <View style={styles.headerTop}>
-                <Ionicons name="person-circle" size={60} color="black" />
-                <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-                  <Ionicons name="close" size={30} color="black" />
-                </TouchableOpacity>
-            </View>
+            {userPhoto ? (
+              <Image source={{ uri: userPhoto }} style={styles.profilePicture} />
+            ) : (
+              <Ionicons name="person-circle" size={80} color="black" />
+            )}
+            <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+              <Ionicons name="close" size={30} color="black" />
+            </TouchableOpacity>
             <View style={styles.headerBottom}>
-                <Text style={styles.emailText}>seokbin.cloud@gmail.com</Text>
+              <Text style={styles.emailText}>{userEmail}</Text>
             </View>
           </View>
 
           <View style={styles.body}>
-              <TouchableOpacity style={styles.menu} onPress={() => console.log('프로필 사진 변경')}>
-                <Ionicons name="image" size={20} color="#828282" />
-                <Text style={styles.menuText}>프로필 사진 변경</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.menu} onPress={() => console.log('계정 설정')}>
-                <Ionicons name="settings" size={20} color='#828282' />
-                <Text style={styles.menuText}>계정 설정</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.menu} onPress={() => console.log('도움말')}>
-                <Ionicons name="help-circle" size={20} color="#828282" />
-                <Text style={styles.menuText}>도움말</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.menu} onPress={() => console.log('로그아웃')}>
-                <Ionicons name="log-out" size={20} color="#828282" />
-                <Text style={styles.menuText}>로그아웃</Text>
-              </TouchableOpacity>
-        </View>
-
-          <View style={styles.footer}>
-
+            <TouchableOpacity style={styles.menu} onPress={() => console.log('프로필 사진 변경')}>
+              <Ionicons name="image" size={20} color="#828282" />
+              <Text style={styles.menuText}>프로필 사진 변경</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.menu} onPress={() => console.log('도움말')}>
+              <Ionicons name="help-circle" size={20} color="#828282" />
+              <Text style={styles.menuText}>도움말</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.menu} onPress={() => console.log('도움말')}>
+              <Ionicons name="help-circle" size={20} color="#828282" />
+              <Text style={styles.menuText}>도움말</Text>
+            </TouchableOpacity>
           </View>
 
+          <View style={styles.footer}></View>
         </Animated.View>
       </View>
     </Modal>
@@ -77,76 +79,61 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',  // 수정된 반투명 배경
+    backgroundColor: 'rgba(0,0,0,0.5)',
   },
   modalView: {
-    marginTop: '-40%',
-    height: '50%',
-    width: '92.5%',
-    margin: 20,
+    height: height * 0.4, // Reduced height for the modal
+    width: width * 0.9, // Adjust width based on screen size
     backgroundColor: 'white',
     borderRadius: 20,
-    padding: 5,
+    padding: 15,
     alignItems: 'center',
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 5
+    elevation: 5,
   },
-
-
   header: {
-    flex: '1.5',
+    flex: 1.5,
     alignItems: 'center',
     width: '100%',
-    borderBottomWidth: 0.7,
-  },
-  headerTop: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    flex: 2,
+    position: 'relative',
+    paddingBottom: 50,
   },
   headerBottom: {
-    flex: 1,
+    marginTop: 10,
   },
   emailText: {
     fontSize: 15,
   },
   closeButton: {
     position: 'absolute',
-    padding: 10,
-    left: '45%',
+    right: 0, // Position the close button to the right side
     top: 0,
+    padding: 10,
   },
-
   body: {
-    marginTop: 10,
     flex: 3,
     justifyContent: 'center',
-    alignItems: 'center',
     width: '100%',
-    borderBottomWidth: 0.7
+    borderTopWidth: 0.7,
   },
-  menu:{
+  menu: {
     flexDirection: 'row',
-    width: '100%',
-    marginLeft: 10,
+    width: '90%',
     padding: 12,
     marginBottom: 7.5,
   },
   menuText: {
     marginLeft: 10,
   },
-  footer: {
-    flex: 0.9,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-  },
+  profilePicture: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    marginTop: 15
+  }
 });
 
 export default ProfileModal;

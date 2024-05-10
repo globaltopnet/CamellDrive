@@ -28,23 +28,6 @@ const LoginPage = () => {
   });
 
   useEffect(() => {
-    const checkServerStatus = async () => {
-      try {
-        const response = await fetch('http://54.180.133.138:8080/api/ping');
-        if (response.ok) {
-          setServerStatus('Connected');
-        } else {
-          setServerStatus('Server not reachable');
-        }
-      } catch (error) {
-        console.error('Ping error:', error);
-        setServerStatus('Connection failed');
-      }
-    };
-    checkServerStatus();
-  }, []);
-
-  useEffect(() => {
     if (response?.type === "success") {
       const { id_token } = response.params;
       const credential = GoogleAuthProvider.credential(id_token);
@@ -52,8 +35,6 @@ const LoginPage = () => {
         .then(async (userCredential) => {
           const user = userCredential.user;
           const email = user.email;
-          console.log('User email:', email);
-
           try {
             const response = await fetch('http://54.180.133.138:8080/api/create-wallet', {
               method: 'POST',
