@@ -59,24 +59,6 @@ function Tabs() {
           header: ({ navigation }) => <TabScreenHeader title="미디어" navigation={navigation} />
         }}
       />
-      <Tab.Screen 
-        name="Favorite" 
-        component={FavoriteScreen}
-        options={{
-          tabBarButton: () => null,  // 탭 버튼을 숨김
-          headerTitle: '즐겨찾기',
-          header: ({ navigation }) => <TabScreenHeader title="즐겨찾기" navigation={navigation} />
-        }}
-      />
-      <Tab.Screen 
-        name="Share" 
-        component={ShareScreen}
-        options={{
-          tabBarButton: () => null,  // 탭 버튼을 숨김
-          headerTitle: '공유',
-          header: ({ navigation }) => <TabScreenHeader title="공유" navigation={navigation} />
-        }}
-      />
 
     </Tab.Navigator>
   );

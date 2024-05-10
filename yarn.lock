@@ -4203,10 +4203,10 @@ expo-status-bar@~1.12.1:
   resolved "https://registry.npmjs.org/expo-status-bar/-/expo-status-bar-1.12.1.tgz"
   integrity sha512-/t3xdbS8KB0prj5KG5w7z+wZPFlPtkgs95BsmrP/E7Q0xHXTcDcQ6Cu2FkFuRM+PKTb17cJDnLkawyS5vDLxMA==
 
-expo@*, expo@~51.0.0:
-  version "51.0.1"
-  resolved "https://registry.npmjs.org/expo/-/expo-51.0.1.tgz"
-  integrity sha512-q+3cnPmNcgKhx4AK0NO9n2Y4VLpvkyRx1O1H5okdUE+3Z8paIMlQsPnl4SnQu6YRY7ar1OmS7txUqRAmr1Sxxg==
+expo@*, expo@~51.0.2:
+  version "51.0.2"
+  resolved "https://registry.npmjs.org/expo/-/expo-51.0.2.tgz"
+  integrity sha512-aRKrheMMQBcNDg2SBjW5kcSN5G58bdIpsxeSQ65Bx18DFLXjPv5UaU9kzIWRAcxaPtgictn9ut9IJQVZKChNxQ==
   dependencies:
     "@babel/runtime" "^7.20.0"
     "@expo/cli" "0.18.10"
@@ -6707,10 +6707,10 @@ react-native-reanimated@^2.0.0-alpha.5:
     setimmediate "^1.0.5"
     string-hash-64 "^1.0.3"
 
-"react-native-reanimated@>= 1.0.0", react-native-reanimated@~3.10.0:
-  version "3.10.0"
-  resolved "https://registry.npmjs.org/react-native-reanimated/-/react-native-reanimated-3.10.0.tgz"
-  integrity sha512-oiQiO+iJ8HTXTli94+Cl5R7nd+TzZf+3MYnMKWtnVDDCxFsqBgpkKO2Xp2ZhZyseXY/JDdH0//E7LlPQRRxpXg==
+"react-native-reanimated@>= 1.0.0", react-native-reanimated@~3.10.1:
+  version "3.10.1"
+  resolved "https://registry.npmjs.org/react-native-reanimated/-/react-native-reanimated-3.10.1.tgz"
+  integrity sha512-sfxg6vYphrDc/g4jf/7iJ7NRi+26z2+BszPmvmk0Vnrz6FL7HYljJqTf531F1x6tFmsf+FEAmuCtTUIXFLVo9w==
   dependencies:
     "@babel/plugin-transform-arrow-functions" "^7.0.0-0"
     "@babel/plugin-transform-nullish-coalescing-operator" "^7.0.0-0"

@@ -154,8 +154,24 @@ const CustomDrawerContent = (props) => {
           style={styles.items}
         />
         <DrawerItem
+            label="파일"
+            onPress={() => props.navigation.navigate('File')}
+            icon={({ color, size }) => (
+                <MaterialCommunityIcons name="file" color={color} size={size} />
+            )}
+            style={styles.items}
+         />
+          <DrawerItem
+            label="미디어"
+            onPress={() => props.navigation.navigate('Media')}
+            icon={({ color, size }) => (
+                <MaterialCommunityIcons name="image" color={color} size={size} />
+            )}
+            style={styles.items}
+         />
+        <DrawerItem
             label="즐겨찾기"
-            onPress={() => props.navigation.navigate('Favorite')}
+            onPress={() => props.navigation.navigate('FavoriteScreen')}
             icon={({ color, size }) => (
                 <MaterialCommunityIcons name="star" color={color} size={size} />
             )}
@@ -163,7 +179,7 @@ const CustomDrawerContent = (props) => {
         />
         <DrawerItem
             label="공유"
-            onPress={() => props.navigation.navigate('Share')}
+            onPress={() => props.navigation.navigate('ShareScreen')}
             icon={({ color, size }) => (
                 <MaterialCommunityIcons name="share" color={color} size={size} />
             )}
