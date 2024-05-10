@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { View, StyleSheet } from 'react-native';
 import { CardStyleInterpolators } from '@react-navigation/stack';
-import { Colors } from '../../theme/color';
+import { Colors } from '../theme/color';
 import FileScreen from '../screens/FileScreen';
 import MediaScreen from '../screens/MediaScreen';
 import PlusMenu from '../screens/PlusMenu';
@@ -57,24 +57,6 @@ function Tabs() {
           tabBarLabel: '미디어',
           headerTitle: '미디어 라이브러리',
           header: ({ navigation }) => <TabScreenHeader title="미디어" navigation={navigation} />
-        }}
-      />
-      <Tab.Screen 
-        name="Favorite" 
-        component={FavoriteScreen}
-        options={{
-          tabBarButton: () => null,  // 탭 버튼을 숨김
-          headerTitle: '즐겨찾기',
-          header: ({ navigation }) => <TabScreenHeader title="즐겨찾기" navigation={navigation} />
-        }}
-      />
-      <Tab.Screen 
-        name="Share" 
-        component={ShareScreen}
-        options={{
-          tabBarButton: () => null,  // 탭 버튼을 숨김
-          headerTitle: '공유',
-          header: ({ navigation }) => <TabScreenHeader title="공유" navigation={navigation} />
         }}
       />
 

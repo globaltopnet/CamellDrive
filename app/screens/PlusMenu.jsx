@@ -3,7 +3,7 @@ import { View, TouchableOpacity, Animated, Text, StyleSheet } from 'react-native
 import { AntDesign } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Foundation } from '@expo/vector-icons';
-import { Colors } from '../../theme/color';
+import { Colors } from '../theme/color';
 
 export default function App() {
   const [isOpen, setIsOpen] = useState(false);

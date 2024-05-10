@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, TextInput, StyleSheet, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '../../theme/color';
+import { Colors } from '../theme/color';
 
 const SearchBar = ({ onSearch }) => {
   const [query, setQuery] = useState('');

@@ -3,25 +3,21 @@ import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerI
 import { View, Text, SafeAreaView, StyleSheet, Image, TouchableOpacity, Animated } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import * as Progress from 'react-native-progress';
-import { Colors } from '../../theme/color';
-import { signOut } from 'firebase/auth';
+import { Colors } from '../theme/color';
+
 import BinScreen from '../screens/BinScreen';
+import WalletScreen from '../screens/WalletScreen';
 import FavoriteScreen from '../screens/FavoriteScreen';
 import HelpScreen from '../screens/HelpScreen';
 import SettingScreen from '../screens/SettingScreen';
 import ShareScreen from '../screens/ShareScreen';
 import UpgradePlanScreen from '../screens/UpgradePlanScreen';
-import WalletScreen from '../screens/WalletScreen';
 import Tabs from './Tabs';
-import { auth } from '@/firebaseConfig';
 import { NavigationContainer } from '@react-navigation/native';
-import DepositScreen from '../screens/DepositScreen';
-import WithdrawalScreen from '../screens/WithdrawalScreen';
 import ChartScreen from '../screens/ChartScreen';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Alert } from 'react-native';
 
 const Drawer = createDrawerNavigator();
+
 const rate = 30;
 
 const DrawerMenu = () => {
@@ -53,14 +49,6 @@ const DrawerMenu = () => {
         }}
       />
 
-        <Drawer.Screen 
-          name="DepositScreen"
-          component={DepositScreen}
-          options={{
-            drawerLabel: '입금',
-            drawerItemStyle: {display: 'none'}
-          }}
-        />
 
         <Drawer.Screen 
           name="ChartScreen"
@@ -70,15 +58,7 @@ const DrawerMenu = () => {
             drawerItemStyle: {display: 'none'}
           }}
         />
-
-        <Drawer.Screen 
-          name="WithdrawalScreen"
-          component={WithdrawalScreen}
-          options={{
-            drawerLabel: '출금',
-            drawerItemStyle: {display: 'none'}
-          }}
-        />       
+   
 
       <Drawer.Screen 
         name="FavoriteScreen"
@@ -103,7 +83,7 @@ const DrawerMenu = () => {
         name="HelpScreen"
         component={HelpScreen}
         options={{
-          drawerLabel: '고객센터',
+          drawerLabel: '고객지원',
           headerShown: false,
           drawerItemStyle: {display: 'none'}
         }}
@@ -151,34 +131,12 @@ const DrawerMenu = () => {
 };
 
 const CustomDrawerContent = (props) => {
-  const handleLogout = async () => {
-    Alert.alert(
-      "로그아웃 확인",
-      "로그아웃 하시겠습니까?",
-      [
-        {
-          text: "Cancel",
-          onPress: () => console.log("Logout cancelled"),
-          style: "cancel",
-        },
-        {
-          text: "Logout",
-          onPress: async () => {
-            await signOut(auth);
-            await AsyncStorage.removeItem('@user');
-          },
-        },
-      ],
-      { cancelable: false }
-    );
-  };
-
   return (
     <DrawerContentScrollView {...props}>
       <SafeAreaView style={styles.drawerSafeArea}>
         <View style={styles.titleContainer}>
           <Image
-            source={require('@/assets/images/camell_logo.png')}
+            source={require('../../assets/images/camell_logo.png')}
             style={styles.logo}
           />
           <Text style={styles.drawerTitle}>Camell Drive</Text>
@@ -196,8 +154,24 @@ const CustomDrawerContent = (props) => {
           style={styles.items}
         />
         <DrawerItem
+            label="파일"
+            onPress={() => props.navigation.navigate('File')}
+            icon={({ color, size }) => (
+                <MaterialCommunityIcons name="file" color={color} size={size} />
+            )}
+            style={styles.items}
+         />
+          <DrawerItem
+            label="미디어"
+            onPress={() => props.navigation.navigate('Media')}
+            icon={({ color, size }) => (
+                <MaterialCommunityIcons name="image" color={color} size={size} />
+            )}
+            style={styles.items}
+         />
+        <DrawerItem
             label="즐겨찾기"
-            onPress={() => props.navigation.navigate('Favorite')}
+            onPress={() => props.navigation.navigate('FavoriteScreen')}
             icon={({ color, size }) => (
                 <MaterialCommunityIcons name="star" color={color} size={size} />
             )}
@@ -205,7 +179,7 @@ const CustomDrawerContent = (props) => {
         />
         <DrawerItem
             label="공유"
-            onPress={() => props.navigation.navigate('Share')}
+            onPress={() => props.navigation.navigate('ShareScreen')}
             icon={({ color, size }) => (
                 <MaterialCommunityIcons name="share" color={color} size={size} />
             )}
@@ -233,7 +207,7 @@ const CustomDrawerContent = (props) => {
         />
 
         <DrawerItem
-          label="고객센터"
+          label="고객지원"
           onPress={() => props.navigation.navigate('HelpScreen')}
           icon={({ color, size }) => (
             <MaterialCommunityIcons name="help-circle" color={color} size={size} />
@@ -270,7 +244,7 @@ const CustomDrawerContent = (props) => {
     <View style={styles.menuItem3}>
       <DrawerItem
         label="로그아웃"
-        onPress={handleLogout}
+        onPress={() => alert('Link to logout')}
         icon={({ color, size }) => (
           <MaterialCommunityIcons name="logout" color={color} size={size} />
         )}

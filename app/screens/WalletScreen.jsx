@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity,Image, FlatList,  Clipboard } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons'; // Ionicons를 import합니다.
-import { Colors } from '../../theme/color';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Image, FlatList, Modal, Clipboard, Platform, Alert} from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons'; 
+import { Colors } from '../theme/color';
 import SubTabScreenHeader from '../main/SubTabScreenHeader';
 import RNPickerSelect from 'react-native-picker-select';
+import { TextInput } from 'react-native-gesture-handler';
+import QRCode from 'react-native-qrcode-svg';
+import axios from 'axios';
 
-// 버튼 텍스트와 매핑될 아이콘 이름
+
+// 버튼 아이콘
 const buttonIcons = {
   출금: 'exit-outline',
   입금: 'enter-outline',
@@ -13,37 +17,96 @@ const buttonIcons = {
   더보기: 'ellipsis-horizontal-outline'
 };
 
-// WalletScreen.jsx 내 handleButtonPress 수정
-const handleButtonPress = (buttonText, navigation) => {
-  switch (buttonText) {
-    case '입금':
-      navigation.navigate('DepositScreen'); // 직접 호출
-      break;
-    case '출금':
-      navigation.navigate('WithdrawalScreen'); // 직접 호출
-      break;
-    case '시세':
-      navigation.navigate('ChartScreen'); // 직접 호출
-      break;
-    case '더보기':
-      // 다른 화면으로 이동
-      break;
-    default:
-      break;
-  }
-};
-
-
-const copyToClipboard = (address) => {
-  Clipboard.setString(address);
-  alert('주소가 복사되었습니다!');
-};
-
 
 
 
 export default function WalletScreen({ navigation }) {
+
+  const [inputText, setInputText] = useState('');
+  
+  const [depositModalVisible, setDepositModalVisible] = useState(false);
+  const [withdrawalModalVisible, setWithdrawalModalVisible] = useState(false);
+
+  const [balance, setBalance] = useState('0');
+
+  const [walletAddress, setWalletAddress] = useState('TNDcxm95uDiensNHpfHfn7q5kt2x1vtMfD'); // 지갑주소
+
+    // 지갑 잔액 코드
+    useEffect(() => {
+      if (walletAddress) {
+          axios.get(`http://54.180.133.138:5500/wallet-balance?wallet_address=${walletAddress}`)
+          .then(response => {
+              if (response.data.balance) {
+                  setBalance(response.data.balance.toString());
+              } else if (response.data.error) {
+                  Alert.alert('Error', response.data.error);
+              }
+          })
+          .catch(error => {
+              console.error("잔액을 불러오는데 실패했습니다.:", error);
+              Alert.alert('Error', '잔액을 불러오는데 실패했습니다.: ' + error.message);
+          });
+      }
+  }, [walletAddress]);
+
+  useEffect(() => {
+    if (walletAddress) {
+      axios.get(`http://54.180.133.138:5500/wallet-transactions?wallet_address=${walletAddress}`)
+      .then(response => {
+        if (response.data.transactions) {
+          // setTransfers 대신 setTransactions 사용
+          setTransactions(response.data.transactions);
+        } else if (response.data.error) {
+          Alert.alert('Error', response.data.error);
+        }
+      })
+      .catch(error => {
+        console.error("Failed to fetch transactions:", error);
+        Alert.alert('Error', 'Failed to fetch transactions: ' + error.message);
+      });
+    }
+  }, [walletAddress]);
+    
+
+
+        // 복사
+  const copyToClipboard = (address) => {
+    Clipboard.setString(address);
+    Alert.alert("알림", "주소가 클립보드에 복사되었습니다!");
+  };
+
+const closeModal = () => {
+  setDepositModalVisible(false);
+};
+
+  
+
+const handleButtonPress = (buttonText) => {
+  switch (buttonText) {
+    case '입금':
+      closeModal();
+      setTimeout(() => setDepositModalVisible(true), 10);
+      break;
+    
+    case '출금':
+      setWithdrawalModalVisible(true);
+      break;
+
+    case '시세':
+        navigation.navigate('ChartScreen');
+      break;
+    
+    case '더보기':
+      break;
+    
+    default:
+      break;
+  }
+};
+  
+
   const [currency, setCurrency] = useState('KRW');
+  
   const currencies = [
     // 백엔드 필요 !!
     { label: '(USD)', value: 'USD' },
@@ -51,119 +114,179 @@ export default function WalletScreen({ navigation }) {
     { label: '(EUR)', value: 'EUR' }
   ];
 
-  const transactions = [
-    // 백엔트 필요 !!
-    {
-      id: '1',
-      profilePic: require('@/assets/images/camell_logo.png'),
-      walletAddress: 'TQsfB1J131GZV3PH8HyCaE8pzNmFnTYzQ5',
-      date: '2024-04-26',
-      amount: '100.00',
-      type: 'deposit',
-    },
-    {
-      id: '2',
-      profilePic: require('@/assets/images/camell_logo.png'),
-      walletAddress: 'TQsfB1J131GZV3PH8HyCaE8pzNmFnTYzQ5',
-      date: '2024-04-26',
-      amount: '100.00',
-      type: 'withrow',
-    },
-    {
-      id: '3',
-      profilePic: require('@/assets/images/camell_logo.png'),
-      walletAddress: 'TQsfB1J131GZV3PH8HyCaE8pzNmFnTYzQ5',
-      date: '2024-04-26',
-      amount: '100.00',
-      type: 'deposit',
-    },
-    {
-      id: '4',
-      profilePic: require('@/assets/images/camell_logo.png'),
-      walletAddress: 'TQsfB1J131GZV3PH8HyCaE8pzNmFnTYzQ5',
-      date: '2024-04-26',
-      amount: '100.00',
-      type: 'withrow',
-    },
-    {
-      id: '5',
-      profilePic: require('@/assets/images/camell_logo.png'),
-      walletAddress: 'TQsfB1J131GZV3PH8HyCaE8pzNmFnTYzQ5',
-      date: '2024-04-26',
-      amount: '100.00',
-      type: 'deposit',
-    },
-    {
-      id: '6',
-      profilePic: require('@/assets/images/camell_logo.png'),
-      walletAddress: 'TQsfB1J131GZV3PH8HyCaE8pzNmFnTYzQ5',
-      date: '2024-04-26',
-      amount: '100.00',
-      type: 'deposit',
-    },
-    {
-      id: '7',
-      profilePic: require('@/assets/images/camell_logo.png'),
-      walletAddress: 'TQsfB1J131GZV3PH8HyCaE8pzNmFnTYzQ5',
-      date: '2024-04-26',
-      amount: '100.00',
-      type: 'deposit',
-    },
-    {
-      id: '8',
-      profilePic: require('@/assets/images/camell_logo.png'),
-      walletAddress: 'TQsfB1J131GZV3PH8HyCaE8pzNmFnTYzQ5',
-      date: '2024-04-26',
-      amount: '100.00',
-      type: 'deposit',
-    },
-    {
-      id: '9',
-      profilePic: require('@/assets/images/camell_logo.png'),
-      walletAddress: 'TQsfB1J131GZV3PH8HyCaE8pzNmFnTYzQ5',
-      date: '2024-04-26',
-      amount: '100.00',
-      type: 'deposit',
-    },
-    // ... 더 많은 내역 추가
-  ];
+  const [transactions, setTransactions] = useState([]);
+
 
   const renderItem = ({ item }) => (
     <View style={styles.transactionRow}>
-    <Image source={item.profilePic} style={styles.profilePic} />
-    <View style={styles.transactionDetails}>
-      {/* 주소와 아이콘을 하나의 뷰 안에 배치 */}
-      <View style={styles.addressContainer}>
-        <Text style={styles.walletAddress}>
-          {`${item.walletAddress.slice(0, 6)}...${item.walletAddress.slice(-4)}`}
-        </Text>
-        <TouchableOpacity onPress={() => copyToClipboard(item.walletAddress)} style={styles.copyIcon}>
-          <Ionicons name="copy-outline" size={15} color="black" />
-        </TouchableOpacity>
+      <Image
+        source={require('../../assets/images/camell_logo.png')}
+        style={styles.profilePic}
+      />
+      <View style={styles.transactionDetails}>
+        {/* 거래 유형에 따라 발신자 또는 수신자 주소 표시 */}
+        <View style={styles.addressContainer}>
+          <Text style={styles.walletAddress}>
+            {item.type === 'deposit' ? 
+              `${item.from.slice(0, 6)}...${item.from.slice(-4)}` : 
+              `${item.to.slice(0, 6)}...${item.to.slice(-4)}`}
+          </Text>
+          <TouchableOpacity 
+            onPress={() => copyToClipboard(item.type === 'deposit' ? item.from : item.to)} 
+            style={styles.copyIcon}
+          >
+            <Ionicons name="copy-outline" size={15} color="black" />
+          </TouchableOpacity>
+        </View>
+  
+        {/* 거래 시간: timestamp를 로컬 시간으로 변환하여 표시 */}
+        <Text style={styles.date}>{formatDate(item.timestamp)}</Text>
       </View>
-      <Text style={styles.date}>{item.date}</Text>
+      {/* 금액과 토큰 이름 */}
+      <Text style={[styles.amount, { color: item.type === 'deposit' ? 'green' : 'red' }]}>
+        {item.type === 'deposit' ? '+' : '-'}{parseFloat(item.amount).toLocaleString()} CAMT
+      </Text>
     </View>
-    <Text style={[styles.amount, { color: item.type === 'deposit' ? 'green' : 'red' }]}>
-      {item.type === 'deposit' ? '+' : '-'}{item.amount} CAMT
-    </Text>
-  </View>
   );
+  
+  
+  const renderEmptyComponent = () => (
+    <View style={styles.emptyContainer}>
+      <Text style={styles.emptyText}>입출금 내역 없음</Text>
+    </View>
+  );
+  
+  const formatDate = (timestamp) => {
+    const date = new Date(timestamp);
+    // 사용자 지정 포맷을 위한 옵션 설정
+    const options = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false // 24시간제 표시
+    };
+    // 한국어 (ko-KR) 설정을 사용하여 날짜와 시간 포맷
+    return new Intl.DateTimeFormat('ko-KR', options).format(date);
+  };
   
   
 
   return (
     <View style={styles.container}>
       <SubTabScreenHeader title="지갑" navigation={navigation} />
+      <Modal
+          animationType="slide"
+          transparent={true}
+          visible={withdrawalModalVisible}
+          onRequestClose={() => {
+            setWithdrawalModalVisible(!withdrawalModalVisible);
+          }}
+        >
+        <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+                <TouchableOpacity
+                    style={styles.closeButton}
+                    onPress={() => setWithdrawalModalVisible(!withdrawalModalVisible)}
+                >
+                <Ionicons name="close-circle" size={40} color="#000" />
+                </TouchableOpacity>
+                <Text style={styles.modalText}>출금</Text>
+                <View style={styles.inputView}>
+                    <View style={styles.inputForm}>
+                        <View style={styles.won}>
+                            <Text>출금 수량</Text>
+                            <TextInput
+                            style={styles.textInput}
+                            onChangeText={(text) => setInputText(text)}
+                            placeholder="최소 10 CAMT"
+                            placeholderTextColor="#808080"
+                            />
+                            <Text style={styles.wonValue}>= 0 KRW</Text>
+                        </View>
+                        <Text>출금 대상</Text>
+                        <TextInput
+                          style={styles.textInput}
+                          onChangeText={(text) => setInputText(text)}
+                          placeholder="대상 주소 입력"
+                          placeholderTextColor="#808080"
+                        />
+                        <View style={styles.network}>
+                            <Text style={styles.networkText}>출금 네트워크</Text>
+                            <View style={styles.networkValue}>
+                                <Text style={styles.networkValueText}>Tron</Text>
+                            </View>
+                        </View>
+                        <View style={styles.buttonContainer}>
+                            <TouchableOpacity style={styles.okButton}>
+                                <Text style={styles.okButtonText}>확인</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+        </View>
+    </View>
+</Modal>
+
+
+
+
+
+<Modal
+  animationType="slide"
+  transparent={true}
+  visible={depositModalVisible}
+  onRequestClose={() => setDepositModalVisible(false)}
+>
+  <View style={styles.centeredView}>
+    <View style={styles.modalView}>
+      <TouchableOpacity
+        style={styles.closeButton}
+        onPress={() => setDepositModalVisible(false)}
+      >
+        <Ionicons name="close-circle" size={40} color="#000" />
+      </TouchableOpacity>
+      <Text style={styles.modalText}>입금</Text>
+      <View style={styles.qr}>
+      <QRCode
+            value={walletAddress}
+            size={Platform.OS === 'android' ? 200 : 230}
+            color="black"
+            backgroundColor="white"
+          />
+      </View>
+      <View style={styles.address}>
+        <Text style={{fontSize: 20, textAlign: 'center'}}>지갑 주소</Text>
+        <View style={{marginTop: 10}}>
+          <Text style={{fontSize: 17}}>TNDcxm95uDiensNHpfHfn7q5kt2x1vtMfD</Text>
+          <View style={{alignItems: 'center', marginTop: 30,}}>
+
+          <TouchableOpacity onPress={() => copyToClipboard(walletAddress)} style={styles.copyButton}>
+          <Ionicons name="copy-outline" size={50} color="black" />
+        </TouchableOpacity>
+
+          </View>
+        </View>
+      </View>
+    </View>
+  </View>
+</Modal>
+
+
+
+
       <View style={styles.headContainer}>
         <View style={styles.balance}>
 
           <View style={styles.balanceTop}>
             <View style={{flexDirection: 'row', alignItems: 'center',}}>
             <Image
-                source={require('@/assets/images/camell_logo.png')}
+                source={require('../../assets/images/camell_logo.png')}
                 style={styles.logo}
             />
             <Text style={styles.camell}>Camell</Text>
+
             </View>
             
             <View>
@@ -201,44 +324,16 @@ export default function WalletScreen({ navigation }) {
               </View>
             </View>
 
-            <View style={styles.dropdown}>
-              <RNPickerSelect
-                onValueChange={(value) => setCurrency(value)}
-                items={currencies}
-                style={{
-                  inputIOS: {
-                    fontSize: 13, // 폰트 크기 조정
-                    paddingVertical: 15,
-                    paddingHorizontal: 15,
-                    borderRadius: 4,
-                    color: 'gray', // 폰트 색상을 회색으로 변경
-                  },
-                  inputAndroid: {
-                    fontSize: 14, // 폰트 크기 조정
-                    paddingHorizontal: 10,
-                    paddingVertical: 8,
-                    color: 'gray', // 폰트 색상을 회색으로 변경
-                  },
-                  iconContainer: {
-                    top: 13,
-                    right: 10,
-                  },
-                }}
-                value={currency}
-                useNativeAndroidPickerStyle={false}
-                placeholder={{}}
-                Icon={() => {
-                  return <Ionicons name="caret-down-outline" size={15} style={{ marginRight: -20, color: 'gray' }} />; // 아이콘을 오른쪽으로 이동시키기
-                }}
-              />
-            </View>
+            
 
           </View>
 
           <View style={styles.balanceMid}>
 
-                                    {/*  백엔드 필요 !!  */}
-            <Text style={styles.camtValue}>32.423123</Text>
+            <Text style={styles.camtValue}>
+              {parseFloat(balance).toLocaleString('ko-KR',)}
+            </Text>
+
             <Text style={styles.camt}>CAMT</Text>
           </View>
           
@@ -269,14 +364,20 @@ export default function WalletScreen({ navigation }) {
         </View>
       </View>
       <View style={styles.bottomContainer}>
-        <FlatList
-          data={transactions}
-          renderItem={renderItem}
-          keyExtractor={item => item.id}
-          showsVerticalScrollIndicator={false}
-        />
+      <FlatList
+        alwaysBounceVertical={true} // iOS에서 항상 스크롤 가능하게
+        data={transactions} // transactions 데이터 사용
+        renderItem={renderItem}
+        keyExtractor={item => item.transaction_hash} // 고유한 transaction_hash를 키로 사용
+        ListEmptyComponent={renderEmptyComponent} // 빈 목록 컴포넌트
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ flexGrow: 1, minHeight: '100%' }}
+      />
+
+
       </View>
     </View>
+
   );
 }
 
@@ -292,14 +393,12 @@ const styles = StyleSheet.create({
 
 
 
-
-
-  
   balance: {
     borderRadius: 20,
     margin: 11,
     marginHorizontal: 15,
-    flex: 1.8,
+    flex: Platform.OS === 'android' ? 1.8 : 1.3,
+
     backgroundColor: Colors.background,
 
   },
@@ -314,7 +413,7 @@ const styles = StyleSheet.create({
 
   dropdown: {
     alignItems: 'center',
-    marginLeft: 160,
+    marginRight: 30
   },
 
 
@@ -358,7 +457,7 @@ Won: {
 
 balancePlusMinus: {
   backgroundColor: '#10ad2a',
-  marginRight: 15,
+  marginRight: 30,
   borderRadius: 15,
   padding: 6,
 },
@@ -370,7 +469,7 @@ PlusMinusValue: {
 
 
   buttonRow: {
-    flex: 0.7,
+    flex: 0.8,
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
@@ -441,5 +540,140 @@ PlusMinusValue: {
 
   copyIcon: {
     marginLeft: 5, // 아이콘과 주소 사이 간격 조절
+  },
+
+
+  
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyText: {
+    fontSize: 16,
+    color: 'gray',
+  },
+  
+  centeredView: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: "center",
+    marginTop: 22
+  },
+  modalView: {
+    bottom: -15,
+    width: '100%',
+    height: Platform.OS === 'android' ? '70%' : '65%',
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 20,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+
+  
+  closeButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 6,
+    elevation: 2
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+    fontSize: 18
+  },
+
+  inputView:{
+    flex: 1,
+    width: '100%',
+  },
+  textInput: {
+    paddingLeft: 10,
+    borderWidth: 0.2,
+    marginBottom: 20,
+    borderRadius: 10,
+    height: 45,
+    marginTop: 5,
+  },
+
+  inpitForm: {
+    marginTop: 30,
+  },
+  network: {
+    marginTop: 10,
+  },
+  networkText: {
+    fontSize: 20,
+  },
+  networkValue: {
+    marginTop:5,
+    backgroundColor: '#f3f1f1',
+    borderRadius: 10,
+    height: 50,
+    justifyContent: 'center',
+    paddingLeft: 15,
+  },
+  networkValueText: {
+    fontSize: 22,
+  },
+
+  buttonContainer: {
+    marginTop: 100,
+    justifyContent: 'center',
+    height: 100,
+    alignItems: 'center',
+  },
+  okButton: {
+    alignItems: 'center',
+    height: 60,
+    justifyContent: 'center',
+    borderRadius: 15,
+    borderWidth: 0.2,
+    width: '60%',
+    bottom: Platform.OS === 'android' ? 60 : 0,
+  },
+  okButtontext: {
+    fontSize: 20,
+  },
+  won: {
+  },
+  wonValue: {
+    top: -15,
+    fontSize: 12,
+    opacity: 0.5,
+  },
+
+  qr: {
+    marginTop: 20,
+    marginBottom: 40,
+  },
+
+  address: {
+    
+  },
+  addressText:{
+    fontSize: 20,
+    textAlign: 'center',
+  },
+
+  copyButton: {
+    borderWidth: 0.2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 80,
+    height: 80,
+    borderRadius: 40,
   },
 });
