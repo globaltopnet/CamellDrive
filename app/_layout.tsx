@@ -58,6 +58,19 @@ const InitialLayout = () => {
 
       <Stack.Screen name="login/help" options={{ title: 'Help', presentation: 'modal' }} />
       <Stack.Screen name="navigation/navigation" options={{ headerShown: false }} />
+      <Stack.Screen 
+        name="screens/ChartScreen"
+        options={{
+          title: '',
+          headerLeft: () => (
+            <TouchableOpacity onPress={router.back}>
+              <Ionicons name="arrow-back" size={34} color={Colors.dark} />
+            </TouchableOpacity>
+          ),
+          headerLargeTitle: true,
+          headerTransparent: true,
+        }} 
+      />
     </Stack>
   );
 };

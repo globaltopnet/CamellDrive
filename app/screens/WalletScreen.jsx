@@ -7,18 +7,14 @@ import RNPickerSelect from 'react-native-picker-select';
 import { TextInput } from 'react-native-gesture-handler';
 import QRCode from 'react-native-qrcode-svg';
 import axios from 'axios';
+import { Link } from 'expo-router';
 
-
-// 버튼 아이콘
 const buttonIcons = {
   출금: 'exit-outline',
   입금: 'enter-outline',
   시세: 'bar-chart-outline',
   더보기: 'ellipsis-horizontal-outline'
 };
-
-
-
 
 export default function WalletScreen({ navigation }) {
 
@@ -34,7 +30,7 @@ export default function WalletScreen({ navigation }) {
     // 지갑 잔액 코드
     useEffect(() => {
       if (walletAddress) {
-          axios.get(`http://54.180.133.138:5500/wallet-balance?wallet_address=${walletAddress}`)
+          axios.get(`http://172.30.1.93:5500/wallet-balance?wallet_address=${walletAddress}`)
           .then(response => {
               if (response.data.balance) {
                   setBalance(response.data.balance.toString());
@@ -51,7 +47,7 @@ export default function WalletScreen({ navigation }) {
 
   useEffect(() => {
     if (walletAddress) {
-      axios.get(`http://54.180.133.138:5500/wallet-transactions?wallet_address=${walletAddress}`)
+      axios.get(`http://172.30.1.93:5500/wallet-transactions?wallet_address=${walletAddress}`)
       .then(response => {
         if (response.data.transactions) {
           // setTransfers 대신 setTransactions 사용
@@ -91,10 +87,6 @@ const handleButtonPress = (buttonText) => {
     case '출금':
       setWithdrawalModalVisible(true);
       break;
-
-    case '시세':
-        navigation.navigate('ChartScreen');
-      break;
     
     case '더보기':
       break;
@@ -103,7 +95,33 @@ const handleButtonPress = (buttonText) => {
       break;
   }
 };
-  
+
+
+const renderButton = (buttonText, iconName) => {
+  if (buttonText === '시세') {
+    return (
+      <Link href={`/screens/ChartScreen`}
+      underlayColor="#f0f4f7"
+      >
+        <View style={[styles.buttonCircle, { justifyContent: 'center' }]}>
+          <Ionicons name={iconName} size={30} color="#000" />
+          <Text style={[styles.buttonText, { marginTop: 5 }]}>시세</Text>
+        </View>
+      </Link>
+    );
+  } else {
+    return (
+      <TouchableOpacity
+        key={buttonText}
+        style={styles.buttonCircle}
+        onPress={() => handleButtonPress(buttonText)}
+      >
+        <Ionicons name={iconName} size={30} color="#000" />
+        <Text style={styles.buttonText}>{buttonText}</Text>
+      </TouchableOpacity>
+    );
+  }
+};
 
   const [currency, setCurrency] = useState('KRW');
   
@@ -352,16 +370,9 @@ const handleButtonPress = (buttonText) => {
         </View>
         <View style={styles.buttonRow}>
           {Object.entries(buttonIcons).map(([buttonText, iconName]) => (
-             <TouchableOpacity
-              key={buttonText}
-              style={styles.buttonCircle}
-              onPress={() => handleButtonPress(buttonText, navigation)}
-             >
-              <Ionicons name={iconName} size={30} color="#000" />
-              <Text style={styles.buttonText}>{buttonText}</Text>
-             </TouchableOpacity>
+            renderButton(buttonText, iconName)
           ))}
-        </View>
+      </View>
       </View>
       <View style={styles.bottomContainer}>
       <FlatList
@@ -484,9 +495,13 @@ PlusMinusValue: {
     borderRadius: 35,
     padding: 10,
     backgroundColor: Colors.background,
-    shadowColor: '#000', shadowOffset: { width: 0, height: 0.5 }, shadowOpacity: 0.2, shadowRadius: 3, elevation: 1
-
+    shadowColor: '#000', 
+    shadowOffset: { width: 0, height: 0.5 }, 
+    shadowOpacity: 0.2, 
+    shadowRadius: 3, 
+    elevation: 1
   },
+
   buttonIconText: {
     // 아이콘을 위한 텍스트 스타일링, 실제 아이콘으로 교체 필요
   },
@@ -494,6 +509,11 @@ PlusMinusValue: {
     fontSize: 12,
     color: '#000',
     marginTop: 5, // 아이콘과 텍스트 간격 조정
+  },
+  buttonText2: {
+    fontSize: 12,
+    color: '#000',
+    marginTop: 7, // 아이콘과 텍스트 간격 조정
   },
   bottomContainer: {
     borderTopLeftRadius: 20,
