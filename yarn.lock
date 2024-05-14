@@ -3425,7 +3425,7 @@
   resolved "https://registry.npmjs.org/@react-native-menu/menu/-/menu-1.0.2.tgz"
   integrity sha512-C0TSpjN8DUa9vkEhmY5BNsIyuh3Jf6nHXcNA2vy1quOCouKeUQ3B2jtO0Jb9CDdLw2I1NNbYCshdna0VJRSKBw==
 
-"@react-native-picker/picker@^2.4.0":
+"@react-native-picker/picker@^2.4.0", "@react-native-picker/picker@^2.7.5":
   version "2.7.5"
   resolved "https://registry.npmjs.org/@react-native-picker/picker/-/picker-2.7.5.tgz"
   integrity sha512-vhMaOLkXSUb+YKVbukMJToU4g+89VMhBG2U9+cLYF8X8HtFRidrHjohGqT8/OyesDuKIXeLIP+UFYI9Q9CRA9Q==
@@ -3914,17 +3914,17 @@
   dependencies:
     "@sinonjs/commons" "^3.0.0"
 
-"@tanstack/query-core@5.35.1":
-  version "5.35.1"
-  resolved "https://registry.npmjs.org/@tanstack/query-core/-/query-core-5.35.1.tgz"
-  integrity sha512-0Dnpybqb8+ps6WgqBnqFEC+1F/xLvUosRAq+wiGisTgolOZzqZfkE2995dEXmhuzINiTM7/a6xSGznU0NIvBkw==
+"@tanstack/query-core@5.36.0":
+  version "5.36.0"
+  resolved "https://registry.npmjs.org/@tanstack/query-core/-/query-core-5.36.0.tgz"
+  integrity sha512-B5BD3pg/mztDR36i77hGcyySKKeYrbM5mnogOROTBi1SUml5ByRK7PGUUl16vvubvQC+mSnqziFG/VIy/DE3FQ==
 
-"@tanstack/react-query@^5.24.8":
-  version "5.35.1"
-  resolved "https://registry.npmjs.org/@tanstack/react-query/-/react-query-5.35.1.tgz"
-  integrity sha512-i2T7m2ffQdNqlX3pO+uMsnQ0H4a59Ens2GxtlMsRiOvdSB4SfYmHb27MnvFV8rGmtWRaa4gPli0/rpDoSS5LbQ==
+"@tanstack/react-query@^5.36.0":
+  version "5.36.0"
+  resolved "https://registry.npmjs.org/@tanstack/react-query/-/react-query-5.36.0.tgz"
+  integrity sha512-BATvtM0rohwg7pRHUnxgeDiwLWRGZ8OM/4y8LImHVpecQWoH6Uhytu3Z8YV6V7hQ1sMQBFcUrGE1/e4MxR6YiA==
   dependencies:
-    "@tanstack/query-core" "5.35.1"
+    "@tanstack/query-core" "5.36.0"
 
 "@tootallnate/once@2":
   version "2.0.0"
@@ -10283,7 +10283,7 @@ react-native-randombytes@^3.6.1, "react-native-randombytes@>=2.0.0 <4.0.0":
     buffer "^4.9.1"
     sjcl "^1.0.3"
 
-react-native-reanimated@*, react-native-reanimated@^3.8.1, "react-native-reanimated@>= 1.0.0", react-native-reanimated@>=2.0.0, react-native-reanimated@>=3.0.0:
+react-native-reanimated@*, react-native-reanimated@^3.11.0, "react-native-reanimated@>= 1.0.0", react-native-reanimated@>=2.0.0, react-native-reanimated@>=3.0.0:
   version "3.11.0"
   resolved "https://registry.npmjs.org/react-native-reanimated/-/react-native-reanimated-3.11.0.tgz"
   integrity sha512-BNw/XDgUfs8UhfY1X6IniU8kWpnotWGyt8qmQviaHisTi5lvwnaOdXQKfN1KGONx6ekdFRHRP5EFwLi0UajwKA==
@@ -12104,10 +12104,10 @@ vary@~1.1.2:
   resolved "https://registry.npmjs.org/vary/-/vary-1.1.2.tgz"
   integrity sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==
 
-victory-native@^40.0.4:
-  version "40.1.1"
-  resolved "https://registry.npmjs.org/victory-native/-/victory-native-40.1.1.tgz"
-  integrity sha512-jag3gzffRpQNFwdpu8/9sXOxB+Bz25++fcKQwp1SN3LBTee7IKUs7gA0rzlpv3STA4CpO/2bSQ4ts8TvtXZpyA==
+victory-native@^40.2.0:
+  version "40.2.0"
+  resolved "https://registry.npmjs.org/victory-native/-/victory-native-40.2.0.tgz"
+  integrity sha512-M3cYCw/YS/6yOYxcF9yexXxR0vVKdzAq3r52GOvJfq7SZ1ygGKkIAeY0yIEGVJX1g765VroepKlIcSGBYEucxA==
   dependencies:
     d3-scale "^4.0.2"
     d3-shape "^3.2.0"

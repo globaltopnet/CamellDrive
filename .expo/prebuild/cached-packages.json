@@ -1,4 +1,7 @@
 {
-  "dependencies": "32998b73817efd7ffabc8b4a5a544241f7ca9f65",
+  "dependencies": [
+    "32998b73817efd7ffabc8b4a5a544241f7ca9f65",
+    "546f25e634e773d2f7fb8eb09b5c605cb03df3e8"
+  ],  
   "devDependencies": "8f727552b4b4ce570d985b23f0b7db3b095ff65c"
 }

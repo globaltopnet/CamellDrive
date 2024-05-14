@@ -7,18 +7,14 @@ import RNPickerSelect from 'react-native-picker-select';
 import { TextInput } from 'react-native-gesture-handler';
 import QRCode from 'react-native-qrcode-svg';
 import axios from 'axios';
+import { Link } from 'expo-router';
 
-
-// 버튼 아이콘
 const buttonIcons = {
   Withdraw: 'exit-outline',
   Desposit: 'enter-outline',
   Chart: 'bar-chart-outline',
   Menu: 'ellipsis-horizontal-outline'
 };
-
-
-
 
 export default function WalletScreen({ navigation }) {
 
@@ -140,10 +136,6 @@ const handleButtonPress = (buttonText) => {
     case 'Withdraw':
       setWithdrawalModalVisible(true);
       break;
-
-    case '시세':
-        navigation.navigate('ChartScreen');
-      break;
     
     case '더보기':
       break;
@@ -152,7 +144,33 @@ const handleButtonPress = (buttonText) => {
       break;
   }
 };
-  
+
+
+const renderButton = (buttonText, iconName) => {
+  if (buttonText === '시세') {
+    return (
+      <Link href={`/screens/ChartScreen`}
+      underlayColor="#f0f4f7"
+      >
+        <View style={[styles.buttonCircle, { justifyContent: 'center' }]}>
+          <Ionicons name={iconName} size={30} color="#000" />
+          <Text style={[styles.buttonText, { marginTop: 5 }]}>시세</Text>
+        </View>
+      </Link>
+    );
+  } else {
+    return (
+      <TouchableOpacity
+        key={buttonText}
+        style={styles.buttonCircle}
+        onPress={() => handleButtonPress(buttonText)}
+      >
+        <Ionicons name={iconName} size={30} color="#000" />
+        <Text style={styles.buttonText}>{buttonText}</Text>
+      </TouchableOpacity>
+    );
+  }
+};
 
   const [currency, setCurrency] = useState('KRW');
   
@@ -410,7 +428,7 @@ const handleButtonPress = (buttonText) => {
               <Text style={styles.buttonText}>{buttonText}</Text>
              </TouchableOpacity>
           ))}
-        </View>
+      </View>
       </View>
       <View style={styles.bottomContainer}>
       <FlatList
@@ -533,9 +551,13 @@ PlusMinusValue: {
     borderRadius: 35,
     padding: 10,
     backgroundColor: Colors.background,
-    shadowColor: '#000', shadowOffset: { width: 0, height: 0.5 }, shadowOpacity: 0.2, shadowRadius: 3, elevation: 1
-
+    shadowColor: '#000', 
+    shadowOffset: { width: 0, height: 0.5 }, 
+    shadowOpacity: 0.2, 
+    shadowRadius: 3, 
+    elevation: 1
   },
+
   buttonIconText: {
     // 아이콘을 위한 텍스트 스타일링, 실제 아이콘으로 교체 필요
   },
@@ -543,6 +565,11 @@ PlusMinusValue: {
     fontSize: 13,
     color: '#000',
     marginTop: 5, // 아이콘과 텍스트 간격 조정
+  },
+  buttonText2: {
+    fontSize: 12,
+    color: '#000',
+    marginTop: 7, // 아이콘과 텍스트 간격 조정
   },
   bottomContainer: {
     borderTopLeftRadius: 20,
