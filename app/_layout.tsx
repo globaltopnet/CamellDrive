@@ -7,6 +7,10 @@ import { Link, Stack, useRouter } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
 import { TouchableOpacity, StyleSheet } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+const queryClient = new QueryClient();
+
 
 SplashScreen.preventAutoHideAsync();
 
@@ -60,7 +64,7 @@ const InitialLayout = () => {
       <Stack.Screen name="navigation/navigation" options={{ headerShown: false }} />
       <Stack.Screen 
         name="screens/ChartScreen"
-        options={{
+        options={{ 
           title: '',
           headerLeft: () => (
             <TouchableOpacity onPress={router.back}>
@@ -69,10 +73,20 @@ const InitialLayout = () => {
           ),
           headerLargeTitle: true,
           headerTransparent: true,
-        }} 
+         }}
       />
     </Stack>
   );
 };
 
-export default InitialLayout;
+const RootLayoutNav = () => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <InitialLayout />
+      </GestureHandlerRootView>
+    </QueryClientProvider>
+  )
+}
+
+export default RootLayoutNav;

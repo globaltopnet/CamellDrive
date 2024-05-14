@@ -55,6 +55,18 @@ export const defaultStyles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  dollarSmall: {
+    paddingHorizontal: 20,
+    height: 40,
+    borderRadius: 20,
+    borderColor: Colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.primary,
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '500',
+  },
   buttonTextSmall: {
     color: '#fff',
     fontSize: 16,

@@ -38,6 +38,7 @@ export interface Currency {
     fully_diluted_market_cap: number;
     tvl?: any;
     last_updated: string;
+    Ticker: Ticker;
   }
   
   export interface Ticker {
