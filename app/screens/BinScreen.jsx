@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TextInput, StyleSheet } from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
 import { Colors } from '../theme/color';
 import { Keyboard, TouchableWithoutFeedback } from 'react-native';
 import SubTabScreenHeader from '../main/SubTabScreenHeader';
@@ -8,9 +8,9 @@ export default function BinScreen({ navigation }) {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
-        <SubTabScreenHeader title="휴지통" navigation={navigation} />
+        <SubTabScreenHeader title="Trash" navigation={navigation} />
         <View style={styles.mainContainer}>
-
+          <Text>Empty</Text>
         </View>
       </View>
     </TouchableWithoutFeedback>

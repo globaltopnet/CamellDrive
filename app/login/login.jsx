@@ -72,7 +72,7 @@ const LoginPage = () => {
       <Text style={defaultStyles.header}>Welcome Back to</Text>
       <Text style={defaultStyles.logo}>Camell Drive</Text>
       <Text style={defaultStyles.descriptionText}>
-        Camell Drive에 오신 것을 환영합니다.
+        Camell Cloud Storage Platform .
       </Text>
 
       {walletAddress && (
@@ -101,7 +101,7 @@ const LoginPage = () => {
           source={require('@/assets/icons/google-icon.png')}
           style={{ width: 24, height: 24 }}
         />
-        <Text style={[defaultStyles.buttonText, { color: '#000' }]}>Google로 계속하기</Text>
+        <Text style={[defaultStyles.buttonText, { color: '#000' }]}>Login with Google</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -115,7 +115,7 @@ const LoginPage = () => {
           source={require('@/assets/icons/kakao-icon.png')}
           style={{ width: 24, height: 24 }}
         />
-        <Text style={[defaultStyles.buttonText, { color: '#000' }]}>Kakao로 계속하기</Text>
+        <Text style={[defaultStyles.buttonText, { color: '#000' }]}>Login with Kakao</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -129,7 +129,7 @@ const LoginPage = () => {
           source={require('@/assets/icons/apple-icon.png')}
           style={{ width: 25, height: 25 }}
         />
-        <Text style={[defaultStyles.buttonText2, { color: '#FFF' }]}>Apple로 계속하기</Text>
+        <Text style={[defaultStyles.buttonText2, { color: '#FFF' }]}>Login with Apple</Text>
       </TouchableOpacity>
     </View>
   );

@@ -55,17 +55,17 @@ export default function App() {
       <Item 
         style={heartStyle}
         icon={<Foundation name="folder-add" size={35} color="white" />}
-        label="폴더 생성"
+        label="Create Folder"
       />
       <Item 
         style={thumbStyle}
         icon={<AntDesign name="camera" size={35} color="white" />}
-        label="사진 촬영"
+        label="Photo Shoot"
       />
       <Item 
         style={pinStyle}
         icon={<MaterialIcons name="note-add" size={35} color="white" />}
-        label="업로드"
+        label="Upload"
       />
     </View>
   );

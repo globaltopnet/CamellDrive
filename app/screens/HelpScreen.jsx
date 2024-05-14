@@ -17,9 +17,9 @@ export default function HelpScreen({ navigation }) {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
-        <SubTabScreenHeader title="고객 지원" navigation={navigation} />
+        <SubTabScreenHeader title="Customer Support" navigation={navigation} />
         <View style={styles.mainContainer}>
-          <Text style={styles.label}>어떤 문제인지 선택하세요</Text>
+          <Text style={styles.label}>Choose your problem</Text>
           <RNPickerSelect
             onValueChange={(value) => setIssueType(value)}
             items={[
@@ -30,29 +30,29 @@ export default function HelpScreen({ navigation }) {
               { label: '기타', value: 'other' },
             ]}
             placeholder={{
-              label: '선택',
+              label: 'Select',
               value: null,
             }}
             style={pickerSelectStyles}
           />
-          <Text style={styles.label}>제목</Text>
+          <Text style={styles.label}>Title</Text>
           <TextInput
             style={styles.input}
             value={title}
             onChangeText={setTitle}
-            placeholder="제목을 입력하세요"
+            placeholder="Please enter a title"
           />
-          <Text style={styles.label}>내용</Text>
+          <Text style={styles.label}>Detail</Text>
           <TextInput
             style={styles.Contentinput}
             value={content}
             onChangeText={setContent}
-            placeholder="상세 내용을 입력하세요"
+            placeholder="Please enter your details"
             multiline
             numberOfLines={4}
           />
           <Button
-            title="보내기"
+            title="Send"
             onPress={handleSubmit}
           />
         </View>

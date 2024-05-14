@@ -34,7 +34,7 @@ export default function SettingScreen({ navigation }) {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.container}>
-        <SubTabScreenHeader title="설정" navigation={navigation} />
+        <SubTabScreenHeader title="Setting" navigation={navigation} />
 
         <ScrollView style={styles.scrollView}>
           <View style={styles.plan}>
@@ -42,19 +42,19 @@ export default function SettingScreen({ navigation }) {
 
           <TouchableOpacity onPress={() => handleNavigation('UpgradePlanScreen')}>
             <View style={{justifyContent: 'space-between', flexDirection: 'row'}}>
-              <Text style={styles.planButtons}>업그레이드 플랜</Text>
+              <Text style={styles.planButtons}>Upgrade Plan</Text>
               <MaterialIcons paddingTop={10} paddingRight={10}  name="chevron-right" size={25} color="#000" />
             </View>
           </TouchableOpacity>
 
 
             <View style={styles.settingItem}>
-              <Text style={styles.planButtons}>사용가능 용량</Text>     
+              <Text style={styles.planButtons}>Available storage</Text>     
               <Text style={styles.valueText}>20GB</Text>
             </View>
             
             <View style={styles.settingItem}> 
-              <Text style={styles.planButtons}>사용중인 용량</Text>
+              <Text style={styles.planButtons}>Storage in use</Text>
               <Text style={styles.valueText}>10GB</Text>
             </View>
           </View>
@@ -62,7 +62,7 @@ export default function SettingScreen({ navigation }) {
           <View style={styles.mode}>
 
           <View style={{justifyContent:'space-between', flexDirection: 'row'}}>
-            <Text style={styles.planButtons}>다크모드</Text>
+            <Text style={styles.planButtons}>Dark Mode</Text>
             <Switch
               trackColor={{ false: "#767577", true: "#81b0ff" }}
               thumbColor={isDarkModeEnabled ? "#f5dd4b" : "#f4f3f4"}
@@ -76,7 +76,7 @@ export default function SettingScreen({ navigation }) {
 
           <TouchableOpacity onPress={() => setLanguageModalVisible(true)}>
               <View style={{justifyContent: 'space-between', flexDirection: 'row'}}>
-                <Text style={styles.planButtons}>언어</Text>
+                <Text style={styles.planButtons}>Language</Text>
                 <MaterialIcons paddingTop={10} paddingRight={10} name="chevron-right" size={25} color="#000" />
               </View>
             </TouchableOpacity>
@@ -87,21 +87,21 @@ export default function SettingScreen({ navigation }) {
 
             <TouchableOpacity onPress={() => handleNavigation('Language')}>
               <View style={{justifyContent: 'space-between', flexDirection: 'row'}}>
-                <Text style={styles.planButtons}>버그 신고</Text>
+                <Text style={styles.planButtons}>Report Bug</Text>
                 <MaterialIcons paddingTop={10} paddingRight={10}  name="chevron-right" size={25} color="#000" />
               </View>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => handleNavigation('Language')}>
               <View style={{justifyContent: 'space-between', flexDirection: 'row'}}>
-               <Text style={styles.planButtons}>피드백 보내기</Text>
+               <Text style={styles.planButtons}>Send Feedback</Text>
                <MaterialIcons paddingTop={10} paddingRight={10}  name="chevron-right" size={25} color="#000" />
              </View>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => handleNavigation('HelpScreen')}>
               <View style={{justifyContent: 'space-between', flexDirection: 'row'}}>
-                <Text style={styles.planButtons}>고객지원</Text>
+                <Text style={styles.planButtons}>Customer Support</Text>
                 <MaterialIcons paddingTop={10} paddingRight={10}  name="chevron-right" size={25} color="#000" />
               </View>
             </TouchableOpacity>
@@ -112,34 +112,34 @@ export default function SettingScreen({ navigation }) {
 
             <TouchableOpacity onPress={() => handleNavigation('Language')}>
               <View style={{justifyContent: 'space-between', flexDirection: 'row'}}>
-                <Text style={styles.planButtons}>서비스 약관</Text>
+                <Text style={styles.planButtons}>Terms of Service</Text>
                 <MaterialIcons paddingTop={10} paddingRight={10}  name="chevron-right" size={25} color="#000" />
               </View>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => handleNavigation('Language')}>
               <View style={{justifyContent: 'space-between', flexDirection: 'row'}}>
-                <Text style={styles.planButtons}>개인정보처리방침</Text>
+                <Text style={styles.planButtons}>Privacy Policy</Text>
                 <MaterialIcons paddingTop={10} paddingRight={10}  name="chevron-right" size={25} color="#000" />
               </View>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => handleNavigation('Language')}>
               <View style={{justifyContent: 'space-between', flexDirection: 'row'}}>
-                <Text style={styles.planButtons}>CCPA 환경설정</Text>
+                <Text style={styles.planButtons}>CCPA Preferences</Text>
                 <MaterialIcons paddingTop={10} paddingRight={10}  name="chevron-right" size={25} color="#000" />
               </View>
             </TouchableOpacity>
               
             <View>
-            <Text style={styles.planButtons}>앱 버전</Text>
+            <Text style={styles.planButtons}>App Version</Text>
             <Text style={styles.valueText}>1.0.0</Text>
             </View>
 
           </View>
 
           <View style={styles.deleteAccount}>
-            <Text style={styles.accountText}>계정 탈퇴</Text>
+            <Text style={styles.accountText}>Leave Account</Text>
           </View>
 
         </ScrollView>

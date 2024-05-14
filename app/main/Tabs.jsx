@@ -34,9 +34,9 @@ function Tabs() {
         component={FileScreen} 
         options={{
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-          tabBarLabel: '파일',
-          headerTitle: '파일',
-          header: ({ navigation }) => <TabScreenHeader title="파일" navigation={navigation} />
+          tabBarLabel: 'File',
+          headerTitle: 'File',
+          header: ({ navigation }) => <TabScreenHeader title="File" navigation={navigation} />
         }}
       />
       <Tab.Screen 
@@ -52,9 +52,9 @@ function Tabs() {
         name="Media" 
         component={MediaScreen} 
         options={{
-          tabBarLabel: '미디어',
+          tabBarLabel: 'Media',
           headerTitle: '미디어 라이브러리',
-          header: ({ navigation }) => <TabScreenHeader title="미디어" navigation={navigation} />
+          header: ({ navigation }) => <TabScreenHeader title="Media" navigation={navigation} />
         }}
       />
       <Tab.Screen 

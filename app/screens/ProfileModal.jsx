@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Modal, View, Text, StyleSheet, TouchableOpacity, Animated, Dimensions, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { getAuth } from "firebase/auth";
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const { width, height } = Dimensions.get('window');
 
@@ -55,15 +56,15 @@ const ProfileModal = ({ visible, onClose }) => {
           <View style={styles.body}>
             <TouchableOpacity style={styles.menu} onPress={() => console.log('프로필 사진 변경')}>
               <Ionicons name="image" size={20} color="#828282" />
-              <Text style={styles.menuText}>프로필 사진 변경</Text>
+              <Text style={styles.menuText}>Change profile picture</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.menu} onPress={() => console.log('도움말')}>
               <Ionicons name="help-circle" size={20} color="#828282" />
-              <Text style={styles.menuText}>도움말</Text>
+              <Text style={styles.menuText}>Help</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.menu} onPress={() => console.log('도움말')}>
-              <Ionicons name="help-circle" size={20} color="#828282" />
-              <Text style={styles.menuText}>도움말</Text>
+              <MaterialCommunityIcons name="cog" color='#828282' size={20} />
+              <Text style={styles.menuText}>Drive Setting</Text>
             </TouchableOpacity>
           </View>
 

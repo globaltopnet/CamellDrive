@@ -11,10 +11,10 @@ import axios from 'axios';
 
 // 버튼 아이콘
 const buttonIcons = {
-  출금: 'exit-outline',
-  입금: 'enter-outline',
-  시세: 'bar-chart-outline',
-  더보기: 'ellipsis-horizontal-outline'
+  Withdraw: 'exit-outline',
+  Desposit: 'enter-outline',
+  Chart: 'bar-chart-outline',
+  Menu: 'ellipsis-horizontal-outline'
 };
 
 
@@ -24,17 +24,22 @@ export default function WalletScreen({ navigation }) {
 
   const [inputText, setInputText] = useState('');
   
+
+  const [withdrawAmount, setWithdrawAmount] = useState('');  // 출금 금액 상태
+  const [targetAddress, setTargetAddress] = useState('');    // 대상 주소 상태
+  const minimumAmount = 10;  // 최소 출금 금액 설정
+
   const [depositModalVisible, setDepositModalVisible] = useState(false);
   const [withdrawalModalVisible, setWithdrawalModalVisible] = useState(false);
 
   const [balance, setBalance] = useState('0');
 
-  const [walletAddress, setWalletAddress] = useState('TNDcxm95uDiensNHpfHfn7q5kt2x1vtMfD'); // 지갑주소
+  const [walletAddress, setWalletAddress] = useState('TRBnLcH29Q7u821J1sr8pNzhSem1dhGHck'); // 지갑주소
 
     // 지갑 잔액 코드
     useEffect(() => {
       if (walletAddress) {
-          axios.get(`http://54.180.133.138:5500/wallet-balance?wallet_address=${walletAddress}`)
+          axios.get(`http://172.30.1.93:5500/wallet-balance?wallet_address=${walletAddress}`)
           .then(response => {
               if (response.data.balance) {
                   setBalance(response.data.balance.toString());
@@ -51,7 +56,7 @@ export default function WalletScreen({ navigation }) {
 
   useEffect(() => {
     if (walletAddress) {
-      axios.get(`http://54.180.133.138:5500/wallet-transactions?wallet_address=${walletAddress}`)
+      axios.get(`http://172.30.1.93:5500/wallet-transactions?wallet_address=${walletAddress}`)
       .then(response => {
         if (response.data.transactions) {
           // setTransfers 대신 setTransactions 사용
@@ -66,6 +71,50 @@ export default function WalletScreen({ navigation }) {
       });
     }
   }, [walletAddress]);
+
+
+ // 예시: 출금 요청 함수
+ const handleWithdraw = async () => {
+  const minimumAmount = 10;  // 최소 출금 금액 설정
+
+  // 입력값 검증
+  if (parseFloat(withdrawAmount) < minimumAmount || !targetAddress) {
+    Alert.alert('오류', '유효하지 않은 금액 또는 주소입니다.');
+    return;
+  }
+
+  // 서버에 출금 요청
+  try {
+    const response = await fetch('http://172.30.1.93:5500/withdraw', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        amount: withdrawAmount,
+        toAddress: targetAddress,
+        network: 'Tron'  // 현재 Tron 고정
+      })
+    });
+    const result = await response.json();
+    if (result.success) {
+      Alert.alert('성공', '출금 요청 성공');
+      // 출금 성공 후 추가 로직
+      // 예: 모달 닫기, 상태 업데이트 등
+      setWithdrawalModalVisible(false);
+      setWithdrawAmount('');
+      setTargetAddress('');
+    } else {
+      Alert.alert('오류', '출금 요청 실패 - ' + result.error);
+    }
+  } catch (error) {
+    Alert.alert('서버 오류', '서버 오류: ' + error.message);
+  }
+};
+
+
+
+
     
 
 
@@ -83,12 +132,12 @@ const closeModal = () => {
 
 const handleButtonPress = (buttonText) => {
   switch (buttonText) {
-    case '입금':
+    case 'Desposit':
       closeModal();
       setTimeout(() => setDepositModalVisible(true), 10);
       break;
     
-    case '출금':
+    case 'Withdraw':
       setWithdrawalModalVisible(true);
       break;
 
@@ -152,7 +201,7 @@ const handleButtonPress = (buttonText) => {
   
   const renderEmptyComponent = () => (
     <View style={styles.emptyContainer}>
-      <Text style={styles.emptyText}>입출금 내역 없음</Text>
+      <Text style={styles.emptyText}>Empty</Text>
     </View>
   );
   
@@ -175,59 +224,59 @@ const handleButtonPress = (buttonText) => {
 
   return (
     <View style={styles.container}>
-      <SubTabScreenHeader title="지갑" navigation={navigation} />
+      <SubTabScreenHeader title="Wallet" navigation={navigation} />
       <Modal
-          animationType="slide"
-          transparent={true}
-          visible={withdrawalModalVisible}
-          onRequestClose={() => {
-            setWithdrawalModalVisible(!withdrawalModalVisible);
-          }}
-        >
+        animationType="slide"
+        transparent={true}
+        visible={withdrawalModalVisible}
+        onRequestClose={() => {
+          setWithdrawalModalVisible(!withdrawalModalVisible);
+        }}
+      >
         <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-                <TouchableOpacity
-                    style={styles.closeButton}
-                    onPress={() => setWithdrawalModalVisible(!withdrawalModalVisible)}
-                >
-                <Ionicons name="close-circle" size={40} color="#000" />
-                </TouchableOpacity>
-                <Text style={styles.modalText}>출금</Text>
-                <View style={styles.inputView}>
-                    <View style={styles.inputForm}>
-                        <View style={styles.won}>
-                            <Text>출금 수량</Text>
-                            <TextInput
-                            style={styles.textInput}
-                            onChangeText={(text) => setInputText(text)}
-                            placeholder="최소 10 CAMT"
-                            placeholderTextColor="#808080"
-                            />
-                            <Text style={styles.wonValue}>= 0 KRW</Text>
-                        </View>
-                        <Text>출금 대상</Text>
-                        <TextInput
-                          style={styles.textInput}
-                          onChangeText={(text) => setInputText(text)}
-                          placeholder="대상 주소 입력"
-                          placeholderTextColor="#808080"
-                        />
-                        <View style={styles.network}>
-                            <Text style={styles.networkText}>출금 네트워크</Text>
-                            <View style={styles.networkValue}>
-                                <Text style={styles.networkValueText}>Tron</Text>
-                            </View>
-                        </View>
-                        <View style={styles.buttonContainer}>
-                            <TouchableOpacity style={styles.okButton}>
-                                <Text style={styles.okButtonText}>확인</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
+          <View style={styles.modalView}>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setWithdrawalModalVisible(!withdrawalModalVisible)}
+            >
+              <Ionicons name="close-circle" size={40} color="#000" />
+            </TouchableOpacity>
+            <Text style={styles.modalText}>출금</Text>
+            <View style={styles.inputView}>
+              <View style={styles.inputForm}>
+                <View style={styles.won}>
+                  <Text>출금 수량</Text>
+                  <TextInput
+                    style={styles.textInput}
+                    onChangeText={(text) => setWithdrawAmount(text)}
+                    placeholder="최소 10 CAMT"
+                    placeholderTextColor="#808080"
+                  />
+                  <Text style={styles.wonValue}>= 0 KRW</Text>
                 </View>
+                <Text>출금 대상</Text>
+                <TextInput
+                  style={styles.textInput}
+                  onChangeText={(text) => setTargetAddress(text)}
+                  placeholder="대상 주소 입력"
+                  placeholderTextColor="#808080"
+                />
+                <View style={styles.network}>
+                  <Text style={styles.networkText}>출금 네트워크</Text>
+                  <View style={styles.networkValue}>
+                    <Text style={styles.networkValueText}>Tron</Text>
+                  </View>
+                </View>
+                <View style={styles.buttonContainer}>
+                  <TouchableOpacity style={styles.okButton} onPress={handleWithdraw}>
+                    <Text style={styles.okButtonText}>확인</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </View>
         </View>
-    </View>
-</Modal>
+      </Modal>
 
 
 
@@ -357,7 +406,7 @@ const handleButtonPress = (buttonText) => {
               style={styles.buttonCircle}
               onPress={() => handleButtonPress(buttonText, navigation)}
              >
-              <Ionicons name={iconName} size={30} color="#000" />
+              <Ionicons name={iconName} size={32} color="#000" />
               <Text style={styles.buttonText}>{buttonText}</Text>
              </TouchableOpacity>
           ))}
@@ -479,8 +528,8 @@ PlusMinusValue: {
   buttonCircle: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: 70,
-    height: 70,
+    width: 80,
+    height: 80,
     borderRadius: 35,
     padding: 10,
     backgroundColor: Colors.background,
@@ -491,7 +540,7 @@ PlusMinusValue: {
     // 아이콘을 위한 텍스트 스타일링, 실제 아이콘으로 교체 필요
   },
   buttonText: {
-    fontSize: 12,
+    fontSize: 13,
     color: '#000',
     marginTop: 5, // 아이콘과 텍스트 간격 조정
   },

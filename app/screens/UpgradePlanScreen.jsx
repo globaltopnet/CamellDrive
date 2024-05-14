@@ -7,11 +7,11 @@ import { ScrollView } from 'react-native-gesture-handler';
 export default function PlanScreen({ navigation }) {
   return (
     <View style={styles.container}>
-      <SubTabScreenHeader title="플랜" navigation={navigation} />
+      <SubTabScreenHeader title="Plan" navigation={navigation} />
       <View style={styles.mainContainer}>
         <ScrollView style={{flex: 1}}>
         <View style={styles.planTitle}>
-          <Text style={{ fontSize: Platform.OS === 'android' ? 18 : 20, opacity: 0.7}}>CAMT로 저렴하게 더 많은 공간을 확보하세요.</Text>
+          <Text style={{ fontSize: Platform.OS === 'android' ? 18 : 20, opacity: 0.7}}>Get more space at a lower cost with CAMT.</Text>
         </View>
           <View style={styles.planContainer}>
 
@@ -25,11 +25,11 @@ export default function PlanScreen({ navigation }) {
               </View>
 
               <View style={styles.cost}>
-                <Text style={styles.costText}>첫 구매에만 30 CAMT, 이후 0 CAMT / 월</Text>
+                <Text style={styles.costText}>30 CAMT for first purchase only</Text>
               </View>
               <View style={styles.buy}>
                 <TouchableOpacity style={styles.usingbutton}>
-                  <Text style={styles.buttonText}>사용중</Text>
+                  <Text style={styles.buttonText}>Current plan</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -42,11 +42,11 @@ export default function PlanScreen({ navigation }) {
                 <Text style={styles.sizeText}>200 GB</Text>
               </View>
               <View style={styles.cost}>
-                <Text style={styles.costText}>1개월동안 180 CAMT, 이후 200 CAMT / 월</Text>
+                <Text style={styles.costText}>180 CAMT for 1 month and 200 CAMT/month after</Text>
               </View>
               <View style={styles.buy}>
                 <TouchableOpacity style={styles.button}>
-                  <Text style={styles.buttonText}>구매하기</Text>
+                  <Text style={styles.buttonText}>Get Offer</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -59,11 +59,11 @@ export default function PlanScreen({ navigation }) {
                 <Text style={styles.sizeText}>500 GB</Text>
               </View>
               <View style={styles.cost}>
-                <Text style={styles.costText}>1개월동안 450 CAMT, 이후 470 CAMT / 월</Text>
+                <Text style={styles.costText}>450 CAMT for 1 month and 470 CAMT/month after</Text>
               </View>
               <View style={styles.buy}>
                 <TouchableOpacity style={styles.button}>
-                  <Text style={styles.buttonText}>구매하기</Text>
+                  <Text style={styles.buttonText}>Get Offer</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -76,11 +76,11 @@ export default function PlanScreen({ navigation }) {
                 <Text style={styles.sizeText}>1 TB</Text>
               </View>
               <View style={styles.cost}>
-                <Text style={styles.costText}>1개월동안 800 CAMT, 이후 900 CAMT / 월</Text>
+                <Text style={styles.costText}>800 CAMT for 1 month and 900 CAMT/month after</Text>
               </View>
               <View style={styles.buy}>
                 <TouchableOpacity style={styles.button}>
-                  <Text style={styles.buttonText}>구매하기</Text>
+                  <Text style={styles.buttonText}>Get Offer</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -93,11 +93,11 @@ export default function PlanScreen({ navigation }) {
                 <Text style={styles.sizeText}>2 TB</Text>
               </View>
               <View style={styles.cost}>
-                <Text style={styles.costText}>1개월동안 1600 CAMT, 이후 1800 CAMT / 월</Text>
+                <Text style={styles.costText}>1400 CAMT for 1 month and 1600 CAMT/month after</Text>
               </View>
               <View style={styles.buy}>
                 <TouchableOpacity style={styles.button}>
-                  <Text style={styles.buttonText}>구매하기</Text>
+                  <Text style={styles.buttonText}>Get Offer</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
     top: 40,
   },
   costText: {
-    fontSize: Platform.OS === 'android' ? 12 : 14,
+    fontSize: Platform.OS === 'android' ? 12 : 12,
 
   },
   buy: {
@@ -182,11 +182,11 @@ const styles = StyleSheet.create({
   },
   usingbutton: {
       backgroundColor: 'gray',
-      padding: 10,
+      padding: 8,
       borderRadius: 20,
   },
   buttonText: {
-    fontSize: 15,
+    fontSize: 12,
     color: 'white',
     textAlign: 'center',
   }

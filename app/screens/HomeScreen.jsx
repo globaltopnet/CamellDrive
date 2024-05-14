@@ -13,21 +13,21 @@ export default function HomeScreen({ navigation }) {
 
     const percentage = Math.round((usedStorage / totalStorage) * 100);
     const radius = 80; // 게이지의 반지름
-    const strokeWidth = 20; // 게이지 선의 두께
+    const strokeWidth = 14; // 게이지 선의 두께
     const circumference = 2 * Math.PI * radius; // 원의 둘레
     const strokeDashoffset = circumference - (percentage / 100) * circumference; // 게이지 진행 상태
 
     // 임의의 최근 항목 데이터
     const recentItems = [
-        { id: 1, type: 'folder', name: '문서', date: '2024-05-07' },
-        { id: 2, type: 'file', name: '프로젝트 계획서.pdf', date: '2024-05-05' },
-        { id: 3, type: 'file', name: '연구 보고서.docx', date: '2024-04-30' },
-        { id: 4, type: 'folder', name: '사진 모음', date: '2024-05-04' },
+        { id: 1, type: 'folder', name: 'Doucments', date: '2024-05-07' },
+        { id: 2, type: 'file', name: 'Projectplan.pdf', date: '2024-05-05' },
+        { id: 3, type: 'file', name: 'memo.txt', date: '2024-04-30' },
+        { id: 4, type: 'folder', name: 'Travle Album', date: '2024-05-04' },
     ];
 
     return (
         <View style={styles.container}>
-            <SubTabScreenHeader title="홈" navigation={navigation} />
+            <SubTabScreenHeader title="Home" navigation={navigation} />
                 <View style={styles.topContainer}>
                     <View style={styles.storageCard}>
                         <Svg height="200" width="200" viewBox="0 0 200 200" style={styles.gauge}>
@@ -64,8 +64,8 @@ export default function HomeScreen({ navigation }) {
                             </SvgText>
                         </Svg>
                         <View style={styles.storageTextContainer}>
-                            <Text style={styles.storageTitle}>저장공간</Text>
-                            <Text style={styles.storageText}>{totalStorage} GB 중 {usedStorage} GB 사용중</Text>
+                            <Text style={styles.storageTitle}>Storage</Text>
+                            <Text style={styles.storageText}>{usedStorage} GB of {totalStorage} GB used</Text>
                         </View>
                     </View>
                 </View>
@@ -74,25 +74,25 @@ export default function HomeScreen({ navigation }) {
                     <View style={styles.buttonContainer}>
 
                         <TouchableOpacity style={styles.selectedCategoryButton}>
-                            <Ionicons name="time" size={20} color="white" />
-                            <Text style={styles.selectedButtonText}>최근 항목</Text>
+                            <Ionicons name="time" size={17} color="white" />
+                            <Text style={styles.selectedButtonText}>Recent Items</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity style={styles.categoryButton}>
-                            <Ionicons name="star" size={17.5} color="#636363" />
-                            <Text style={styles.buttonText}>즐겨찾기 항목</Text>
+                            <Ionicons name="star" size={15} color="#636363" />
+                            <Text style={styles.buttonText}>Favorite items</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity style={styles.categoryButton}>
-                          <MaterialCommunityIcons name="share" color='#636363' size={21} />
-                            <Text style={styles.buttonText}>공유 항목</Text>
+                          <MaterialCommunityIcons name="share" color='#636363' size={19} />
+                            <Text style={styles.buttonText}>Shared items</Text>
                         </TouchableOpacity>
 
                     </View>
 
                     <View style={{alignItems: 'flex-end'}}>
                       <TouchableOpacity style={styles.viewAll} onPress={() => navigation.navigate('File')}>
-                        <Text style={{color: 'blue', fontSize:16, textAlign: 'center'}}>모두 보기</Text>
+                        <Text style={{color: 'blue', fontSize:13, textAlign: 'center'}}>View All</Text>
                       </TouchableOpacity>
                     </View>
 
@@ -164,14 +164,14 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         flexDirection: 'row',
-        marginLeft: 12,
+        marginLeft: -7,
     },
     categoryButton: {
       flexDirection: 'row',
       alignItems: 'center',
       backgroundColor: 'white',
-      paddingHorizontal: 10,
-      paddingVertical: 15,
+      paddingHorizontal: 8,
+      paddingVertical: 14,
       borderRadius: 13,
       marginRight: 20,
     },
@@ -179,21 +179,21 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       alignItems: 'center',
       backgroundColor: Colors.themcolor,
-      paddingHorizontal: 10,
-      paddingVertical: 15,
+      paddingHorizontal: 8,
+      paddingVertical: 14,
       borderRadius: 13,
       marginRight: 20,
     },
     
     buttonText: {
       color: 'black',
-      fontSize: 15,
+      fontSize: 13,
       marginLeft: 5,
     },
     selectedButtonText:{
       color: 'white',
       fontWeight: 'bold',
-      fontSize: 15,
+      fontSize: 13,
       marginLeft: 5,
     },
     itemContainer: {
@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
         marginLeft: '10%',
     },
     itemName: {
-        fontSize: 14,
+        fontSize: 15,
         marginTop: 8,
         textAlign: 'center',
     },
