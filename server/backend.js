@@ -81,17 +81,28 @@ async function createS3Folder(walletAddress) {
   const bucketName = process.env.BUCKET_NAME;
   const folderName = walletAddress + '/';
 
-  const params = {
-    Bucket: bucketName,
-    Key: folderName
+  const createFolder = async (folderPath) => {
+    const params = {
+      Bucket: bucketName,
+      Key: folderPath
+    };
+
+    try {
+      await s3.putObject(params).promise();
+      console.log(`Folder ${folderPath} created in bucket ${bucketName}`);
+    } catch (error) {
+      console.error(`Error creating folder ${folderPath}:`, error);
+      throw error;
+    }
   };
 
   try {
-    await s3.putObject(params).promise();
-    console.log(`Folder ${folderName} created in bucket ${bucketName}`);
+    await createFolder(folderName);
+    await createFolder(folderName + 'media/');
+    await createFolder(folderName + 'folder/');
     return folderName;
   } catch (error) {
-    console.error('Error creating S3 folder:', error);
+    console.error('Error creating S3 folders:', error);
     throw error;
   }
 }

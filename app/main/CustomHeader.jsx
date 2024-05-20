@@ -38,11 +38,12 @@ const CustomHeader = ({ title, navigation }) => {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.headerContainer}>
         <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
-          <Ionicons name="menu" size={30} color="black" />
+          <Ionicons name="menu" size={30} color="black" marginRight={52.5} />
         </TouchableOpacity>
 
         <Text style={styles.title}>{title}</Text>
 
+        <View style={styles.homeandpro}>
         <TouchableOpacity style={styles.homeButton} onPress={() => navigation.navigate('Home')}>
           <Ionicons name="home" size={27} color="black" />
         </TouchableOpacity>
@@ -54,21 +55,22 @@ const CustomHeader = ({ title, navigation }) => {
             <Ionicons name="person-circle" size={35} color="black" />
           )}
         </TouchableOpacity>
+        </View>
       </View>
       <SearchBar onSearch={(query) => console.log('Searching:', query)} />
       <View style={styles.controlsContainer}>
         <View style={styles.sortOptions}>
           {/* 정렬 옵션 */}
           <TouchableOpacity style={styles.sortButton} onPress={() => toggleSortType('name')}>
-            <Text style={styles.sortButtonText}>이름</Text>
+            <Text style={styles.sortButtonText}>name</Text>
             <Ionicons name={getIcon('name')} size={20} color="black" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.sortButton} onPress={() => toggleSortType('date')}>
-            <Text style={styles.sortButtonText}>날짜</Text>
+            <Text style={styles.sortButtonText}>date</Text>
             <Ionicons name={getIcon('date')} size={20} color="black" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.sortButton} onPress={() => toggleSortType('size')}>
-            <Text style={styles.sortButtonText}>크기</Text>
+            <Text style={styles.sortButtonText}>size</Text>
             <Ionicons name={getIcon('size')} size={20} color="black" />
           </TouchableOpacity>
         </View>
@@ -132,13 +134,16 @@ const styles = StyleSheet.create({
   },
 
   homeButton: {
-    position: 'absolute',
-    left: 330,
+    marginRight: 20,
   },
   profilePicture: {
     width: 35,
     height: 35,
     borderRadius: 17.5,
+  },
+  homeandpro:{
+    alignItems: 'center',
+    flexDirection: 'row',
   }
 });
 
