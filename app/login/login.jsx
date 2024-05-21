@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -15,7 +16,7 @@ import {
 } from "firebase/auth";
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
-import React, { useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -31,10 +32,12 @@ const LoginPage = () => {
     if (response?.type === "success") {
       const { id_token } = response.params;
       const credential = GoogleAuthProvider.credential(id_token);
+      setLoading(true);
       signInWithCredential(auth, credential)
         .then(async (userCredential) => {
           const user = userCredential.user;
           const email = user.email;
+          await AsyncStorage.setItem('userEmail', email);
           try {
             const response = await fetch('http://54.180.133.138:8080/api/create-wallet', {
               method: 'POST',
@@ -96,7 +99,7 @@ const LoginPage = () => {
           backgroundColor: '#E1E4EC'
         }]}
         onPress={() => promptAsync()}
-        >
+      >
         <Image
           source={require('@/assets/icons/google-icon.png')}
           style={{ width: 24, height: 24 }}
