@@ -2,44 +2,13 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Colors } from '../theme/color';
+import PlusMenu from '../screens/PlusMenu';
 
 const files = [
   { id: '1', name: 'Logo.png', type: 'folder', uploadDate: '2024-05-10', size: '2MB' },
   { id: '2', name: 'Logo.png', type: 'file', uploadDate: '2024-05-10', size: '2MB' },
   { id: '3', name: 'Logo.png', type: 'file', uploadDate: '2024-05-10', size: '2MB' },
-  { id: '4', name: 'Logo.png', type: 'file', uploadDate: '2024-05-10', size: '2MB' },
-  { id: '5', name: 'Logo.png', type: 'file', uploadDate: '2024-05-10', size: '2MB' },
-  { id: '6', name: 'Logo.png', type: 'file', uploadDate: '2024-05-10', size: '2MB' },
-  { id: '5', name: 'Logo.png', type: 'file', uploadDate: '2024-05-10', size: '2MB' },
-  { id: '5', name: 'Logo.png', type: 'file', uploadDate: '2024-05-10', size: '2MB' },
-  { id: '5', name: 'Logo.png', type: 'file', uploadDate: '2024-05-10', size: '2MB' },
-  { id: '5', name: 'Logo.png', type: 'file', uploadDate: '2024-05-10', size: '2MB' },
-  { id: '5', name: 'Logo.png', type: 'file', uploadDate: '2024-05-10', size: '2MB' },
-  { id: '5', name: 'Logo.png', type: 'file', uploadDate: '2024-05-10', size: '2MB' },
-  { id: '5', name: 'Logo.png', type: 'file', uploadDate: '2024-05-10', size: '2MB' },
-  { id: '5', name: 'Logo.png', type: 'file', uploadDate: '2024-05-10', size: '2MB' },
-  { id: '5', name: 'Logo.png', type: 'file', uploadDate: '2024-05-10', size: '2MB' },
-  { id: '5', name: 'Logo.png', type: 'file', uploadDate: '2024-05-10', size: '2MB' },
-  { id: '5', name: 'Logo.png', type: 'file', uploadDate: '2024-05-10', size: '2MB' },
-  { id: '5', name: 'Logo.png', type: 'file', uploadDate: '2024-05-10', size: '2MB' },
-  { id: '5', name: 'Logo.png', type: 'file', uploadDate: '2024-05-10', size: '2MB' },
-  { id: '5', name: 'Logo.png', type: 'file', uploadDate: '2024-05-10', size: '2MB' },
-  { id: '5', name: 'Logo.png', type: 'file', uploadDate: '2024-05-10', size: '2MB' },
-  { id: '5', name: 'Logo.png', type: 'file', uploadDate: '2024-05-10', size: '2MB' },
-  { id: '5', name: 'Logo.png', type: 'file', uploadDate: '2024-05-10', size: '2MB' },
-  { id: '5', name: 'Logo.png', type: 'file', uploadDate: '2024-05-10', size: '2MB' },
-  { id: '5', name: 'Logo.png', type: 'file', uploadDate: '2024-05-10', size: '2MB' },
-  { id: '5', name: 'Logo.png', type: 'file', uploadDate: '2024-05-10', size: '2MB' },
-  { id: '5', name: 'Logo.png', type: 'file', uploadDate: '2024-05-10', size: '2MB' },
-  { id: '5', name: 'Logo.png', type: 'file', uploadDate: '2024-05-10', size: '2MB' },
-  { id: '5', name: 'Logo.png', type: 'file', uploadDate: '2024-05-10', size: '2MB' },
-  { id: '5', name: 'Logo.png', type: 'file', uploadDate: '2024-05-10', size: '2MB' },
-  { id: '5', name: 'Logo.png', type: 'file', uploadDate: '2024-05-10', size: '2MB' },
-  { id: '5', name: 'Logo.png', type: 'file', uploadDate: '2024-05-10', size: '2MB' },
-  { id: '5', name: 'Logo.png', type: 'file', uploadDate: '2024-05-10', size: '2MB' },
-  { id: '5', name: 'Logo.png', type: 'file', uploadDate: '2024-05-10', size: '2MB' },
-  { id: '5', name: 'Logo.png', type: 'file', uploadDate: '2024-05-10', size: '2MB' },
-  { id: '5', name: 'Logo.png', type: 'file', uploadDate: '2024-05-10', size: '2MB' },
+
 
 ];
 
@@ -54,6 +23,7 @@ export default function GridView() {
         color={item.type === 'folder' ? '#d54d84' : Colors.themcolor}
         style={{ opacity: 0.8 }}
       />
+
       <Text style={styles.fileName}>{item.name}</Text>
       <TouchableOpacity
         style={styles.menuIcon}
@@ -62,6 +32,7 @@ export default function GridView() {
         <Ionicons name="ellipsis-vertical" size={15} color="#000" />
       </TouchableOpacity>
     </View>
+    
   );
 
   const showMenu = (fileName) => {
@@ -75,16 +46,19 @@ export default function GridView() {
   };
 
   return (
-    <FlatList
-      data={files}
-      renderItem={renderFileItem}
-      keyExtractor={item => item.id}
-      numColumns={numColumns}
-      key={numColumns}
-      contentContainerStyle={styles.grid}
-      style={{ backgroundColor: Colors.background }}
-      ListEmptyComponent={<Text style={styles.emptyText}>Empty</Text>}
-    />
+    <View style={{ flex: 1, backgroundColor: Colors.background }}>
+      <FlatList
+        data={files}
+        renderItem={renderFileItem}
+        keyExtractor={item => item.id}
+        numColumns={numColumns}
+        key={numColumns}
+        contentContainerStyle={styles.grid}
+        style={{ backgroundColor: Colors.background }}
+        ListEmptyComponent={<Text style={styles.emptyText}>Empty</Text>}
+      />
+      <PlusMenu />
+    </View>
   );
 }
 

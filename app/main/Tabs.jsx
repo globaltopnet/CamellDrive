@@ -1,4 +1,3 @@
-// Tabs.js
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { View, StyleSheet } from 'react-native';
@@ -6,15 +5,14 @@ import { CardStyleInterpolators } from '@react-navigation/stack';
 import { Colors } from '../theme/color';
 import FileScreen from '../screens/FileScreen';
 import MediaScreen from '../screens/MediaScreen';
-import PlusMenu from '../screens/PlusMenu';
 import HomeScreen from '../screens/HomeScreen';
 import TabScreenHeader from './TabScreenHeader';
+import FavoriteScreen from '../screens/FavoriteScreen';
+import ShareScreen from '../screens/ShareScreen';
+import BinScreen from '../screens/BinScreen';
+import SubTabScreenHeader from './SubTabScreenHeader';
 
 const Tab = createBottomTabNavigator();
-
-function EmptyScreen() {
-  return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} />;
-}
 
 function Tabs() {
   return (
@@ -29,6 +27,37 @@ function Tabs() {
         tabBarActiveTintColor: Colors.themcolor,
       })}
     >
+      {/* 공유, 휴지통, 즐겨찾기 탭을 숨깁니다. */}
+      <Tab.Screen 
+        name="Share" 
+        component={ShareScreen} 
+        options={{
+          tabBarButton: () => null, // 탭 바 버튼을 숨깁니다.
+          tabBarLabel: '공유',
+          headerTitle: '공유',
+          header: ({ navigation }) => <TabScreenHeader title="공유" navigation={navigation} />
+        }}
+      />
+      <Tab.Screen 
+        name="Bin" 
+        component={BinScreen} 
+        options={{
+          tabBarButton: () => null, // 탭 바 버튼을 숨깁니다.
+          tabBarLabel: '휴지통',
+          headerTitle: '휴지통',
+          header: ({ navigation }) => <TabScreenHeader title="휴지통" navigation={navigation} />
+        }}
+      />
+      <Tab.Screen 
+        name="Favorite" 
+        component={FavoriteScreen} 
+        options={{
+          tabBarButton: () => null, // 탭 바 버튼을 숨깁니다.
+          tabBarLabel: '즐겨찾기',
+          headerTitle: '즐겨찾기',
+          header: ({ navigation }) => <TabScreenHeader title="즐겨찾기" navigation={navigation} />
+        }}
+      />
       <Tab.Screen 
         name="File" 
         component={FileScreen} 
@@ -40,12 +69,12 @@ function Tabs() {
         }}
       />
       <Tab.Screen 
-        name="Plus" 
-        component={EmptyScreen} 
+        name="Home" 
+        component={HomeScreen}
         options={{
-          tabBarLabel: () => null,
-          headerShown: false,
-          header: ({ navigation }) => <TabScreenHeader title="추가기능" navigation={navigation} />
+          tabBarLabel: '홈',
+          headerTitle: '홈',
+          header: ({ navigation }) => <SubTabScreenHeader title="홈" navigation={navigation} />
         }}
       />
       <Tab.Screen 
@@ -57,14 +86,6 @@ function Tabs() {
           header: ({ navigation }) => <TabScreenHeader title="미디어" navigation={navigation} />
         }}
       />
-      <Tab.Screen 
-        name="Home" 
-        component={HomeScreen}
-        options={{
-          tabBarButton: () => null,  // 탭 버튼을 숨김
-          headerShown: false
-        }}
-      />
     </Tab.Navigator>
   );
 }
@@ -73,7 +94,7 @@ function getIconName(routeName, focused) {
   const iconMap = {
     File: focused ? 'document' : 'document-outline',
     Media: focused ? 'images' : 'images-outline',
-    Plus: 'add-circle-outline'
+    Home: 'home'
   };
   return iconMap[routeName] || 'alert-circle-outline';
 }

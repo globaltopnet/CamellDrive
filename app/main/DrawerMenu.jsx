@@ -13,6 +13,7 @@ import HelpScreen from '../screens/HelpScreen';
 import SettingScreen from '../screens/SettingScreen';
 import ShareScreen from '../screens/ShareScreen';
 import UpgradePlanScreen from '../screens/UpgradePlanScreen';
+import HomeScreen from '../screens/HomeScreen';
 import Tabs from './Tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import ChartScreen from '../screens/ChartScreen';
@@ -63,25 +64,6 @@ const DrawerMenu = () => {
    
 
       <Drawer.Screen 
-        name="FavoriteScreen"
-        component={FavoriteScreen}
-        options={{
-          drawerLabel: '즐겨찾기',
-          headerShown: false,
-          drawerItemStyle: {display: 'none'}
-        }}
-      />
-
-      <Drawer.Screen 
-        name="BinScreen"
-        component={BinScreen}
-        options={{
-          drawerLabel: '휴지통',
-          headerShown: false,
-          drawerItemStyle: {display: 'none'}
-        }}
-      />
-      <Drawer.Screen 
         name="HelpScreen"
         component={HelpScreen}
         options={{
@@ -113,15 +95,6 @@ const DrawerMenu = () => {
         component={SettingScreen}
         options={{
           drawerLabel: '설정',
-          headerShown: false,
-          drawerItemStyle: {display: 'none'}
-        }}
-      />
-      <Drawer.Screen 
-        name="ShareScreen"
-        component={ShareScreen}
-        options={{
-          drawerLabel: '공유',
           headerShown: false,
           drawerItemStyle: {display: 'none'}
         }}
@@ -168,6 +141,15 @@ const CustomDrawerContent = (props) => {
 
 
         <View style={styles.menuItem}>
+          
+        <DrawerItem
+          label="홈"
+          onPress={() => props.navigation.navigate('Home')}
+          icon={({ color, size }) => (
+            <MaterialCommunityIcons name="home" color={color} size={size} />
+          )}
+          style={styles.items}
+        />
         <DrawerItem
           label="지갑"
           onPress={() => props.navigation.navigate('WalletScreen')}
@@ -176,6 +158,10 @@ const CustomDrawerContent = (props) => {
           )}
           style={styles.items}
         />
+          
+        </View>
+
+        <View style={styles.menuItem}>
         <DrawerItem
             label="파일"
             onPress={() => props.navigation.navigate('File')}
@@ -194,7 +180,7 @@ const CustomDrawerContent = (props) => {
          />
         <DrawerItem
             label="즐겨찾기"
-            onPress={() => props.navigation.navigate('FavoriteScreen')}
+            onPress={() => props.navigation.navigate('Favorite')}
             icon={({ color, size }) => (
                 <MaterialCommunityIcons name="star" color={color} size={size} />
             )}
@@ -202,7 +188,7 @@ const CustomDrawerContent = (props) => {
         />
         <DrawerItem
             label="공유"
-            onPress={() => props.navigation.navigate('ShareScreen')}
+            onPress={() => props.navigation.navigate('Share')}
             icon={({ color, size }) => (
                 <MaterialCommunityIcons name="share" color={color} size={size} />
             )}
@@ -210,7 +196,7 @@ const CustomDrawerContent = (props) => {
         />
         <DrawerItem
           label="휴지통"
-          onPress={() => props.navigation.navigate('BinScreen')}
+          onPress={() => props.navigation.navigate('Bin')}
           icon={({ color, size }) => (
             <MaterialCommunityIcons name="trash-can" color={color} size={size} />
           )}

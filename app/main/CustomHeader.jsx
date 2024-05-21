@@ -38,15 +38,10 @@ const CustomHeader = ({ title, navigation }) => {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.headerContainer}>
         <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
-          <Ionicons name="menu" size={30} color="black" marginRight={52.5} />
+          <Ionicons name="menu" size={30} color="black"/>
         </TouchableOpacity>
 
         <Text style={styles.title}>{title}</Text>
-
-        <View style={styles.homeandpro}>
-        <TouchableOpacity style={styles.homeButton} onPress={() => navigation.navigate('Home')}>
-          <Ionicons name="home" size={27} color="black" />
-        </TouchableOpacity>
 
         <TouchableOpacity onPress={() => setModalVisible(true)}>
           {userPhoto ? (
@@ -55,7 +50,6 @@ const CustomHeader = ({ title, navigation }) => {
             <Ionicons name="person-circle" size={35} color="black" />
           )}
         </TouchableOpacity>
-        </View>
       </View>
       <SearchBar onSearch={(query) => console.log('Searching:', query)} />
       <View style={styles.controlsContainer}>

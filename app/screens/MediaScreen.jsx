@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Colors } from '../theme/color';
 import { Keyboard, TouchableWithoutFeedback } from 'react-native';
-import TabScreenHeader from '../main/TabScreenHeader';
+import PlusMenu from '../screens/PlusMenu';
 
 export default function MediaScreen({ navigation }) {
   return (
@@ -11,6 +11,8 @@ export default function MediaScreen({ navigation }) {
         <View style={styles.mainContainer}>
             <Text>비어있음</Text>
         </View>
+        <PlusMenu />
+
       </View>
     </TouchableWithoutFeedback>
   );

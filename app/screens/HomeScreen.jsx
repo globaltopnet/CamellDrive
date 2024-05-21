@@ -1,11 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Colors } from '../theme/color';
-import SubTabScreenHeader from '../main/SubTabScreenHeader';
 import Svg, { Circle, Text as SvgText } from 'react-native-svg';
 import { Ionicons } from '@expo/vector-icons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
 
 export default function HomeScreen({ navigation }) {
     const usedStorage = 10; // 10GB 사용됨
@@ -27,7 +25,6 @@ export default function HomeScreen({ navigation }) {
 
     return (
         <View style={styles.container}>
-            <SubTabScreenHeader title="홈" navigation={navigation} />
                 <View style={styles.topContainer}>
                     <View style={styles.storageCard}>
                         <Svg height="200" width="200" viewBox="0 0 200 200" style={styles.gauge}>
@@ -110,7 +107,10 @@ export default function HomeScreen({ navigation }) {
                         ))}
                     </View>
                 </View>
+                
+                
         </View>
+        
     );
 }
 
