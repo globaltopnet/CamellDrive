@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Platform, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '../theme/color';
-import SearchBar from './SearchBar';
 import ProfileModal from '../screens/ProfileModal';
 import { getAuth } from "firebase/auth";
 
@@ -36,16 +35,13 @@ const CustomHeader = ({ title, navigation }) => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.headerContainer}>
+        
         <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
-          <Ionicons name="menu" size={30} color="black" marginRight={52.5} />
+          <Ionicons name="menu" size={30} color="black" />
         </TouchableOpacity>
 
         <Text style={styles.title}>{title}</Text>
 
-        <View style={styles.homeandpro}>
-        <TouchableOpacity style={styles.homeButton} onPress={() => navigation.navigate('Home')}>
-          <Ionicons name="home" size={27} color="black" />
-        </TouchableOpacity>
 
         <TouchableOpacity onPress={() => setModalVisible(true)}>
           {userPhoto ? (
@@ -54,8 +50,8 @@ const CustomHeader = ({ title, navigation }) => {
             <Ionicons name="person-circle" size={35} color="black" />
           )}
         </TouchableOpacity>
-        </View>
       </View>
+
       <View style={styles.controlsContainer}>
         <ProfileModal
           visible={modalVisible}
@@ -96,25 +92,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     flex: 1,
   },
-  sortButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginHorizontal: 20, // 좌우 마진을 증가
-    fontSize: 10,
-  },
-  sortButtonText: {
-    marginRight: 5,
-    fontSize: 12,
-  },
-  viewModeButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 10,
-  },
 
-  homeButton: {
-    marginRight: 20,
-  },
   profilePicture: {
     width: 35,
     height: 35,

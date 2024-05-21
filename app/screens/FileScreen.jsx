@@ -4,8 +4,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Colors } from '../theme/color';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 const POLLING_INTERVAL = 5000;
+import PlusMenu from '../screens/PlusMenu';
 
 const FileScreen = () => {
   const [files, setFiles] = useState([]);
@@ -154,6 +154,7 @@ const FileScreen = () => {
         contentContainerStyle={styles.grid}
         ListEmptyComponent={<Text style={styles.emptyText}>Empty</Text>}
       />
+      <PlusMenu />
     </View>
   );
 };
