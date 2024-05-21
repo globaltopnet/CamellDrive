@@ -1,9 +1,8 @@
 const express = require('express');
 const mysql = require('mysql2/promise');
 const TronWeb = require('tronweb');
-const crypto = require('crypto');
 const cors = require('cors');
-const AWS = require('aws-sdk');
+const { S3Client, ListObjectsV2Command, PutObjectCommand } = require('@aws-sdk/client-s3');
 require('dotenv').config();
 
 const app = express();
@@ -18,12 +17,14 @@ const dbConfig = {
 };
 
 const s3Config = {
-  accessKeyId: process.env.ACCESS_KEY,
-  secretAccessKey: process.env.SECRET_ACCESS_KEY,
-  region: process.env.REGION
+  region: process.env.REGION,
+  credentials: {
+    accessKeyId: process.env.ACCESS_KEY,
+    secretAccessKey: process.env.SECRET_ACCESS_KEY
+  }
 };
 
-const s3 = new AWS.S3(s3Config);
+const s3Client = new S3Client(s3Config);
 
 const pool = mysql.createPool(dbConfig);
 
@@ -84,11 +85,12 @@ async function createS3Folder(walletAddress) {
   const createFolder = async (folderPath) => {
     const params = {
       Bucket: bucketName,
-      Key: folderPath
+      Key: folderPath,
+      Body: '',
     };
 
     try {
-      await s3.putObject(params).promise();
+      await s3Client.send(new PutObjectCommand(params));
       console.log(`Folder ${folderPath} created in bucket ${bucketName}`);
     } catch (error) {
       console.error(`Error creating folder ${folderPath}:`, error);
@@ -99,7 +101,7 @@ async function createS3Folder(walletAddress) {
   try {
     await createFolder(folderName);
     await createFolder(folderName + 'media/');
-    await createFolder(folderName + 'folder/');
+    await createFolder(folderName + 'file/');
     return folderName;
   } catch (error) {
     console.error('Error creating S3 folders:', error);
@@ -131,6 +133,82 @@ app.post('/api/create-wallet', async (req, res) => {
     }
   } catch (error) {
     console.error('Error creating wallet:', error);
+    return res.status(500).json({ success: false, error: 'Internal server error' });
+  }
+});
+
+app.post('/api/get-wallet-address', async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ error: 'Missing email' });
+  }
+
+  try {
+    const [rows] = await pool.execute(
+      'SELECT Address FROM Wallets WHERE Email = ?',
+      [email]
+    );
+
+    if (rows.length > 0) {
+      return res.status(200).json({ success: true, address: rows[0].Address });
+    } else {
+      return res.status(404).json({ success: false, error: 'Wallet not found' });
+    }
+  } catch (error) {
+    console.error('Error fetching wallet address:', error);
+    return res.status(500).json({ success: false, error: 'Internal server error' });
+  }
+});
+
+app.post('/api/list-folder-contents', async (req, res) => {
+  const { walletAddress, folderPath = '' } = req.body;
+  const bucketName = process.env.BUCKET_NAME;
+  const prefix = `${walletAddress}/file/${folderPath}`;
+
+  if (!walletAddress) {
+    return res.status(400).json({ error: 'Missing walletAddress' });
+  }
+
+  console.log(`Fetching contents for prefix: ${prefix}`);
+
+  const params = {
+    Bucket: bucketName,
+    Prefix: prefix,
+    Delimiter: '/'
+  };
+
+  try {
+    const data = await s3Client.send(new ListObjectsV2Command(params));
+    console.log('S3 response data:', JSON.stringify(data, null, 2));
+
+    // Extract folders
+    const folders = (data.CommonPrefixes || []).map(item => ({
+      key: item.Prefix.replace(prefix, '').replace('/', ''),
+      type: 'folder'
+    }));
+
+    // Extract files, ensuring they don't include the prefix and are not empty
+    const files = (data.Contents || []).filter(item => {
+      const fileKey = item.Key.replace(prefix, '');
+      // Ensure the file is not a directory
+      return fileKey && !fileKey.endsWith('/');
+    }).map(item => {
+      const fileKey = item.Key.replace(prefix, '');
+      return {
+        key: fileKey,
+        size: item.Size,
+        lastModified: item.LastModified,
+        type: 'file'
+      };
+    });
+
+    console.log('Folders:', folders);
+    console.log('Files:', files);
+
+    return res.status(200).json({ success: true, contents: [...folders, ...files] });
+  } catch (error) {
+    console.error('Error listing folder contents:', error);
     return res.status(500).json({ success: false, error: 'Internal server error' });
   }
 });
