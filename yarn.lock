@@ -2549,6 +2549,7 @@
     "@floating-ui/core" "^1.0.0"
     "@floating-ui/utils" "^0.2.0"
 
+<<<<<<< HEAD
 "@floating-ui/react-dom@^2.0.0":
   version "2.1.0"
   resolved "https://registry.npmjs.org/@floating-ui/react-dom/-/react-dom-2.1.0.tgz"
@@ -2557,6 +2558,9 @@
     "@floating-ui/dom" "^1.0.0"
 
 "@floating-ui/react-dom@^2.0.2":
+=======
+"@floating-ui/react-dom@^2.0.0", "@floating-ui/react-dom@^2.0.2":
+>>>>>>> shin
   version "2.1.0"
   resolved "https://registry.npmjs.org/@floating-ui/react-dom/-/react-dom-2.1.0.tgz"
   integrity sha512-lNzj5EQmEKn5FFKc04+zasr09h/uX8RtJRNj5gUXsSQIXHVWTVh+hVAg1vOMCexkX8EgvemMvIFpQfkosnVNyA==

@@ -3,6 +3,7 @@ import { View, TouchableOpacity, Text, TextInput, StyleSheet, Modal, TouchableWi
 import {  MaterialIcons, Foundation } from '@expo/vector-icons';
 import { Colors } from '../theme/color';
 import * as ImagePicker from 'expo-image-picker';
+import * as DocumentPicker from 'expo-document-picker';
 
 
 
@@ -11,7 +12,6 @@ export default function App() {
   const [isFolderDialogVisible, setIsFolderDialogVisible] = useState(false);
   const [folderName, setFolderName] = useState('');
   const [currentFolder, setCurrentFolder] = useState(''); // 현재 폴더 경로를 추적합니다.
-
 
   const toggleMenuModal = () => {
     setIsModalVisible(!isModalVisible);
@@ -79,6 +79,18 @@ export default function App() {
     }
   };
   
+  const selectDoc = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: "*/*",
+      });
+      if (result.type === "success") {
+        console.log(result.uri);
+      }
+    } catch (err) {
+      console.error("Error picking document:", err);
+    }
+  };
   
 
   return (
@@ -99,7 +111,10 @@ export default function App() {
               <MenuItem
                   icon={<MaterialIcons name="note-add" size={22} color="gray" />}
                   label="파일 업로드"
-                  onPress={() => console.log(" 파일 업로드")}
+                  onPress={ async () => {
+                    await selectDoc();
+                    toggleMenuModal();
+                  }}
                 />
               <MenuItem
                 icon={<MaterialIcons name="add-photo-alternate" size={24} color="gray" />}
@@ -140,18 +155,17 @@ export default function App() {
               onChangeText={setFolderName}
             />
             <View style={styles.dialogButtons}>
-              <TouchableOpacity onPress={createFolder} style={styles.dialogButton}>
-                <Text style={styles.dialogbuttonText}>만들기</Text>
-              </TouchableOpacity>
+            <TouchableOpacity onPress={createFolder} style={styles.dialogButton}>
+              <Text style={styles.dialogbuttonText}>만들기</Text>
+            </TouchableOpacity>
 
-              <TouchableOpacity onPress={toggleFolderDialog} style={styles.dialogButton}>
-                <Text style={styles.dialogbuttonText}>취소</Text>
-              </TouchableOpacity>
+            <TouchableOpacity onPress={toggleFolderDialog} style={styles.dialogButton}>
+              <Text style={styles.dialogbuttonText}>취소</Text>
+            </TouchableOpacity>
             </View>
           </View>
         </View>
       </Modal>
-
     </View>
   );
 }
