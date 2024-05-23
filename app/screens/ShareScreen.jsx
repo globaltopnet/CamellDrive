@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TextInput, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { Colors } from '../theme/color';
 import { Keyboard, TouchableWithoutFeedback } from 'react-native';
 
@@ -8,7 +8,7 @@ export default function ShareScreen({ navigation }) {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         <View style={styles.mainContainer}>
-
+          <Text>asdfasdfasdf</Text>
         </View>
       </View>
     </TouchableWithoutFeedback>

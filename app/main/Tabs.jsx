@@ -17,6 +17,7 @@ const Tab = createBottomTabNavigator();
 function Tabs() {
   return (
     <Tab.Navigator
+      initialRouteName="Home"
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           if (route.name === 'Plus') return <PlusMenu />;
@@ -27,12 +28,12 @@ function Tabs() {
         tabBarActiveTintColor: Colors.themcolor,
       })}
     >
-      {/* 공유, 휴지통, 즐겨찾기 탭을 숨깁니다. */}
+
       <Tab.Screen 
         name="Share" 
         component={ShareScreen} 
         options={{
-          tabBarButton: () => null, // 탭 바 버튼을 숨깁니다.
+          tabBarButton: () => null,
           tabBarLabel: '공유',
           headerTitle: '공유',
           header: ({ navigation }) => <TabScreenHeader title="공유" navigation={navigation} />
@@ -77,6 +78,7 @@ function Tabs() {
           header: ({ navigation }) => <SubTabScreenHeader title="홈" navigation={navigation} />
         }}
       />
+
       <Tab.Screen 
         name="Media" 
         component={MediaScreen} 

@@ -10,6 +10,8 @@ export default function App() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isFolderDialogVisible, setIsFolderDialogVisible] = useState(false);
   const [folderName, setFolderName] = useState('');
+  const [currentFolder, setCurrentFolder] = useState(''); // 현재 폴더 경로를 추적합니다.
+
 
   const toggleMenuModal = () => {
     setIsModalVisible(!isModalVisible);
@@ -48,12 +50,35 @@ export default function App() {
 
   };
 
-  const createFolder = () => {
+  const createFolder = async () => {
     console.log("폴더 생성:", folderName);
-    // 폴더 생성 로직 구현
-    setFolderName('');
-    toggleFolderDialog();
+    const folderPath = `${currentFolder}${currentFolder ? '/' : ''}${folderName}/`;
+  
+    if (!walletAddress) {
+      alert('지갑 주소가 설정되지 않았습니다.');
+      return;
+    }
+  
+    try {
+      const response = await fetch('http://13.124.248.7:8080/api/create-folder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ folderPath, walletAddress }),
+      });
+      const data = await response.json();
+      if (data.success) {
+        alert('폴더가 생성되었습니다.');
+        setFolderName('');
+        toggleFolderDialog();
+      } else {
+        alert('폴더 생성 중 오류 발생: ' + data.error);
+      }
+    } catch (error) {
+      console.error('폴더 생성 API 오류:', error);
+      alert('폴더 생성 중 서버 오류 발생');
+    }
   };
+  
   
 
   return (
@@ -99,7 +124,6 @@ export default function App() {
 
 
       <Modal
-
         transparent={true}
         visible={isFolderDialogVisible}
         onRequestClose={toggleFolderDialog}
@@ -116,17 +140,18 @@ export default function App() {
               onChangeText={setFolderName}
             />
             <View style={styles.dialogButtons}>
-            <TouchableOpacity onPress={createFolder} style={styles.dialogButton}>
-              <Text style={styles.dialogbuttonText}>만들기</Text>
-            </TouchableOpacity>
+              <TouchableOpacity onPress={createFolder} style={styles.dialogButton}>
+                <Text style={styles.dialogbuttonText}>만들기</Text>
+              </TouchableOpacity>
 
-            <TouchableOpacity onPress={toggleFolderDialog} style={styles.dialogButton}>
-              <Text style={styles.dialogbuttonText}>취소</Text>
-            </TouchableOpacity>
+              <TouchableOpacity onPress={toggleFolderDialog} style={styles.dialogButton}>
+                <Text style={styles.dialogbuttonText}>취소</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
       </Modal>
+
     </View>
   );
 }

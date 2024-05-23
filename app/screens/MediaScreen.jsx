@@ -9,7 +9,7 @@ export default function MediaScreen({ navigation }) {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         <View style={styles.mainContainer}>
-            <Text>비어있음</Text>
+            <Text style={{fontSize: 15}}>Empty</Text>
         </View>
         <PlusMenu />
 

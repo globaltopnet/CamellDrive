@@ -4,7 +4,6 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Colors } from '../theme/color';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-const POLLING_INTERVAL = 5000;
 import PlusMenu from '../screens/PlusMenu';
 
 const FileScreen = () => {
@@ -21,7 +20,7 @@ const FileScreen = () => {
       }
 
       try {
-        const response = await fetch('http://54.180.133.138:8080/api/get-wallet-address', {
+        const response = await fetch('http://13.124.248.7:8080/api/get-wallet-address', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -43,13 +42,11 @@ const FileScreen = () => {
   }, []);
 
   useEffect(() => {
-    let intervalId;
-
     const fetchFolderContents = async () => {
       if (!walletAddress) return;
-
+  
       try {
-        const response = await fetch('http://54.180.133.138:8080/api/list-folder-contents', {
+        const response = await fetch('http://13.124.248.7:8080/api/list-folder-contents', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -58,37 +55,40 @@ const FileScreen = () => {
         });
         const data = await response.json();
         if (data.success) {
-          const folderContents = data.contents;
+          const folderContents = data.contents.map(item => ({
+            ...item,
+            key: item.key.split('/').filter(part => part).pop() 
+          }));
           if (currentFolder) {
             folderContents.unshift({ key: 'back', type: 'back' });
           }
           setFiles(folderContents);
         } else {
-          console.error('Error fetching folder contents:', data.error);
+          console.error('폴더 내용을 가져오는 중 오류 발생:', data.error);
         }
       } catch (error) {
-        console.error('API error:', error);
+        console.error('API 오류:', error);
       }
     };
-
+  
     if (walletAddress) {
       fetchFolderContents();
-      intervalId = setInterval(fetchFolderContents, POLLING_INTERVAL);
     }
-
-    return () => clearInterval(intervalId);
   }, [walletAddress, currentFolder]);
-
+  
   const renderFileItem = ({ item }) => (
     <TouchableOpacity
       style={styles.fileItem}
       onPress={() => {
         if (item.type === 'folder') {
-          setCurrentFolder(prev => prev ? `${prev}/${item.key}` : item.key);
+          setCurrentFolder(prev => {
+            const newPath = `${prev}${item.key}/`.replace(/\/\/+/g, '/');
+            return newPath;
+          });
         } else if (item.type === 'back') {
           goBack();
         } else {
-          // Handle file click if needed
+
         }
       }}
     >
@@ -125,7 +125,8 @@ const FileScreen = () => {
       )}
     </TouchableOpacity>
   );
-
+  
+  
   const showMenu = (fileName) => {
     Alert.alert("File Menu", `Actions for ${fileName}`, [
       { text: '공유', onPress: () => console.log('Share') },
@@ -135,14 +136,19 @@ const FileScreen = () => {
       { text: '취소', onPress: () => console.log('Cancel'), style: 'cancel' },
     ]);
   };
-
+  
   const goBack = () => {
     setCurrentFolder(prev => {
       const parts = prev.split('/');
       parts.pop();
-      return parts.join('/');
+      parts.pop(); 
+      return parts.length > 0 ? parts.join('/') + '/' : '';
     });
   };
+  
+  
+  
+  
 
   return (
     <View style={{ flex: 1, backgroundColor: Colors.background }}>
@@ -186,7 +192,8 @@ const styles = StyleSheet.create({
   emptyText: {
     textAlign: 'center',
     marginTop: 50,
-    fontSize: 18,
+    fontSize: 15,
+    top: 248,
   },
 });
 
