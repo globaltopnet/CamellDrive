@@ -7,11 +7,10 @@ import * as DocumentPicker from 'expo-document-picker';
 
 
 
-export default function App() {
+export default function PlusMenu({ walletAddress, currentFolder }) { // walletAddress를 prop으로 추가
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isFolderDialogVisible, setIsFolderDialogVisible] = useState(false);
   const [folderName, setFolderName] = useState('');
-  const [currentFolder, setCurrentFolder] = useState(''); // 현재 폴더 경로를 추적합니다.
 
   const toggleMenuModal = () => {
     setIsModalVisible(!isModalVisible);
@@ -21,6 +20,49 @@ export default function App() {
   const closeModal = () => {
     setIsModalVisible(false);
   };
+
+  const createFolder = async () => {
+    if (!walletAddress) {
+      alert('지갑 주소가 설정되지 않았습니다.');
+      return;
+    }
+    
+    let folderNameToCreate = folderName.trim() || '새폴더';
+
+    // 현재 폴더 경로를 포함하여 전체 경로를 생성합니다.
+    const fullPath = currentFolder ? `${currentFolder}/${folderNameToCreate}` : folderNameToCreate;
+    console.log("경로 :",fullPath);
+
+    try {
+      // 서버에 폴더 생성 요청
+      const response = await fetch(`http://13.124.248.7:2005/api/create-folder`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          folderPath: fullPath,
+          walletAddress
+        }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        alert('폴더가 성공적으로 생성되었습니다.');
+        setIsFolderDialogVisible(false);
+        setFolderName('');
+      } else {
+        alert('폴더 생성에 실패하였습니다: ' + data.error);
+      }
+    } catch (error) {
+      console.error('폴더 생성 오류:', error);
+      alert('폴더 생성 중 오류가 발생하였습니다.');
+    }
+};
+
+
+  
+  
 
   const pickImageFromGallery = async () => {
     // 갤러리 접근 권한 요청
@@ -50,34 +92,8 @@ export default function App() {
 
   };
 
-  const createFolder = async () => {
-    console.log("폴더 생성:", folderName);
-    const folderPath = `${currentFolder}${currentFolder ? '/' : ''}${folderName}/`;
   
-    if (!walletAddress) {
-      alert('지갑 주소가 설정되지 않았습니다.');
-      return;
-    }
   
-    try {
-      const response = await fetch('http://13.124.248.7:8080/api/create-folder', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ folderPath, walletAddress }),
-      });
-      const data = await response.json();
-      if (data.success) {
-        alert('폴더가 생성되었습니다.');
-        setFolderName('');
-        toggleFolderDialog();
-      } else {
-        alert('폴더 생성 중 오류 발생: ' + data.error);
-      }
-    } catch (error) {
-      console.error('폴더 생성 API 오류:', error);
-      alert('폴더 생성 중 서버 오류 발생');
-    }
-  };
   
   const selectDoc = async () => {
     try {
@@ -125,8 +141,8 @@ export default function App() {
                 icon={<Foundation name="folder-add" size={22} color="gray" />}
                 label="폴더 생성"
                 color="black"
-                onPress={toggleFolderDialog}
-              />
+                onPress={toggleFolderDialog} // 폴더 생성 모달을 열기 위한 함수 호출
+                />
               <MenuItem
                 icon={<MaterialIcons name="add-a-photo" size={22} color="gray" />}
                 label="사진 촬영"

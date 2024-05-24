@@ -160,7 +160,7 @@ const FileScreen = () => {
         contentContainerStyle={styles.grid}
         ListEmptyComponent={<Text style={styles.emptyText}>Empty</Text>}
       />
-      <PlusMenu />
+    <PlusMenu walletAddress={walletAddress} currentFolder={currentFolder} />
     </View>
   );
 };

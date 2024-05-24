@@ -44,7 +44,7 @@ const ProfileModal = ({ visible, onClose }) => {
     if (visible) {
       Animated.timing(slideAnim, {
         toValue: 0,
-        duration: 100,
+        duration: 0,
         useNativeDriver: true,
       }).start();
     } else {
