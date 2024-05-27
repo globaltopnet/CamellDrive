@@ -1,0 +1,1 @@
+{"version":3,"names":["_reactNative","require","MenuComponent","requireNativeComponent","_default","exports","default"],"sourceRoot":"../../src","sources":["UIMenuView.android.tsx"],"mappings":";;;;;;AAAA,IAAAA,YAAA,GAAAC,OAAA;AAGA,MAAMC,aAAa,GAAG,IAAAC,mCAAsB,EAC1C,UACF,CAA4C;AAAC,IAAAC,QAAA,GAAAC,OAAA,CAAAC,OAAA,GAE9BJ,aAAa"}

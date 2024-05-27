@@ -1,0 +1,22 @@
+import { createIosMenu } from '../menu';
+const {
+  Root,
+  Trigger,
+  Content,
+  Item,
+  ItemTitle,
+  ItemSubtitle,
+  SubTrigger,
+  Group,
+  Separator,
+  ItemIcon,
+  ItemImage,
+  CheckboxItem,
+  ItemIndicator,
+  Label,
+  Arrow,
+  Sub,
+  SubContent
+} = createIosMenu('DropdownMenu');
+export { Root, Trigger, Content, Item, ItemTitle, ItemSubtitle, SubTrigger, Group, Separator, ItemIcon, ItemImage, CheckboxItem, ItemIndicator, Label, Arrow, Sub, SubContent };
+//# sourceMappingURL=dropdown-menu.ios.js.map

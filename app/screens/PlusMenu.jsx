@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
-import { View, TouchableOpacity, Text, TextInput, StyleSheet, Modal, TouchableWithoutFeedback } from 'react-native';
-import {  MaterialIcons, Foundation } from '@expo/vector-icons';
+import { View, TouchableOpacity, Text, TextInput, StyleSheet, Modal, TouchableWithoutFeedback, Alert } from 'react-native';
+import { MaterialIcons, Foundation } from '@expo/vector-icons';
 import { Colors } from '../theme/color';
 import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
 
-
-
-export default function PlusMenu({ walletAddress, currentFolder }) { // walletAddress를 prop으로 추가
+export default function PlusMenu({ walletAddress, currentFolder }) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isFolderDialogVisible, setIsFolderDialogVisible] = useState(false);
   const [folderName, setFolderName] = useState('');
@@ -16,7 +14,6 @@ export default function PlusMenu({ walletAddress, currentFolder }) { // walletAd
     setIsModalVisible(!isModalVisible);
   };
 
-  // 모달 외부를 눌렀을 때 모달을 닫는 함수
   const closeModal = () => {
     setIsModalVisible(false);
   };
@@ -60,41 +57,65 @@ export default function PlusMenu({ walletAddress, currentFolder }) { // walletAd
     }
 };
 
+const pickImageFromGallery = async () => {
+  const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+  if (status !== 'granted') {
+    alert('갤러리에 접근하기 위한 권한이 필요합니다.');
+    return;
+  }
 
-  
-  
+  const result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    allowsEditing: true,
+    aspect: [4, 3],
+    quality: 1,
+  });
 
-  const pickImageFromGallery = async () => {
-    // 갤러리 접근 권한 요청
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') {
-      alert('갤러리에 접근하기 위한 권한이 필요합니다.');
-      return;
+  if (!result.cancelled && result.assets && result.assets.length > 0) {
+    const asset = result.assets[0];
+    const uri = asset.uri;
+    const fileName = uri.split('/').pop();
+    const mimeType = asset.type;
+
+    try {
+      const formData = new FormData();
+      formData.append('walletAddress', walletAddress);
+      formData.append('currentFolder', currentFolder);
+      formData.append('fileName', fileName);
+      formData.append('fileContent', {
+        uri,
+        type: mimeType,
+        name: fileName,
+      });
+
+      const uploadResponse = await fetch('http://13.124.248.7:2005/api/mediaupload-file', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        body: formData,
+      });
+
+      const uploadData = await uploadResponse.json();
+      if (uploadData.success) {
+        Alert.alert('성공', '파일이 성공적으로 업로드되었습니다.');
+      } else {
+        console.error('파일 업로드 오류:', uploadData.error);
+      }
+    } catch (error) {
+      console.error('API 오류:', error);
     }
-  
-    // 갤러리에서 이미지 선택
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-  
-    if (!result.cancelled) {
-      // 선택된 이미지 처리 (예: 상태 업데이트 또는 업로드)
-      console.log(result.uri);
-    }
-  };
+  } else {
+    Alert.alert('취소', '파일 선택이 취소되었습니다.');
+  }
+};
+
 
   const toggleFolderDialog = () => {
     setIsFolderDialogVisible(!isFolderDialogVisible);
     setIsModalVisible(!isModalVisible);
-
   };
 
-  
-  
-  
   const selectDoc = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
@@ -107,7 +128,6 @@ export default function PlusMenu({ walletAddress, currentFolder }) { // walletAd
       console.error("Error picking document:", err);
     }
   };
-  
 
   return (
     <View style={styles.container}>
@@ -125,13 +145,13 @@ export default function PlusMenu({ walletAddress, currentFolder }) { // walletAd
           <View style={styles.modalOverlay}>
             <View style={styles.modalMenu}>
               <MenuItem
-                  icon={<MaterialIcons name="note-add" size={22} color="gray" />}
-                  label="파일 업로드"
-                  onPress={ async () => {
-                    await selectDoc();
-                    toggleMenuModal();
-                  }}
-                />
+                icon={<MaterialIcons name="note-add" size={22} color="gray" />}
+                label="파일 업로드"
+                onPress={async () => {
+                  await selectDoc();
+                  toggleMenuModal();
+                }}
+              />
               <MenuItem
                 icon={<MaterialIcons name="add-photo-alternate" size={24} color="gray" />}
                 label="미디어 업로드"
@@ -141,8 +161,8 @@ export default function PlusMenu({ walletAddress, currentFolder }) { // walletAd
                 icon={<Foundation name="folder-add" size={22} color="gray" />}
                 label="폴더 생성"
                 color="black"
-                onPress={toggleFolderDialog} // 폴더 생성 모달을 열기 위한 함수 호출
-                />
+                onPress={toggleFolderDialog}
+              />
               <MenuItem
                 icon={<MaterialIcons name="add-a-photo" size={22} color="gray" />}
                 label="사진 촬영"
@@ -153,7 +173,6 @@ export default function PlusMenu({ walletAddress, currentFolder }) { // walletAd
         </TouchableWithoutFeedback>
       </Modal>
 
-
       <Modal
         transparent={true}
         visible={isFolderDialogVisible}
@@ -161,7 +180,7 @@ export default function PlusMenu({ walletAddress, currentFolder }) { // walletAd
       >
         <View style={styles.dialogOverlay}>
           <View style={styles.dialog}>
-            <View style={{flex: 1.7,}}>
+            <View style={{ flex: 1.7 }}>
               <Text>새 폴더</Text>
             </View>
             <TextInput
@@ -171,13 +190,13 @@ export default function PlusMenu({ walletAddress, currentFolder }) { // walletAd
               onChangeText={setFolderName}
             />
             <View style={styles.dialogButtons}>
-            <TouchableOpacity onPress={createFolder} style={styles.dialogButton}>
-              <Text style={styles.dialogbuttonText}>만들기</Text>
-            </TouchableOpacity>
+              <TouchableOpacity onPress={createFolder} style={styles.dialogButton}>
+                <Text style={styles.dialogbuttonText}>만들기</Text>
+              </TouchableOpacity>
 
-            <TouchableOpacity onPress={toggleFolderDialog} style={styles.dialogButton}>
-              <Text style={styles.dialogbuttonText}>취소</Text>
-            </TouchableOpacity>
+              <TouchableOpacity onPress={toggleFolderDialog} style={styles.dialogButton}>
+                <Text style={styles.dialogbuttonText}>취소</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -223,11 +242,7 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-
-
     justifyContent: 'flex-end',
-
-    // backgroundColor: 'rgba(0, 0, 0, 0.15)',  // 모달 외부의 반투명 배경
   },
   modalMenu: {
     borderWidth: 0.2,
@@ -260,20 +275,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   input: {
-    
     width: '100%',
     borderBottomWidth: 1,
     borderBottomColor: Colors.themcolor,
     marginBottom: 20,
     fontSize: 16,
     padding: 10,
-
   },
   dialogButtons: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-end',
-
     width: '100%',
   },
   dialogButton: {

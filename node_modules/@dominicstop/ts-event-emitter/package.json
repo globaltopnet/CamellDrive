@@ -1,0 +1,57 @@
+{
+  "name": "@dominicstop/ts-event-emitter",
+  "version": "1.1.0",
+  "description": "Yet another event emitter written in typescript.",
+  "main": "lib/commonjs/index",
+  "module": "lib/module/index",
+  "types": "lib/module/index",
+  "source": "src/index",
+  "files": [
+    "lib/**/*",
+    "src/**/*"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint \"**/*.{js,ts,tsx}\"",
+    "release": "release-it --only-version",
+    "typescript": "tsc --noEmit",
+    "build": "npm run build:esm && npm run build:cjs",
+    "build:esm": "rm -rf lib/module && tsc --module es2015 --target es5 --outDir lib/module",
+    "build:cjs": "rm -rf lib/commonjs && tsc --module commonjs --target es5 --outDir lib/commonjs"
+  },
+  "keywords": [
+    "emitter",
+    "event-emitter",
+    "typescript",
+    "typescript-event-emitter"
+  ],
+  "repository": "https://github.com/dominicstop/ts-event-emitter",
+  "author": "Dominic Go <dominicstop@gmail.com> (https://github.com/dominicstop)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dominicstop/ts-event-emitter/issues"
+  },
+  "homepage": "https://github.com/dominicstop/ts-event-emitter#readme",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.29.1",
+    "@typescript-eslint/parser": "^4.29.1",
+    "eslint": "^7.32.0",
+    "release-it": "*",
+    "typescript": "^4.3.5"
+  },
+  "release-it": {
+    "git": {
+      "commitMessage": "⚙️ chore: release ${version}",
+      "tagName": "v${version}"
+    },
+    "npm": {
+      "publish": true
+    },
+    "github": {
+      "release": true
+    }
+  }
+}
