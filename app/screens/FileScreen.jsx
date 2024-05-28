@@ -84,6 +84,22 @@ const FileScreen = () => {
     }
   }, [walletAddress, currentFolder]);
 
+  const truncateName = (name) => {
+    const maxLength = 20;
+    const ellipsis = '...';
+    const nameParts = name.split('.');
+    const fileExtension = nameParts.length > 1 ? nameParts.pop() : '';
+    const baseName = nameParts.join('.');
+
+    if (baseName.length + fileExtension.length + 1 > maxLength) {
+      const availableLength = maxLength - ellipsis.length - fileExtension.length - 1;
+      const truncatedBaseName = baseName.substring(0, availableLength);
+      return `${truncatedBaseName}${ellipsis}${fileExtension ? '.' + fileExtension : ''}`;
+    }
+
+    return name;
+  };
+
   const downloadFile = async (fileName) => {
     if (!walletAddress) {
       console.error('지갑 주소가 없습니다.');
@@ -142,6 +158,56 @@ const FileScreen = () => {
     }
   };
 
+  const renderFileItem = ({ item }) => (
+    <TouchableOpacity
+      style={styles.fileItem}
+      onPress={() => {
+        if (item.type === 'folder') {
+          setCurrentFolder(prev => {
+            const newPath = `${prev}${item.key}/`.replace(/\/\/+/g, '/');
+            return newPath;
+          });
+        } else if (item.type === 'back') {
+          goBack();
+        } else {
+
+        }
+      }}
+    >
+      {item.type === 'folder' ? (
+        <Ionicons
+          name='folder'
+          size={50}
+          color='#d54d84'
+          style={{ opacity: 0.8 }}
+        />
+      ) : item.type === 'back' ? (
+        <MaterialCommunityIcons
+          name='folder-open'
+          size={50}
+          color='#d54d84'
+          style={{ opacity: 0.8 }}
+        />
+      ) : (
+        <Ionicons
+          name='document-text'
+          size={50}
+          color={Colors.themcolor}
+          style={{ opacity: 0.8 }}
+        />
+      )}
+      <Text style={styles.fileName}>{item.type === 'back' ? '...' : truncateName(item.key)}</Text>
+      {item.type !== 'back' && (
+        <TouchableOpacity
+          style={styles.menuIcon}
+          onPress={() => showMenu(item.key)}
+        >
+          <Ionicons name="ellipsis-vertical" size={15} color="#000" />
+        </TouchableOpacity>
+      )}
+    </TouchableOpacity>
+  );
+
   const showMenu = (fileName) => {
     Alert.alert("File Menu", `Actions for ${fileName}`, [
       { text: '다운로드', onPress: () => downloadFile(fileName) },
@@ -161,38 +227,6 @@ const FileScreen = () => {
       return parts.length > 0 ? parts.join('/') + '/' : '';
     });
   };
-
-  const renderFileItem = ({ item }) => (
-    <TouchableOpacity
-      style={styles.fileItem}
-      onPress={() => {
-        if (item.type === 'folder') {
-          setCurrentFolder(prev => {
-            const newPath = `${prev}${item.key}/`.replace(/\/\/+/g, '/');
-            return newPath;
-          });
-        } else if (item.type === 'back') {
-          goBack();
-        } else {
-          // 파일에 대한 액션을 정의합니다.
-        }
-      }}
-    >
-      {item.type === 'folder' ? (
-        <Ionicons name='folder' size={50} color='#d54d84' style={{ opacity: 0.8 }} />
-      ) : item.type === 'back' ? (
-        <MaterialCommunityIcons name='folder-open' size={50} color='#d54d84' style={{ opacity: 0.8 }} />
-      ) : (
-        <Ionicons name='document-text' size={50} color={Colors.themcolor} style={{ opacity: 0.8 }} />
-      )}
-      <Text style={styles.fileName}>{item.type === 'back' ? '...' : item.key}</Text>
-      {item.type !== 'back' && (
-        <TouchableOpacity style={styles.menuIcon} onPress={() => showMenu(item.key)}>
-          <Ionicons name="ellipsis-vertical" size={15} color="#000" />
-        </TouchableOpacity>
-      )}
-    </TouchableOpacity>
-  );
 
   return (
     <View style={{ flex: 1, backgroundColor: Colors.background }}>
@@ -273,19 +307,23 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    height: 100,
-    maxWidth: '25%',
+    height: 120,
+    maxWidth: '22%',
     borderRadius: 10,
+    marginHorizontal: 5, 
+    marginBottom: -10
   },
   fileName: {
     fontSize: 12,
     marginTop: 5,
     textAlign: 'center',
+    height: 30,
+    lineHeight: 15,
   },
   menuIcon: {
     position: 'absolute',
     top: 5,
-    right: 11,
+    right: 0,
   },
   emptyText: {
     textAlign: 'center',
