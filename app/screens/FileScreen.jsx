@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, TextInput, StyleSheet, FlatList, Modal, TouchableOpacity, Alert, Platform, PermissionsAndroid } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -15,11 +15,48 @@ const FileScreen = () => {
   const [isRenameModalVisible, setIsRenameModalVisible] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
   const [isSelectionMode, setIsSelectionMode] = useState(false);
+  const [fileNameToRename, setFileNameToRename] = useState('');
+  const [newFileName, setNewFileName] = useState('');
 
   const showShareModal = () => setIsShareModalVisible(true);
   const closeShareModal = () => setIsShareModalVisible(false);
-  const showRenameModal = () => setIsRenameModalVisible(true);
-  const closeRenameModal = () => setIsRenameModalVisible(false);
+  const showRenameModal = (fileName) => {
+    setFileNameToRename(fileName);
+    setIsRenameModalVisible(true);
+  };
+  const closeRenameModal = () => {
+    setIsRenameModalVisible(false);
+    setFileNameToRename('');
+    setNewFileName('');
+  };
+
+  const fetchFolderContents = useCallback(async () => {
+    if (!walletAddress) return;
+    try {
+      const response = await fetch('http://13.124.248.7:8080/api/list-folder-contents', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ walletAddress, folderPath: currentFolder }),
+      });
+      const data = await response.json();
+      if (data.success) {
+        const folderContents = data.contents.map(item => ({
+          ...item,
+          key: item.key.split('/').filter(part => part).pop(),
+        }));
+        if (currentFolder) {
+          folderContents.unshift({ key: 'back', type: 'back' });
+        }
+        setFiles(folderContents);
+      } else {
+        console.error('폴더 내용을 가져오는 중 오류 발생:', data.error);
+      }
+    } catch (error) {
+      console.error('API 오류:', error);
+    }
+  }, [walletAddress, currentFolder]);
 
   useEffect(() => {
     const fetchWalletAddress = async () => {
@@ -52,39 +89,8 @@ const FileScreen = () => {
   }, []);
 
   useEffect(() => {
-    const fetchFolderContents = async () => {
-      if (!walletAddress) return;
-
-      try {
-        const response = await fetch('http://13.124.248.7:8080/api/list-folder-contents', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ walletAddress, folderPath: currentFolder }),
-        });
-        const data = await response.json();
-        if (data.success) {
-          const folderContents = data.contents.map(item => ({
-            ...item,
-            key: item.key.split('/').filter(part => part).pop(),
-          }));
-          if (currentFolder) {
-            folderContents.unshift({ key: 'back', type: 'back' });
-          }
-          setFiles(folderContents);
-        } else {
-          console.error('폴더 내용을 가져오는 중 오류 발생:', data.error);
-        }
-      } catch (error) {
-        console.error('API 오류:', error);
-      }
-    };
-
-    if (walletAddress) {
-      fetchFolderContents();
-    }
-  }, [walletAddress, currentFolder]);
+    fetchFolderContents();
+  }, [walletAddress, currentFolder, fetchFolderContents]);
 
   const truncateName = (name) => {
     const maxLength = 20;
@@ -189,6 +195,47 @@ const FileScreen = () => {
     }
   };
 
+  const renameFile = async () => {
+    if (!walletAddress || !fileNameToRename || !newFileName) {
+      Alert.alert('Error', '필수 정보가 누락되었습니다.');
+      return;
+    }
+  
+    try {
+      const response = await fetch('http://13.124.248.7:8080/api/rename-object', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          walletAddress,
+          currentFolder,
+          oldFileName: fileNameToRename,
+          newFileName,
+        }),
+      });
+  
+      const text = await response.text();
+      try {
+        const data = JSON.parse(text);
+        if (data.success) {
+          Alert.alert('성공', '파일 이름이 성공적으로 변경되었습니다.');
+          fetchFolderContents();
+          closeRenameModal();
+        } else {
+          Alert.alert('Error', `파일 이름 변경 오류: ${data.error}`);
+        }
+      } catch (jsonError) {
+        console.error('JSON 파싱 오류:', jsonError);
+        console.error('응답 텍스트:', text);
+        Alert.alert('Error', '파일 이름 변경 중 오류가 발생하였습니다.');
+      }
+    } catch (error) {
+      console.error('파일 이름 변경 오류:', error);
+      Alert.alert('Error', '파일 이름 변경 중 오류가 발생하였습니다.');
+    }
+  }; 
+
   const renderFileItem = ({ item }) => {
     const isSelected = selectedItems.includes(item.key);
 
@@ -244,7 +291,7 @@ const FileScreen = () => {
       { text: '공유', onPress: showShareModal },
       { text: '즐겨찾기에 추가', onPress: () => console.log('Add to Favorites') },
       { text: '휴지통으로 이동', onPress: () => console.log('Move to Trash') },
-      { text: '이름 변경', onPress: showRenameModal },
+      { text: '이름 변경', onPress: () => showRenameModal(fileName) },
       { text: '취소', onPress: () => console.log('Cancel'), style: 'cancel' },
     ]);
   };
@@ -274,7 +321,7 @@ const FileScreen = () => {
         ListEmptyComponent={<Text style={styles.emptyText}>Empty</Text>}
       />
       {walletAddress && !isSelectionMode && (
-        <PlusMenu walletAddress={walletAddress} currentFolder={currentFolder} />
+        <PlusMenu walletAddress={walletAddress} currentFolder={currentFolder}/>
       )}
       {isSelectionMode && (
         <View style={styles.selectionMenu}>
@@ -300,6 +347,11 @@ const FileScreen = () => {
           </TouchableOpacity>
         </View>
       )}
+      <PlusMenu
+        walletAddress={walletAddress}
+        currentFolder={currentFolder}
+        onMediaUpload={fetchFolderContents}
+      />
       <Modal
         animationType="slide"
         transparent={true}
@@ -339,11 +391,16 @@ const FileScreen = () => {
           <View style={styles.RenamemodalView}>
             <Text style={styles.shareTitle}>이름 변경</Text>
             <View style={styles.shareInput}>
-              <TextInput style={styles.input} placeholder="Enter wallet address" />
+              <TextInput
+                style={styles.input}
+                placeholder="Enter new file name"
+                value={newFileName}
+                onChangeText={setNewFileName}
+              />
             </View>
             <View style={{ width: 200, alignItems: 'flex-end' }}>
               <View style={styles.shareButton}>
-                <TouchableOpacity onPress={() => console.log('이름변경')} style={styles.dialogButton}>
+                <TouchableOpacity onPress={renameFile} style={styles.dialogButton}>
                   <Text style={styles.dialogbuttonText}>변경</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={closeRenameModal} style={styles.dialogButton}>

@@ -5,7 +5,7 @@ import { Colors } from '../theme/color';
 import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
 
-export default function PlusMenu({ walletAddress, currentFolder }) {
+export default function PlusMenu({ walletAddress, currentFolder, onMediaUpload }) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isFolderDialogVisible, setIsFolderDialogVisible] = useState(false);
   const [folderName, setFolderName] = useState('');
@@ -23,15 +23,13 @@ export default function PlusMenu({ walletAddress, currentFolder }) {
       alert('지갑 주소가 설정되지 않았습니다.');
       return;
     }
-    
+
     let folderNameToCreate = folderName.trim() || '새폴더';
 
-    // 현재 폴더 경로를 포함하여 전체 경로를 생성합니다.
     const fullPath = currentFolder ? `${currentFolder}/${folderNameToCreate}` : folderNameToCreate;
-    console.log("경로 :",fullPath);
+    console.log("경로 :", fullPath);
 
     try {
-      // 서버에 폴더 생성 요청
       const response = await fetch(`http://13.124.248.7:2005/api/create-folder`, {
         method: 'POST',
         headers: {
@@ -55,65 +53,6 @@ export default function PlusMenu({ walletAddress, currentFolder }) {
       console.error('폴더 생성 오류:', error);
       alert('폴더 생성 중 오류가 발생하였습니다.');
     }
-};
-
-const pickImageFromGallery = async () => {
-  const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-  if (status !== 'granted') {
-    alert('갤러리에 접근하기 위한 권한이 필요합니다.');
-    return;
-  }
-
-  const result = await ImagePicker.launchImageLibraryAsync({
-    mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    allowsEditing: true,
-    aspect: [4, 3],
-    quality: 1,
-  });
-
-  if (!result.cancelled && result.assets && result.assets.length > 0) {
-    const asset = result.assets[0];
-    const uri = asset.uri;
-    const fileName = uri.split('/').pop();
-    const mimeType = asset.type;
-
-    try {
-      const formData = new FormData();
-      formData.append('walletAddress', walletAddress);
-      formData.append('currentFolder', currentFolder);
-      formData.append('fileName', fileName);
-      formData.append('fileContent', {
-        uri,
-        type: mimeType,
-        name: fileName,
-      });
-
-      const uploadResponse = await fetch('http://13.124.248.7:2005/api/mediaupload-file', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-        body: formData,
-      });
-
-      const uploadData = await uploadResponse.json();
-      if (uploadData.success) {
-        Alert.alert('성공', '파일이 성공적으로 업로드되었습니다.');
-      } else {
-        console.error('파일 업로드 오류:', uploadData.error);
-      }
-    } catch (error) {
-      console.error('API 오류:', error);
-    }
-  } else {
-    Alert.alert('취소', '파일 선택이 취소되었습니다.');
-  }
-};
-
-
-  const toggleFolderDialog = () => {
-    setIsFolderDialogVisible(!isFolderDialogVisible);
-    setIsModalVisible(!isModalVisible);
   };
 
   const selectDoc = async () => {
@@ -121,12 +60,104 @@ const pickImageFromGallery = async () => {
       const result = await DocumentPicker.getDocumentAsync({
         type: "*/*",
       });
-      if (result.type === "success") {
-        console.log(result.uri);
+      if (result.assets[0].uri) {
+        const uri = result.assets[0].uri;
+        const fileName = result.assets[0].name;
+        const mimeType = result.assets[0].mimeType;
+        const formData = new FormData();
+        formData.append('file', {
+          uri,
+          type: mimeType,
+          name: fileName,
+        });
+        formData.append('walletAddress', walletAddress);
+        formData.append('folderPath', currentFolder || '');
+
+        try {
+          const uploadResponse = await fetch('http://13.124.248.7:8080/api/upload', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+            body: formData,
+          });
+          const uploadData = await uploadResponse.json();
+          if (uploadData.success) {
+            Alert.alert('성공', '파일이 성공적으로 업로드되었습니다.');
+            onMediaUpload();
+          } else {
+            console.error('파일 업로드 오류:', uploadData.error);
+            Alert.alert('실패', `파일 업로드 오류: ${uploadData.error}`);
+          }
+        } catch (error) {
+          console.error('API 오류:', error);
+          Alert.alert('실패', '파일 업로드 중 오류가 발생하였습니다.');
+        }
       }
     } catch (err) {
       console.error("Error picking document:", err);
     }
+  };
+
+  const uploadMediaFile = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      alert('갤러리에 접근하기 위한 권한이 필요합니다.');
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.cancelled && result.assets && result.assets.length > 0) {
+      const asset = result.assets[0];
+      const uri = asset.uri;
+      const fileName = uri.split('/').pop();
+      const mimeType = asset.type;
+
+      try {
+        const formData = new FormData();
+        formData.append('fileContent', {
+          uri,
+          type: mimeType,
+          name: fileName,
+        });
+        formData.append('walletAddress', walletAddress);
+        formData.append('currentFolder', currentFolder || '');
+        formData.append('fileName', fileName);
+
+        const uploadResponse = await fetch('http://13.124.248.7:2005/api/mediaupload-file', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+          body: formData,
+        });
+
+        const uploadData = await uploadResponse.json();
+        if (uploadData.success) {
+          Alert.alert('성공', '미디어 파일이 성공적으로 업로드되었습니다.');
+          onMediaUpload(); // Refresh media list after successful upload
+        } else {
+          console.error('미디어 파일 업로드 오류:', uploadData.error);
+          Alert.alert('실패', `미디어 파일 업로드 오류: ${uploadData.error}`);
+        }
+      } catch (error) {
+        console.error('API 오류:', error);
+        Alert.alert('실패', '미디어 파일 업로드 중 오류가 발생하였습니다.');
+      }
+    } else {
+      Alert.alert('취소', '파일 선택이 취소되었습니다.');
+    }
+  };
+
+  const toggleFolderDialog = () => {
+    setIsFolderDialogVisible(!isFolderDialogVisible);
+    setIsModalVisible(!isModalVisible);
   };
 
   return (
@@ -155,7 +186,7 @@ const pickImageFromGallery = async () => {
               <MenuItem
                 icon={<MaterialIcons name="add-photo-alternate" size={24} color="gray" />}
                 label="미디어 업로드"
-                onPress={pickImageFromGallery}
+                onPress={uploadMediaFile}
               />
               <MenuItem
                 icon={<Foundation name="folder-add" size={22} color="gray" />}
