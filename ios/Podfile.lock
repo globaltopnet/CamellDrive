@@ -19,7 +19,7 @@ PODS:
   - EXAV (13.10.6):
     - ExpoModulesCore
     - ReactCommon/turbomodule/core
-  - EXConstants (16.0.1):
+  - EXConstants (15.4.6):
     - ExpoModulesCore
   - EXFont (11.10.3):
     - ExpoModulesCore
@@ -1139,6 +1139,15 @@ PODS:
     - React-Core
   - react-native-udp (2.7.0):
     - React
+  - react-native-video (6.1.2):
+    - glog
+    - RCT-Folly (= 2022.05.16.00)
+    - React-Core
+    - react-native-video/Video (= 6.1.2)
+  - react-native-video/Video (6.1.2):
+    - glog
+    - RCT-Folly (= 2022.05.16.00)
+    - React-Core
   - React-nativeconfig (0.73.4)
   - React-NativeModulesApple (0.73.4):
     - glog
@@ -1430,6 +1439,7 @@ DEPENDENCIES:
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - "react-native-skia (from `../node_modules/@shopify/react-native-skia`)"
   - react-native-udp (from `../node_modules/react-native-udp`)
+  - react-native-video (from `../node_modules/react-native-video`)
   - React-nativeconfig (from `../node_modules/react-native/ReactCommon`)
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
@@ -1627,6 +1637,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@shopify/react-native-skia"
   react-native-udp:
     :path: "../node_modules/react-native-udp"
+  react-native-video:
+    :path: "../node_modules/react-native-video"
   React-nativeconfig:
     :path: "../node_modules/react-native/ReactCommon"
   React-NativeModulesApple:
@@ -1708,7 +1720,7 @@ SPEC CHECKSUMS:
   EASClient: a42ee8bf36c93b3128352faf2ae49405ab4f80bd
   EXApplication: 16bcea16789221bd566e64b5ea2608cf7756b005
   EXAV: e4f6137431ddc4cb025895046bfefa9612025c35
-  EXConstants: 9a008dbf262550884e6280dea95b81b51f65ea6f
+  EXConstants: a5f6276e565d98f9eb4280f81241fc342d641590
   EXFont: f20669cb266ef48b004f1eb1f2b20db96cd1df9f
   EXImageLoader: 55080616b2fe9da19ef8c7f706afd9814e279b6b
   EXJSONUtils: 5c42959e87be238b045ef37cc5268b16a6c0ad4a
@@ -1785,6 +1797,7 @@ SPEC CHECKSUMS:
   react-native-safe-area-context: 0ee144a6170530ccc37a0fd9388e28d06f516a89
   react-native-skia: 8fa65cf8828f6f8f9629e1577c0b079b7160d422
   react-native-udp: ff9d13e523f2b58e6bc5d4d32321ac60671b5dc9
+  react-native-video: eaa5201f51465b65a1663e342122b0d5a584da59
   React-nativeconfig: d7af5bae6da70fa15ce44f045621cf99ed24087c
   React-NativeModulesApple: 0123905d5699853ac68519607555a9a4f5c7b3ac
   React-perflogger: 8a1e1af5733004bdd91258dcefbde21e0d1faccd

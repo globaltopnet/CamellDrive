@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, StyleSheet, FlatList, Image, Dimensions, Alert, TouchableWithoutFeedback, Keyboard, TouchableOpacity } from 'react-native';
 import { Colors } from '../theme/color';
 import PlusMenu from '../screens/PlusMenu';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ImageViewing from 'react-native-image-viewing';
+import { Video } from 'expo-av';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const fetchMedia = async (walletAddress) => {
   try {
@@ -26,6 +28,11 @@ const MediaScreen = ({ navigation }) => {
   const [walletAddress, setWalletAddress] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const videoRefs = useRef([]);
+  const [images, setImages] = useState([]);
+  const [imageIndexMap, setImageIndexMap] = useState({});
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [isSelectionMode, setIsSelectionMode] = useState(false);
 
   useEffect(() => {
     const fetchWalletAddress = async () => {
@@ -57,28 +64,96 @@ const MediaScreen = ({ navigation }) => {
     fetchWalletAddress();
   }, []);
 
+  const loadMedia = async () => {
+    if (!walletAddress) return;
+    const files = await fetchMedia(walletAddress);
+    console.log('Fetched media files:', files);
+    const filteredFiles = files.filter(file => file.url && file.url.trim() !== '');
+    setMediaFiles(filteredFiles);
+
+    const imageFiles = filteredFiles.filter(file => file.url && !file.url.endsWith('.mp4') && !file.url.endsWith('.mov'));
+    setImages(imageFiles);
+
+    const indexMap = {};
+    let imageIndex = 0;
+    filteredFiles.forEach((file, index) => {
+      if (file.url && !file.url.endsWith('.mp4') && !file.url.endsWith('.mov')) {
+        indexMap[index] = imageIndex++;
+      }
+    });
+    setImageIndexMap(indexMap);
+  };
+
   useEffect(() => {
-    const loadMedia = async () => {
-      if (!walletAddress) return;
-      const files = await fetchMedia(walletAddress);
-      console.log('Fetched media files:', files);
-      const filteredFiles = files.filter(file => file.url && file.url.trim() !== '');
-      setMediaFiles(filteredFiles);
-    };
     loadMedia();
   }, [walletAddress]);
 
-  const renderItem = ({ item, index }) => (
-    <TouchableOpacity
-      style={styles.imageContainer}
-      onPress={() => {
-        setCurrentIndex(index);
+  const handleVideoPress = (index) => {
+    if (videoRefs.current[index]) {
+      videoRefs.current[index].presentFullscreenPlayer();
+    }
+  };
+
+  const handleLongPress = (index) => {
+    setIsSelectionMode(true);
+    toggleSelection(index);
+  };
+
+  const toggleSelection = (index) => {
+    if (selectedItems.includes(index)) {
+      setSelectedItems(selectedItems.filter(item => item !== index));
+    } else {
+      setSelectedItems([...selectedItems, index]);
+    }
+  };
+
+  const handlePress = (index, isVideo) => {
+    if (isSelectionMode) {
+      toggleSelection(index);
+    } else {
+      if (isVideo) {
+        handleVideoPress(index);
+      } else {
+        setCurrentIndex(imageIndexMap[index]);
         setIsVisible(true);
-      }}
-    >
-      <Image source={{ uri: item.url }} style={styles.image} />
-    </TouchableOpacity>
-  );
+      }
+    }
+  };
+
+  const renderItem = ({ item, index }) => {
+    const isVideo = item.url && (item.url.endsWith('.mp4') || item.url.endsWith('.mov'));
+    const isSelected = selectedItems.includes(index);
+
+    return (
+      <TouchableOpacity
+        style={styles.mediaContainer}
+        onPress={() => handlePress(index, isVideo)}
+        onLongPress={() => handleLongPress(index)}
+      >
+        {isVideo ? (
+          <View style={styles.videoContainer}>
+            <Video
+              ref={el => (videoRefs.current[index] = el)}
+              source={{ uri: item.url }}
+              style={styles.media}
+              resizeMode="cover"
+              useNativeControls
+              shouldPlay={false}
+              isLooping={false}
+            />
+            <Icon name="play-circle" size={50} color="white" style={styles.playIcon} />
+          </View>
+        ) : (
+          <Image source={{ uri: item.url }} style={styles.media} />
+        )}
+        {isSelectionMode && (
+          <View style={styles.selectionOverlay}>
+            <Icon name={isSelected ? "checkmark-circle" : "ellipse-outline"} size={30} color={isSelected ? Colors.themcolor : "gray"} />
+          </View>
+        )}
+      </TouchableOpacity>
+    );
+  };
 
   const formatData = (data, numColumns) => {
     const numberOfFullRows = Math.floor(data.length / numColumns);
@@ -92,7 +167,7 @@ const MediaScreen = ({ navigation }) => {
 
   const renderFormattedItem = ({ item, index }) => {
     if (item.empty) {
-      return <View style={[styles.imageContainer, styles.invisible]} />;
+      return <View style={[styles.mediaContainer, styles.invisible]} />;
     }
     return renderItem({ item, index });
   };
@@ -108,9 +183,37 @@ const MediaScreen = ({ navigation }) => {
           contentContainerStyle={styles.list}
           ListEmptyComponent={<Text style={{ fontSize: 15 }}>Empty</Text>}
         />
-        {walletAddress && <View style={styles.plusMenuContainer}><PlusMenu walletAddress={walletAddress} /></View>}
+        {walletAddress && !isSelectionMode && (
+          <View style={styles.plusMenuContainer}>
+            <PlusMenu walletAddress={walletAddress} onMediaUpload={loadMedia} />
+          </View>
+        )}
+        {isSelectionMode && (
+          <View style={styles.selectionMenu}>
+            <TouchableOpacity style={styles.selectionButton} onPress={() => setIsSelectionMode(false)}>
+              <Icon name="close-circle" size={25} color="gray" />
+              <Text style={styles.selectionButtonText}>취소</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.selectionButton}>
+              <Icon name="download" size={25} color="gray" />
+              <Text style={styles.selectionButtonText}>다운로드</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.selectionButton}>
+              <Icon name="share-social" size={25} color="gray" />
+              <Text style={styles.selectionButtonText}>공유</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.selectionButton}>
+              <Icon name="trash" size={25} color="gray" />
+              <Text style={styles.selectionButtonText}>휴지통으로 이동</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.selectionButton}>
+              <Icon name="star" size={25} color="gray" />
+              <Text style={styles.selectionButtonText}>즐겨찾기에 추가</Text>
+            </TouchableOpacity>
+          </View>
+        )}
         <ImageViewing
-          images={mediaFiles.map(file => ({ uri: file.url }))}
+          images={images.map(file => ({ uri: file.url }))}
           imageIndex={currentIndex}
           visible={isVisible}
           onRequestClose={() => setIsVisible(false)}
@@ -130,25 +233,53 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     padding: 10,
   },
-  imageContainer: {
+  mediaContainer: {
     flex: 1,
     margin: 5,
-    height: Dimensions.get('window').width / 3 - 10, // 3열로 만들기 위한 높이 설정
+    height: Dimensions.get('window').width / 3 - 10,
   },
   invisible: {
     backgroundColor: 'transparent',
   },
-  image: {
+  media: {
     width: '100%',
     height: '100%',
     borderRadius: 10,
+    borderWidth: 0.2,
   },
-  plusMenuContainer: {
+  videoContainer: {
+    position: 'relative',
+    width: '100%',
+    height: '100%',
+  },
+  playIcon: {
     position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: [{ translateX: -25 }, { translateY: -25 }],
+    zIndex: 1,
+  },
+  selectionOverlay: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
+    zIndex: 2,
+  },
+  selectionMenu: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
     alignItems: 'center',
-    justifyContent: 'center',
-    bottom: 0,
-    left: 430,
+    padding: 10,
+    borderTopWidth: 1,
+    borderTopColor: 'gray',
+    backgroundColor: 'white',
+  },
+  selectionButton: {
+    alignItems: 'center',
+  },
+  selectionButtonText: {
+    fontSize: 12,
+    color: 'gray',
   },
 });
 

@@ -13,6 +13,8 @@ const FileScreen = () => {
   const [currentFolder, setCurrentFolder] = useState('');
   const [isShareModalVisible, setIsShareModalVisible] = useState(false);
   const [isRenameModalVisible, setIsRenameModalVisible] = useState(false);
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [isSelectionMode, setIsSelectionMode] = useState(false);
 
   const showShareModal = () => setIsShareModalVisible(true);
   const closeShareModal = () => setIsShareModalVisible(false);
@@ -106,7 +108,6 @@ const FileScreen = () => {
       return;
     }
 
-    // 권한 요청 (Android)
     if (Platform.OS === 'android') {
       try {
         const granted = await PermissionsAndroid.request(
@@ -158,55 +159,84 @@ const FileScreen = () => {
     }
   };
 
-  const renderFileItem = ({ item }) => (
-    <TouchableOpacity
-      style={styles.fileItem}
-      onPress={() => {
-        if (item.type === 'folder') {
-          setCurrentFolder(prev => {
-            const newPath = `${prev}${item.key}/`.replace(/\/\/+/g, '/');
-            return newPath;
-          });
-        } else if (item.type === 'back') {
-          goBack();
-        } else {
+  const toggleSelection = (key) => {
+    if (selectedItems.includes(key)) {
+      setSelectedItems(selectedItems.filter(item => item !== key));
+    } else {
+      setSelectedItems([...selectedItems, key]);
+    }
+  };
 
-        }
-      }}
-    >
-      {item.type === 'folder' ? (
-        <Ionicons
-          name='folder'
-          size={50}
-          color='#d54d84'
-          style={{ opacity: 0.8 }}
-        />
-      ) : item.type === 'back' ? (
-        <MaterialCommunityIcons
-          name='folder-open'
-          size={50}
-          color='#d54d84'
-          style={{ opacity: 0.8 }}
-        />
-      ) : (
-        <Ionicons
-          name='document-text'
-          size={50}
-          color={Colors.themcolor}
-          style={{ opacity: 0.8 }}
-        />
-      )}
-      <Text style={styles.fileName}>{item.type === 'back' ? '...' : truncateName(item.key)}</Text>
-      {item.type !== 'back' && (
-        <TouchableOpacity
-          style={styles.menuIcon}
-          onPress={() => showMenu(item.key)}
-        >
-          <Ionicons name="ellipsis-vertical" size={15} color="#000" />
-        </TouchableOpacity>
-      )}
-    </TouchableOpacity>
-  );
+  const handleLongPress = (key) => {
+    setIsSelectionMode(true);
+    toggleSelection(key);
+  };
+
+  const handlePress = (item) => {
+    if (isSelectionMode) {
+      toggleSelection(item.key);
+    } else {
+      if (item.type === 'folder') {
+        setCurrentFolder(prev => {
+          const newPath = `${prev}${item.key}/`.replace(/\/\/+/g, '/');
+          return newPath;
+        });
+      } else if (item.type === 'back') {
+        goBack();
+      } else {
+        // 파일 클릭 시 동작 (예: 다운로드)
+      }
+    }
+  };
+
+  const renderFileItem = ({ item }) => {
+    const isSelected = selectedItems.includes(item.key);
+
+    return (
+      <TouchableOpacity
+        style={[styles.fileItem, isSelected && styles.selectedItem]}
+        onPress={() => handlePress(item)}
+        onLongPress={() => handleLongPress(item.key)}
+      >
+        {item.type === 'folder' ? (
+          <Ionicons
+            name='folder'
+            size={50}
+            color='#d54d84'
+            style={{ opacity: 0.8 }}
+          />
+        ) : item.type === 'back' ? (
+          <MaterialCommunityIcons
+            name='folder-open'
+            size={50}
+            color='#d54d84'
+            style={{ opacity: 0.8 }}
+          />
+        ) : (
+          <Ionicons
+            name='document-text'
+            size={50}
+            color={Colors.themcolor}
+            style={{ opacity: 0.8 }}
+          />
+        )}
+        <Text style={styles.fileName}>{item.type === 'back' ? '...' : truncateName(item.key)}</Text>
+        {isSelectionMode && (
+          <View style={styles.selectionOverlay}>
+            <Ionicons name={isSelected ? "checkmark-circle" : "ellipse-outline"} size={30} color={isSelected ? Colors.themcolor : "gray"} />
+          </View>
+        )}
+        {item.type !== 'back' && (
+          <TouchableOpacity
+            style={styles.menuIcon}
+            onPress={() => showMenu(item.key)}
+          >
+            <Ionicons name="ellipsis-vertical" size={15} color="#000" />
+          </TouchableOpacity>
+        )}
+      </TouchableOpacity>
+    );
+  };
 
   const showMenu = (fileName) => {
     Alert.alert("File Menu", `Actions for ${fileName}`, [
@@ -228,6 +258,11 @@ const FileScreen = () => {
     });
   };
 
+  const exitSelectionMode = () => {
+    setIsSelectionMode(false);
+    setSelectedItems([]);
+  };
+
   return (
     <View style={{ flex: 1, backgroundColor: Colors.background }}>
       <FlatList
@@ -238,7 +273,33 @@ const FileScreen = () => {
         contentContainerStyle={styles.grid}
         ListEmptyComponent={<Text style={styles.emptyText}>Empty</Text>}
       />
-      <PlusMenu walletAddress={walletAddress} currentFolder={currentFolder} />
+      {walletAddress && !isSelectionMode && (
+        <PlusMenu walletAddress={walletAddress} currentFolder={currentFolder} />
+      )}
+      {isSelectionMode && (
+        <View style={styles.selectionMenu}>
+          <TouchableOpacity style={styles.selectionButton} onPress={exitSelectionMode}>
+            <Ionicons name="close-circle" size={25} color="gray" />
+            <Text style={styles.selectionButtonText}>취소</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.selectionButton}>
+            <Ionicons name="download" size={25} color="gray" />
+            <Text style={styles.selectionButtonText}>다운로드</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.selectionButton}>
+            <Ionicons name="share-social" size={25} color="gray" />
+            <Text style={styles.selectionButtonText}>공유</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.selectionButton}>
+            <Ionicons name="trash" size={25} color="gray" />
+            <Text style={styles.selectionButtonText}>휴지통</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.selectionButton}>
+            <Ionicons name="heart" size={25} color="gray" />
+            <Text style={styles.selectionButtonText}>즐겨찾기</Text>
+          </TouchableOpacity>
+        </View>
+      )}
       <Modal
         animationType="slide"
         transparent={true}
@@ -312,6 +373,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginHorizontal: 5, 
     marginBottom: -10
+  },
+  selectedItem: {
+    backgroundColor: '#d1e7ff',
   },
   fileName: {
     fontSize: 12,
@@ -396,6 +460,28 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+  },
+  selectionOverlay: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
+    zIndex: 2,
+  },
+  selectionMenu: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    padding: 10,
+    borderTopWidth: 1,
+    borderTopColor: 'gray',
+    backgroundColor: 'white',
+  },
+  selectionButton: {
+    alignItems: 'center',
+  },
+  selectionButtonText: {
+    fontSize: 12,
+    color: 'gray',
   },
 });
 
