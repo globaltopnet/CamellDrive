@@ -270,10 +270,10 @@ const FileScreen = () => {
         <Text style={styles.fileName}>{item.type === 'back' ? '...' : truncateName(item.key)}</Text>
         {isSelectionMode && (
           <View style={styles.selectionOverlay}>
-            <Ionicons name={isSelected ? "checkmark-circle" : "ellipse-outline"} size={30} color={isSelected ? Colors.themcolor : "gray"} />
+            <Ionicons name={isSelected ? "checkmark-circle" : "ellipse-outline"} size={20} color={isSelected ? Colors.themcolor : "gray"} />
           </View>
         )}
-        {item.type !== 'back' && (
+        {!isSelectionMode && item.type !== 'back' && (
           <TouchableOpacity
             style={styles.menuIcon}
             onPress={() => showMenu(item.key)}
@@ -347,11 +347,6 @@ const FileScreen = () => {
           </TouchableOpacity>
         </View>
       )}
-      <PlusMenu
-        walletAddress={walletAddress}
-        currentFolder={currentFolder}
-        onMediaUpload={fetchFolderContents}
-      />
       <Modal
         animationType="slide"
         transparent={true}
@@ -519,6 +514,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   selectionOverlay: {
+
     position: 'absolute',
     top: 5,
     right: 5,

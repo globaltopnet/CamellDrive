@@ -126,7 +126,7 @@ const MediaScreen = ({ navigation }) => {
 
     return (
       <TouchableOpacity
-        style={styles.mediaContainer}
+        style={[styles.mediaContainer, isSelected && styles.selectedMedia]}
         onPress={() => handlePress(index, isVideo)}
         onLongPress={() => handleLongPress(index)}
       >
@@ -135,16 +135,15 @@ const MediaScreen = ({ navigation }) => {
             <Video
               ref={el => (videoRefs.current[index] = el)}
               source={{ uri: item.url }}
-              style={styles.media}
+              style={[styles.media, isSelected && styles.selectedOverlay]}
               resizeMode="cover"
               useNativeControls
               shouldPlay={false}
               isLooping={false}
             />
-            <Icon name="play-circle" size={50} color="white" style={styles.playIcon} />
           </View>
         ) : (
-          <Image source={{ uri: item.url }} style={styles.media} />
+          <Image source={{ uri: item.url }} style={[styles.media, isSelected && styles.selectedOverlay]} />
         )}
         {isSelectionMode && (
           <View style={styles.selectionOverlay}>
@@ -172,6 +171,11 @@ const MediaScreen = ({ navigation }) => {
     return renderItem({ item, index });
   };
 
+  const exitSelectionMode = () => {
+    setIsSelectionMode(false);
+    setSelectedItems([]);
+  };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
@@ -190,7 +194,7 @@ const MediaScreen = ({ navigation }) => {
         )}
         {isSelectionMode && (
           <View style={styles.selectionMenu}>
-            <TouchableOpacity style={styles.selectionButton} onPress={() => setIsSelectionMode(false)}>
+            <TouchableOpacity style={styles.selectionButton} onPress={exitSelectionMode}>
               <Icon name="close-circle" size={25} color="gray" />
               <Text style={styles.selectionButtonText}>취소</Text>
             </TouchableOpacity>
@@ -246,6 +250,12 @@ const styles = StyleSheet.create({
     height: '100%',
     borderRadius: 10,
     borderWidth: 0.2,
+  },
+  selectedMedia: {
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+  },
+  selectedOverlay: {
+    opacity: 0.5,
   },
   videoContainer: {
     position: 'relative',
