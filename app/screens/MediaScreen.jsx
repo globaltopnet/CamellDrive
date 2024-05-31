@@ -34,6 +34,10 @@ const MediaScreen = ({ navigation }) => {
   const [selectedItems, setSelectedItems] = useState([]);
   const [isSelectionMode, setIsSelectionMode] = useState(false);
 
+  const handleSubmit = () => {
+    alert('To be updated');
+  };
+
   useEffect(() => {
     const fetchWalletAddress = async () => {
       const email = await AsyncStorage.getItem('userEmail');
@@ -185,7 +189,7 @@ const MediaScreen = ({ navigation }) => {
           keyExtractor={(item, index) => index.toString()}
           numColumns={3}
           contentContainerStyle={styles.list}
-          ListEmptyComponent={<Text style={{ fontSize: 15 }}>Empty</Text>}
+          ListEmptyComponent={<Text style={styles.emptyText}>Empty</Text>}
         />
         {walletAddress && !isSelectionMode && (
           <View style={styles.plusMenuContainer}>
@@ -196,23 +200,23 @@ const MediaScreen = ({ navigation }) => {
           <View style={styles.selectionMenu}>
             <TouchableOpacity style={styles.selectionButton} onPress={exitSelectionMode}>
               <Icon name="close-circle" size={25} color="gray" />
-              <Text style={styles.selectionButtonText}>취소</Text>
+              <Text style={styles.selectionButtonText}>Cancel</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.selectionButton}>
+            <TouchableOpacity style={styles.selectionButton} onPress={handleSubmit}>
               <Icon name="download" size={25} color="gray" />
-              <Text style={styles.selectionButtonText}>다운로드</Text>
+              <Text style={styles.selectionButtonText}>Download</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.selectionButton}>
+            <TouchableOpacity style={styles.selectionButton} onPress={handleSubmit}>
               <Icon name="share-social" size={25} color="gray" />
-              <Text style={styles.selectionButtonText}>공유</Text>
+              <Text style={styles.selectionButtonText}>Share</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.selectionButton}>
+            <TouchableOpacity style={styles.selectionButton} onPress={handleSubmit}>
               <Icon name="trash" size={25} color="gray" />
-              <Text style={styles.selectionButtonText}>휴지통으로 이동</Text>
+              <Text style={styles.selectionButtonText}>Trash</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.selectionButton}>
+            <TouchableOpacity style={styles.selectionButton} onPress={handleSubmit}>
               <Icon name="star" size={25} color="gray" />
-              <Text style={styles.selectionButtonText}>즐겨찾기에 추가</Text>
+              <Text style={styles.selectionButtonText}>Favorite</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -290,6 +294,12 @@ const styles = StyleSheet.create({
   selectionButtonText: {
     fontSize: 12,
     color: 'gray',
+  },
+  emptyText: {
+    textAlign: 'center',
+    marginTop: 50,
+    fontSize: 15,
+    top: 248,
   },
 });
 

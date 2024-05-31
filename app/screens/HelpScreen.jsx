@@ -11,48 +11,48 @@ export default function HelpScreen({ navigation }) {
   const [content, setContent] = useState('');
 
   const handleSubmit = () => {
-    alert('정보가 제출되었습니다!');
+    alert('To be updated.');
   };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
-        <SubTabScreenHeader title="고객 지원" navigation={navigation} />
+        <SubTabScreenHeader title="Customer Support" navigation={navigation} />
         <View style={styles.mainContainer}>
-          <Text style={styles.label}>어떤 문제인지 선택하세요</Text>
+          <Text style={styles.label}>Please choose what kind of problem it is</Text>
           <RNPickerSelect
             onValueChange={(value) => setIssueType(value)}
             items={[
-              { label: '기술문의', value: 'technical' },
-              { label: '결제문제', value: 'payment' },
-              { label: '계정문제', value: 'account' },
-              { label: '지갑문제', value: 'wallet' },
-              { label: '기타', value: 'other' },
+              { label: 'Technical questions', value: 'technical' },
+              { label: 'Payment questions', value: 'payment' },
+              { label: 'Account questions', value: 'account' },
+              { label: 'Wallet problem', value: 'wallet' },
+              { label: 'Other', value: 'other' },
             ]}
             placeholder={{
-              label: '선택',
+              label: 'Select',
               value: null,
             }}
             style={pickerSelectStyles}
           />
-          <Text style={styles.label}>제목</Text>
+          <Text style={styles.label}>Title</Text>
           <TextInput
             style={styles.input}
             value={title}
             onChangeText={setTitle}
-            placeholder="제목을 입력하세요"
+            placeholder="Please enter a title"
           />
-          <Text style={styles.label}>내용</Text>
+          <Text style={styles.label}>Content</Text>
           <TextInput
             style={styles.Contentinput}
             value={content}
             onChangeText={setContent}
-            placeholder="상세 내용을 입력하세요"
+            placeholder="Please enter details"
             multiline
             numberOfLines={4}
           />
           <Button
-            title="보내기"
+            title="Send"
             onPress={handleSubmit}
           />
         </View>

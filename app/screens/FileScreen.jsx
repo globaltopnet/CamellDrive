@@ -30,6 +30,10 @@ const FileScreen = () => {
     setNewFileName('');
   };
 
+  const handleSubmit = () => {
+    alert('Update scheduled');
+  };
+
   const fetchFolderContents = useCallback(async () => {
     if (!walletAddress) return;
     try {
@@ -197,7 +201,7 @@ const FileScreen = () => {
 
   const renameFile = async () => {
     if (!walletAddress || !fileNameToRename || !newFileName) {
-      Alert.alert('Error', '필수 정보가 누락되었습니다.');
+      Alert.alert('Error', 'Required information is missing.');
       return;
     }
   
@@ -219,20 +223,20 @@ const FileScreen = () => {
       try {
         const data = JSON.parse(text);
         if (data.success) {
-          Alert.alert('성공', '파일 이름이 성공적으로 변경되었습니다.');
+          Alert.alert('Success', 'File name changed successfully');
           fetchFolderContents();
           closeRenameModal();
         } else {
-          Alert.alert('Error', `파일 이름 변경 오류: ${data.error}`);
+          Alert.alert('Error', `File name change error: ${data.error}`);
         }
       } catch (jsonError) {
         console.error('JSON 파싱 오류:', jsonError);
         console.error('응답 텍스트:', text);
-        Alert.alert('Error', '파일 이름 변경 중 오류가 발생하였습니다.');
+        Alert.alert('Error', 'File name change error.');
       }
     } catch (error) {
       console.error('파일 이름 변경 오류:', error);
-      Alert.alert('Error', '파일 이름 변경 중 오류가 발생하였습니다.');
+      Alert.alert('Error', 'File name change error.');
     }
   }; 
 
@@ -287,12 +291,12 @@ const FileScreen = () => {
 
   const showMenu = (fileName) => {
     Alert.alert("File Menu", `Actions for ${fileName}`, [
-      { text: '다운로드', onPress: () => downloadFile(fileName) },
-      { text: '공유', onPress: showShareModal },
-      { text: '즐겨찾기에 추가', onPress: () => console.log('Add to Favorites') },
-      { text: '휴지통으로 이동', onPress: () => console.log('Move to Trash') },
-      { text: '이름 변경', onPress: () => showRenameModal(fileName) },
-      { text: '취소', onPress: () => console.log('Cancel'), style: 'cancel' },
+      { text: 'Download', onPress: () => downloadFile(fileName) },
+      { text: 'Share', onPress: showShareModal },
+      { text: 'Favorite', onPress: () => console.log('Add to Favorites') },
+      { text: 'Trash', onPress: () => console.log('Move to Trash') },
+      { text: 'Rename', onPress: () => showRenameModal(fileName) },
+      { text: 'Cancel', onPress: () => console.log('Cancel'), style: 'cancel' },
     ]);
   };
 
@@ -327,23 +331,23 @@ const FileScreen = () => {
         <View style={styles.selectionMenu}>
           <TouchableOpacity style={styles.selectionButton} onPress={exitSelectionMode}>
             <Ionicons name="close-circle" size={25} color="gray" />
-            <Text style={styles.selectionButtonText}>취소</Text>
+            <Text style={styles.selectionButtonText}>Cancel</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.selectionButton}>
+          <TouchableOpacity style={styles.selectionButton} onPress={handleSubmit}>
             <Ionicons name="download" size={25} color="gray" />
-            <Text style={styles.selectionButtonText}>다운로드</Text>
+            <Text style={styles.selectionButtonText}>Download</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.selectionButton}>
+          <TouchableOpacity style={styles.selectionButton} onPress={handleSubmit}>
             <Ionicons name="share-social" size={25} color="gray" />
-            <Text style={styles.selectionButtonText}>공유</Text>
+            <Text style={styles.selectionButtonText}>Share</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.selectionButton}>
+          <TouchableOpacity style={styles.selectionButton} onPress={handleSubmit}>
             <Ionicons name="trash" size={25} color="gray" />
-            <Text style={styles.selectionButtonText}>휴지통</Text>
+            <Text style={styles.selectionButtonText}>Trash</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.selectionButton}>
+          <TouchableOpacity style={styles.selectionButton} onPress={handleSubmit}>
             <Ionicons name="heart" size={25} color="gray" />
-            <Text style={styles.selectionButtonText}>즐겨찾기</Text>
+            <Text style={styles.selectionButtonText}>Favorite</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -355,7 +359,7 @@ const FileScreen = () => {
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.shareTitle}>공유하기</Text>
+            <Text style={styles.shareTitle}>Share</Text>
             <View style={styles.shareInput}>
               <TextInput style={styles.input} placeholder="Enter wallet address" />
               <TouchableOpacity onPress={() => console.log('Sending to')} style={styles.camerabutton}>
@@ -365,10 +369,10 @@ const FileScreen = () => {
             <View style={{ width: 200, alignItems: 'flex-end' }}>
               <View style={styles.shareButton}>
                 <TouchableOpacity onPress={() => console.log('Sending to')} style={styles.dialogButton}>
-                  <Text style={styles.dialogbuttonText}>보내기</Text>
+                  <Text style={styles.dialogbuttonText}>Send</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={closeShareModal} style={styles.dialogButton}>
-                  <Text style={styles.dialogbuttonText}>취소</Text>
+                  <Text style={styles.dialogbuttonText}>Cancel</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -384,7 +388,7 @@ const FileScreen = () => {
       >
         <View style={styles.centeredView}>
           <View style={styles.RenamemodalView}>
-            <Text style={styles.shareTitle}>이름 변경</Text>
+            <Text style={styles.shareTitle}>Rename</Text>
             <View style={styles.shareInput}>
               <TextInput
                 style={styles.input}
@@ -396,10 +400,10 @@ const FileScreen = () => {
             <View style={{ width: 200, alignItems: 'flex-end' }}>
               <View style={styles.shareButton}>
                 <TouchableOpacity onPress={renameFile} style={styles.dialogButton}>
-                  <Text style={styles.dialogbuttonText}>변경</Text>
+                  <Text style={styles.dialogbuttonText}>Change</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={closeRenameModal} style={styles.dialogButton}>
-                  <Text style={styles.dialogbuttonText}>취소</Text>
+                  <Text style={styles.dialogbuttonText}>Cancel</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -413,7 +417,7 @@ const FileScreen = () => {
 const styles = StyleSheet.create({
   grid: {
     marginTop: 10,
-    paddingHorizontal: 10,
+
     paddingTop: 10,
   },
   fileItem: {
@@ -424,7 +428,7 @@ const styles = StyleSheet.create({
     maxWidth: '22%',
     borderRadius: 10,
     marginHorizontal: 5, 
-    marginBottom: -10
+    marginBottom: 5
   },
   selectedItem: {
     backgroundColor: '#d1e7ff',

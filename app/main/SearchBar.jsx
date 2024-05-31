@@ -13,7 +13,7 @@ const SearchBar = ({ onSearch }) => {
           <Ionicons style={styles.searchIcon} name="search" size={20} />
           <TextInput
             style={styles.input}
-            placeholder="검색..."
+            placeholder="Search..."
             value={query}
             onChangeText={text => setQuery(text)}
             onSubmitEditing={() => onSearch(query)}

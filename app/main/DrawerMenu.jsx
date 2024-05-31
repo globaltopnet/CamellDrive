@@ -53,7 +53,7 @@ const DrawerMenu = () => {
           name="ChartScreen"
           component={ChartScreen}
           options={{
-            drawerLabel: '시세',
+            drawerLabel: 'Market Price',
             drawerItemStyle: {display: 'none'}
           }}
         />
@@ -63,7 +63,7 @@ const DrawerMenu = () => {
         name="HelpScreen"
         component={HelpScreen}
         options={{
-          drawerLabel: '고객지원',
+          drawerLabel: 'Customer Support',
           headerShown: false,
           drawerItemStyle: {display: 'none'}
         }}
@@ -72,7 +72,7 @@ const DrawerMenu = () => {
         name="WalletScreen"
         component={WalletScreen}
         options={{
-          drawerLabel: '지갑',
+          drawerLabel: 'Wallet',
           headerShown: false,
           drawerItemStyle: {display: 'none'}
         }}
@@ -81,7 +81,7 @@ const DrawerMenu = () => {
         name="UpgradePlanScreen"
         component={UpgradePlanScreen}
         options={{
-          drawerLabel: '플랜',
+          drawerLabel: 'Plan',
           headerShown: false,
           drawerItemStyle: {display: 'none'}
         }}
@@ -90,7 +90,7 @@ const DrawerMenu = () => {
         name="SettingScreen"
         component={SettingScreen}
         options={{
-          drawerLabel: '설정',
+          drawerLabel: 'Setting',
           headerShown: false,
           drawerItemStyle: {display: 'none'}
         }}
@@ -104,8 +104,8 @@ const DrawerMenu = () => {
 const CustomDrawerContent = (props) => {
   const handleLogout = async () => {
     Alert.alert(
-      "로그아웃 확인",
-      "로그아웃 하시겠습니까?",
+      "Logout",
+      "Do you want to log out?",
       [
         {
           text: "Cancel",
@@ -139,7 +139,7 @@ const CustomDrawerContent = (props) => {
         <View style={styles.menuItem}>
           
         <DrawerItem
-          label="홈"
+          label="Home"
           onPress={() => props.navigation.navigate('Home')}
           icon={({ color, size }) => (
             <MaterialCommunityIcons name="home" color={color} size={size} />
@@ -147,7 +147,7 @@ const CustomDrawerContent = (props) => {
           style={styles.items}
         />
         <DrawerItem
-          label="지갑"
+          label="Wallet"
           onPress={() => props.navigation.navigate('WalletScreen')}
           icon={({ color, size }) => (
             <MaterialCommunityIcons name="wallet" color={color} size={size} />
@@ -159,7 +159,7 @@ const CustomDrawerContent = (props) => {
 
         <View style={styles.menuItem}>
         <DrawerItem
-            label="파일"
+            label="File"
             onPress={() => props.navigation.navigate('File')}
             icon={({ color, size }) => (
                 <MaterialCommunityIcons name="file" color={color} size={size} />
@@ -167,7 +167,7 @@ const CustomDrawerContent = (props) => {
             style={styles.items}
          />
           <DrawerItem
-            label="미디어"
+            label="Media"
             onPress={() => props.navigation.navigate('Media')}
             icon={({ color, size }) => (
                 <MaterialCommunityIcons name="image" color={color} size={size} />
@@ -175,7 +175,7 @@ const CustomDrawerContent = (props) => {
             style={styles.items}
          />
         <DrawerItem
-            label="즐겨찾기"
+            label="Favorite"
             onPress={() => props.navigation.navigate('Favorite')}
             icon={({ color, size }) => (
                 <MaterialCommunityIcons name="star" color={color} size={size} />
@@ -183,7 +183,7 @@ const CustomDrawerContent = (props) => {
             style={styles.items}
         />
         <DrawerItem
-            label="공유"
+            label="Share"
             onPress={() => props.navigation.navigate('Share')}
             icon={({ color, size }) => (
                 <MaterialCommunityIcons name="share" color={color} size={size} />
@@ -191,7 +191,7 @@ const CustomDrawerContent = (props) => {
             style={styles.items}
         />
         <DrawerItem
-          label="휴지통"
+          label="Trash"
           onPress={() => props.navigation.navigate('Bin')}
           icon={({ color, size }) => (
             <MaterialCommunityIcons name="trash-can" color={color} size={size} />
@@ -203,7 +203,7 @@ const CustomDrawerContent = (props) => {
 
       <View style={styles.menuItem2}>
         <DrawerItem
-          label="설정"
+          label="Setting"
           onPress={() => props.navigation.navigate('SettingScreen')}
           icon={({ color, size }) => (
             <MaterialCommunityIcons name="cog" color={color} size={size} />
@@ -212,7 +212,7 @@ const CustomDrawerContent = (props) => {
         />
 
         <DrawerItem
-          label="고객지원"
+          label="Customer Support"
           onPress={() => props.navigation.navigate('HelpScreen')}
           icon={({ color, size }) => (
             <MaterialCommunityIcons name="help-circle" color={color} size={size} />
@@ -223,7 +223,7 @@ const CustomDrawerContent = (props) => {
       <View style={styles.customDrawerItem}>
         <View style={styles.drawerItemHeader}>
           <MaterialCommunityIcons name="cloud" color="rgba(28, 28, 30, 0.68)" size={24} />
-          <Text style={styles.drawerItemLabel}>저장공간</Text>
+          <Text style={styles.drawerItemLabel}>Storage</Text>
         </View>
 
         <Progress.Bar
@@ -239,7 +239,7 @@ const CustomDrawerContent = (props) => {
           style={styles.upgradeButton}
           onPress={() => props.navigation.navigate('UpgradePlanScreen')}
            >
-          <Text style={styles.upgradeButtonText}>업그레이드</Text>
+          <Text style={styles.upgradeButtonText}>Upgrade</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -248,7 +248,7 @@ const CustomDrawerContent = (props) => {
 
     <View style={styles.menuItem3}>
       <DrawerItem
-        label="로그아웃"
+        label="Logout"
         onPress={handleLogout}
         icon={({ color, size }) => (
           <MaterialCommunityIcons name="logout" color={color} size={size} />

@@ -10,6 +10,10 @@ export default function PlusMenu({ walletAddress, currentFolder, onMediaUpload }
   const [isFolderDialogVisible, setIsFolderDialogVisible] = useState(false);
   const [folderName, setFolderName] = useState('');
 
+  const handleSubmit = () => {
+    alert('To be updated.');
+  };
+
   const toggleMenuModal = () => {
     setIsModalVisible(!isModalVisible);
   };
@@ -20,7 +24,6 @@ export default function PlusMenu({ walletAddress, currentFolder, onMediaUpload }
 
   const createFolder = async () => {
     if (!walletAddress) {
-      alert('지갑 주소가 설정되지 않았습니다.');
       return;
     }
 
@@ -43,15 +46,15 @@ export default function PlusMenu({ walletAddress, currentFolder, onMediaUpload }
 
       const data = await response.json();
       if (data.success) {
-        alert('폴더가 성공적으로 생성되었습니다.');
+        alert('The folder was successfully created.');
         setIsFolderDialogVisible(false);
         setFolderName('');
       } else {
-        alert('폴더 생성에 실패하였습니다: ' + data.error);
+        alert('Failed to create folder: ' + data.error);
       }
     } catch (error) {
       console.error('폴더 생성 오류:', error);
-      alert('폴더 생성 중 오류가 발생하였습니다.');
+      alert('Error creating folder.');
     }
   };
 
@@ -83,15 +86,15 @@ export default function PlusMenu({ walletAddress, currentFolder, onMediaUpload }
           });
           const uploadData = await uploadResponse.json();
           if (uploadData.success) {
-            Alert.alert('성공', '파일이 성공적으로 업로드되었습니다.');
+            Alert.alert('Success', 'File uploaded successfully.');
             onMediaUpload();
           } else {
             console.error('파일 업로드 오류:', uploadData.error);
-            Alert.alert('실패', `파일 업로드 오류: ${uploadData.error}`);
+            Alert.alert('Failed', `File upload error: ${uploadData.error}`);
           }
         } catch (error) {
           console.error('API 오류:', error);
-          Alert.alert('실패', '파일 업로드 중 오류가 발생하였습니다.');
+          Alert.alert('Failed', 'File upload error.');
         }
       }
     } catch (err) {
@@ -102,7 +105,7 @@ export default function PlusMenu({ walletAddress, currentFolder, onMediaUpload }
   const uploadMediaFile = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
-      alert('갤러리에 접근하기 위한 권한이 필요합니다.');
+      alert('You need permission to access the gallery.');
       return;
     }
 
@@ -140,18 +143,18 @@ export default function PlusMenu({ walletAddress, currentFolder, onMediaUpload }
 
         const uploadData = await uploadResponse.json();
         if (uploadData.success) {
-          Alert.alert('성공', '미디어 파일이 성공적으로 업로드되었습니다.');
+          Alert.alert('Success', 'Media file uploaded successfully.');
           onMediaUpload(); // Refresh media list after successful upload
         } else {
           console.error('미디어 파일 업로드 오류:', uploadData.error);
-          Alert.alert('실패', `미디어 파일 업로드 오류: ${uploadData.error}`);
+          Alert.alert('Failed', `Media File Upload Error: ${uploadData.error}`);
         }
       } catch (error) {
         console.error('API 오류:', error);
-        Alert.alert('실패', '미디어 파일 업로드 중 오류가 발생하였습니다.');
+        Alert.alert('Failed', 'Media File Upload Error.');
       }
     } else {
-      Alert.alert('취소', '파일 선택이 취소되었습니다.');
+      console.log('취소')
     }
   };
 
@@ -177,7 +180,7 @@ export default function PlusMenu({ walletAddress, currentFolder, onMediaUpload }
             <View style={styles.modalMenu}>
               <MenuItem
                 icon={<MaterialIcons name="note-add" size={22} color="gray" />}
-                label="파일 업로드"
+                label="Uploade file"
                 onPress={async () => {
                   await selectDoc();
                   toggleMenuModal();
@@ -185,19 +188,19 @@ export default function PlusMenu({ walletAddress, currentFolder, onMediaUpload }
               />
               <MenuItem
                 icon={<MaterialIcons name="add-photo-alternate" size={24} color="gray" />}
-                label="미디어 업로드"
+                label="Uploade media"
                 onPress={uploadMediaFile}
               />
               <MenuItem
                 icon={<Foundation name="folder-add" size={22} color="gray" />}
-                label="폴더 생성"
+                label="Create folder"
                 color="black"
                 onPress={toggleFolderDialog}
               />
               <MenuItem
                 icon={<MaterialIcons name="add-a-photo" size={22} color="gray" />}
-                label="사진 촬영"
-                onPress={() => console.log("사진 촬영")}
+                label="Photo shoot"
+                onPress={handleSubmit}
               />
             </View>
           </View>

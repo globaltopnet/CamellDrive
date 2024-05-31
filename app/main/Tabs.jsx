@@ -34,9 +34,9 @@ function Tabs() {
         component={ShareScreen} 
         options={{
           tabBarButton: () => null,
-          tabBarLabel: '공유',
-          headerTitle: '공유',
-          header: ({ navigation }) => <TabScreenHeader title="공유" navigation={navigation} />
+          tabBarLabel: 'Share',
+          headerTitle: 'Share',
+          header: ({ navigation }) => <TabScreenHeader title="Share" navigation={navigation} />
         }}
       />
       <Tab.Screen 
@@ -44,9 +44,9 @@ function Tabs() {
         component={BinScreen} 
         options={{
           tabBarButton: () => null, // 탭 바 버튼을 숨깁니다.
-          tabBarLabel: '휴지통',
-          headerTitle: '휴지통',
-          header: ({ navigation }) => <TabScreenHeader title="휴지통" navigation={navigation} />
+          tabBarLabel: 'Trash',
+          headerTitle: 'Trash',
+          header: ({ navigation }) => <TabScreenHeader title="Trash" navigation={navigation} />
         }}
       />
       <Tab.Screen 
@@ -54,9 +54,9 @@ function Tabs() {
         component={FavoriteScreen} 
         options={{
           tabBarButton: () => null, // 탭 바 버튼을 숨깁니다.
-          tabBarLabel: '즐겨찾기',
-          headerTitle: '즐겨찾기',
-          header: ({ navigation }) => <TabScreenHeader title="즐겨찾기" navigation={navigation} />
+          tabBarLabel: 'Favorite',
+          headerTitle: 'Favorite',
+          header: ({ navigation }) => <TabScreenHeader title="Favorite" navigation={navigation} />
         }}
       />
       <Tab.Screen 
@@ -64,18 +64,18 @@ function Tabs() {
         component={FileScreen} 
         options={{
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-          tabBarLabel: '파일',
-          headerTitle: '파일',
-          header: ({ navigation }) => <TabScreenHeader title="파일" navigation={navigation} />
+          tabBarLabel: 'File',
+          headerTitle: 'File',
+          header: ({ navigation }) => <TabScreenHeader title="File" navigation={navigation} />
         }}
       />
       <Tab.Screen 
         name="Home" 
         component={HomeScreen}
         options={{
-          tabBarLabel: '홈',
-          headerTitle: '홈',
-          header: ({ navigation }) => <SubTabScreenHeader title="홈" navigation={navigation} />
+          tabBarLabel: 'Home',
+          headerTitle: 'Home',
+          header: ({ navigation }) => <SubTabScreenHeader title="Home" navigation={navigation} />
         }}
       />
 
@@ -83,9 +83,9 @@ function Tabs() {
         name="Media" 
         component={MediaScreen} 
         options={{
-          tabBarLabel: '미디어',
-          headerTitle: '미디어 라이브러리',
-          header: ({ navigation }) => <TabScreenHeader title="미디어" navigation={navigation} />
+          tabBarLabel: 'Media',
+          headerTitle: 'Media',
+          header: ({ navigation }) => <TabScreenHeader title="Media" navigation={navigation} />
         }}
       />
     </Tab.Navigator>

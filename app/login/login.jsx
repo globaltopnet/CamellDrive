@@ -27,6 +27,9 @@ const LoginPage = () => {
     iosClientId: "795983066430-0d5a3vj9i2ncmt384icemckb714bcdqc.apps.googleusercontent.com",
     androidClientId: "795983066430-dqnfl5gkppmlvs364sb4jhemmf2c9cq4.apps.googleusercontent.com"
   });
+  const handleSubmit = () => {
+    alert('to be updated');
+  };
 
   useEffect(() => {
     if (response?.type === "success") {
@@ -39,7 +42,7 @@ const LoginPage = () => {
           const email = user.email;
           await AsyncStorage.setItem('userEmail', email);
           try {
-            const response = await fetch('http://54.180.133.138:8080/api/create-wallet', {
+            const response = await fetch('http://13.124.248.7:8080/api/create-wallet', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -74,9 +77,9 @@ const LoginPage = () => {
     <View style={defaultStyles.container}>
       <Text style={defaultStyles.header}>Welcome Back to</Text>
       <Text style={defaultStyles.logo}>Camell Drive</Text>
-      <Text style={defaultStyles.descriptionText}>
+      {/* <Text style={defaultStyles.descriptionText}>
         Camell Drive에 오신 것을 환영합니다.
-      </Text>
+      </Text> */}
 
       {walletAddress && (
         <View>
@@ -104,7 +107,7 @@ const LoginPage = () => {
           source={require('@/assets/icons/google-icon.png')}
           style={{ width: 24, height: 24 }}
         />
-        <Text style={[defaultStyles.buttonText, { color: '#000' }]}>Google로 계속하기</Text>
+        <Text style={[defaultStyles.buttonText, { color: '#000' }]}>Sign in with Google</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -113,12 +116,13 @@ const LoginPage = () => {
           gap: 16,
           marginTop: 20,
           backgroundColor: '#F6F60A'
-        }]}>
+        }]}
+        onPress={handleSubmit}>
         <Image
           source={require('@/assets/icons/kakao-icon.png')}
           style={{ width: 24, height: 24 }}
         />
-        <Text style={[defaultStyles.buttonText, { color: '#000' }]}>Kakao로 계속하기</Text>
+        <Text style={[defaultStyles.buttonText, { color: '#000' }]}>Sign in with Kakao</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -131,8 +135,9 @@ const LoginPage = () => {
         <Image
           source={require('@/assets/icons/apple-icon.png')}
           style={{ width: 25, height: 25 }}
+          onPress={handleSubmit}
         />
-        <Text style={[defaultStyles.buttonText2, { color: '#FFF' }]}>Apple로 계속하기</Text>
+        <Text style={[defaultStyles.buttonText2, { color: '#FFF' }]}>Sign in with Apple</Text>
       </TouchableOpacity>
     </View>
   );

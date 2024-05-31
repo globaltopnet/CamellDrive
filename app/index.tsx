@@ -28,16 +28,16 @@ const Main = () => {
           Drive
         </Text>
         <Text style={styles.header2}>
-          클라우드 스토리지
+          Cloud Storge
         </Text>
         <Text style={styles.header2}>
-          플렛폼
+        platform
         </Text>
       </View>
       <View style={styles.buttons}>
         <Link href={'/login/login'} style={[defaultStyles.pillButton, { flex: 1, backgroundColor: Colors.primary }]} asChild>
           <TouchableOpacity>
-            <Text style={{ color: 'white', fontSize: 24, fontWeight: '900' }}>로그인</Text>
+            <Text style={{ color: 'white', fontSize: 24, fontWeight: '900' }}>Login</Text>
           </TouchableOpacity>
         </Link>
       </View>

@@ -3,6 +3,7 @@ import { Modal, View, Text, StyleSheet, TouchableOpacity, Animated, Dimensions, 
 import { Ionicons } from '@expo/vector-icons';
 import { getAuth } from "firebase/auth";
 import * as ImagePicker from 'expo-image-picker';
+import { FontAwesome } from '@expo/vector-icons';
 
 const { width, height } = Dimensions.get('window');
 
@@ -10,6 +11,10 @@ const ProfileModal = ({ visible, onClose }) => {
   const slideAnim = useRef(new Animated.Value(-height)).current;
   const [userPhoto, setUserPhoto] = useState(null);
   const [userEmail, setUserEmail] = useState('');
+
+  const handleSubmit = () => {
+    alert('To be updated');
+  };
 
   const pickImageFromGallery = async () => {
     // 갤러리 접근 권한 요청
@@ -77,17 +82,17 @@ const ProfileModal = ({ visible, onClose }) => {
           </View>
 
           <View style={styles.body}>
-            <TouchableOpacity style={styles.menu} onPress={pickImageFromGallery}>
+            <TouchableOpacity style={styles.menu} onPress={handleSubmit}>
               <Ionicons name="image" size={20} color="#828282" />
-              <Text style={styles.menuText}>프로필 사진 변경</Text>
+              <Text style={styles.menuText}>Change profile picture</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.menu} onPress={() => console.log('도움말')}>
+            <TouchableOpacity style={styles.menu} onPress={handleSubmit}>
               <Ionicons name="help-circle" size={20} color="#828282" />
-              <Text style={styles.menuText}>도움말</Text>
+              <Text style={styles.menuText}>Help</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.menu} onPress={() => console.log('도움말')}>
-              <Ionicons name="help-circle" size={20} color="#828282" />
-              <Text style={styles.menuText}>도움말</Text>
+            <TouchableOpacity style={styles.menu} onPress={handleSubmit}>
+              <FontAwesome name="cog" size={20} color="#828282" />
+              <Text style={styles.menuText}>Setting</Text>
             </TouchableOpacity>
           </View>
 

@@ -8,7 +8,6 @@ export default function ShareScreen({ navigation }) {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         <View style={styles.mainContainer}>
-          <Text>asdfasdfasdf</Text>
         </View>
       </View>
     </TouchableWithoutFeedback>
