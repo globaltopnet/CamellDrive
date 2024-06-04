@@ -1,5 +1,5 @@
-import Colors from '@/constants/Colors';
-import { defaultStyles } from '@/constants/Styles';
+import Colors from '../constants/Colors';
+import { defaultStyles } from '../constants/Styles';
 import { useAssets } from 'expo-asset';
 import { ResizeMode, Video } from 'expo-av';
 import { Link, SplashScreen } from 'expo-router';

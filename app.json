@@ -20,6 +20,7 @@
       "bundleIdentifier": "com.anonymous.CamellDrive"
     },
     "android": {
+      "googleServicesFile": "./android/app/google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"

@@ -103,9 +103,7 @@ export default function HomeScreen({ navigation }) {
                         {recentItems.slice(0, 4).map((item, index) => (
                             <View key={item.id} style={[styles.item, (index === 0 && recentItems.length === 1) ? styles.firstSingleItem : {}]}>
                                 <Ionicons name={item.type === 'folder' ? 'folder' : 'document-text'} size={60} color={Colors.themcolor} />
-                                <TouchableOpacity style={{top: -70, left: 40 }} onPress={handleSubmit}>
-                                  <MaterialCommunityIcons name="dots-vertical" color='#636363' size={21} style={{position:'absolute'}} />
-                                </TouchableOpacity>
+                                  <MaterialCommunityIcons name="dots-vertical" color='#636363' size={21} style={{position:'absolute', left: 115, top: 15,}} />
 
                                 <Text style={styles.itemName}>{item.name}</Text>
                                 <Text style={styles.itemDate}>{item.date}</Text>

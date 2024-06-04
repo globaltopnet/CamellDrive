@@ -24,8 +24,8 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const [walletAddress, setWalletAddress] = useState(null);
   const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
-    iosClientId: "795983066430-0d5a3vj9i2ncmt384icemckb714bcdqc.apps.googleusercontent.com",
-    androidClientId: "795983066430-dqnfl5gkppmlvs364sb4jhemmf2c9cq4.apps.googleusercontent.com"
+    webClientId: '867810152911-vfhigfejetbu3lqr2fe7e4d0c1hcm013.apps.googleusercontent.com',
+    androidClientId: '867810152911-kaaho1pri8g39tgl22b7tbr6d8lqphee.apps.googleusercontent.com',
   });
   const handleSubmit = () => {
     alert('to be updated');
