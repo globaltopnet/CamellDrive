@@ -8,6 +8,7 @@ import {
   ActivityIndicator
 } from 'react-native';
 import "react-native-gesture-handler";
+import { useNavigation } from '@react-navigation/native'; // Import useNavigation hook
 import { defaultStyles } from '@/constants/Styles';
 import { auth } from "../../firebaseConfig";
 import {
@@ -24,11 +25,16 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const [walletAddress, setWalletAddress] = useState(null);
   const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
-    webClientId: '867810152911-vfhigfejetbu3lqr2fe7e4d0c1hcm013.apps.googleusercontent.com',
+    clientId: '867810152911-vfhigfejetbu3lqr2fe7e4d0c1hcm013.apps.googleusercontent.com',
+    iosClientId: '867810152911-g2oi0jukpk006jqo00inkk2ahnv1jo4k.apps.googleusercontent.com',
     androidClientId: '867810152911-kaaho1pri8g39tgl22b7tbr6d8lqphee.apps.googleusercontent.com',
   });
-  const handleSubmit = () => {
-    alert('to be updated');
+
+  const navigation = useNavigation(); // Initialize navigation
+
+  const handleSubmit = ({navigation}) => {
+    // Navigate to HomeScreen
+    navigation.navigate('HomeScreen');
   };
 
   useEffect(() => {
@@ -36,7 +42,7 @@ const LoginPage = () => {
       const { id_token } = response.params;
       const credential = GoogleAuthProvider.credential(id_token);
       setLoading(true);
-      signInWithCredential(auth, credential)
+      signInWithCredential(auth, credential) 
         .then(async (userCredential) => {
           const user = userCredential.user;
           const email = user.email;
@@ -99,6 +105,17 @@ const LoginPage = () => {
           flexDirection: 'row',
           gap: 16,
           marginTop: 20,
+          backgroundColor: '#E45E7E'
+        }]}
+        onPress={handleSubmit}>
+        <Text style={[defaultStyles.buttonText, { color: '#000' }]}>Go to App</Text>
+      </TouchableOpacity>
+
+      {/* <TouchableOpacity
+        style={[defaultStyles.pillButton, {
+          flexDirection: 'row',
+          gap: 16,
+          marginTop: 20,
           backgroundColor: '#E1E4EC'
         }]}
         onPress={() => promptAsync()}
@@ -138,7 +155,7 @@ const LoginPage = () => {
           onPress={handleSubmit}
         />
         <Text style={[defaultStyles.buttonText2, { color: '#FFF' }]}>Sign in with Apple</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 };

@@ -14,11 +14,19 @@
       },
       "oauth_client": [
         {
+          "client_id": "867810152911-4eir21q4fuqab5q7h7fcr5c1igri7j8b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.anonymous.CamellDrive",
+            "certificate_hash": "fd49ac831aeb16c4ea758d5033a46174964eea2d"
+          }
+        },
+        {
           "client_id": "867810152911-kaaho1pri8g39tgl22b7tbr6d8lqphee.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.anonymous.CamellDrive",
-            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+            "certificate_hash": "7e105169871614af4949c8950da5e1dcd7e3dec7"
           }
         },
         {
@@ -37,6 +45,13 @@
             {
               "client_id": "867810152911-vfhigfejetbu3lqr2fe7e4d0c1hcm013.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "867810152911-g2oi0jukpk006jqo00inkk2ahnv1jo4k.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.anonymous.CamellDrive"
+              }
             }
           ]
         }
