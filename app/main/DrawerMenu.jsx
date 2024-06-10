@@ -6,6 +6,7 @@ import * as Progress from 'react-native-progress';
 import { Colors } from '../theme/color';
 import { signOut } from 'firebase/auth';
 import { auth } from '@/firebaseConfig';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import WalletScreen from '../screens/WalletScreen';
 import HelpScreen from '../screens/HelpScreen';
 import SettingScreen from '../screens/SettingScreen';
@@ -14,6 +15,7 @@ import Tabs from './Tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import ChartScreen from '../screens/ChartScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { router } from 'expo-router';
 
 const Drawer = createDrawerNavigator();
 
@@ -115,8 +117,14 @@ const CustomDrawerContent = (props) => {
         {
           text: "Logout",
           onPress: async () => {
-            await signOut(auth);
-            await AsyncStorage.removeItem('@user');
+            try {
+              await GoogleSignin.signOut();
+              await AsyncStorage.removeItem('isLoggedIn');
+              console.log('success');
+              router.replace('/login/login')
+            } catch (error) {
+              console.error('Failed to sign out', error);
+            }
           },
         },
       ],

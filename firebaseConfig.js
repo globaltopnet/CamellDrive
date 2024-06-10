@@ -8,8 +8,8 @@ const firebaseConfig = {
   projectId: "camelldrive-778f3",
   storageBucket: "camelldrive-778f3.appspot.com",
   messagingSenderId: "867810152911",
-  appId: "1:867810152911:web:491283e82c1f4fae1342ba",
-  measurementId: "G-L8LFJEWR9F"
+  appId: "1:867810152911:web:6ab90c2b90a2f1ce1342ba",
+  measurementId: "G-P9ZHCB171V"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -17,3 +17,5 @@ const app = initializeApp(firebaseConfig);
 export const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(AsyncStorage)
 });
+
+// Android: 867810152911-kaaho1pri8g39tgl22b7tbr6d8lqphee.apps.googleusercontent.com

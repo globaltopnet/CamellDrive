@@ -6,19 +6,21 @@ import { Link, SplashScreen } from 'expo-router';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 
 const Main = () => {
-  const [ assets ] = useAssets([require('@/assets/videos/intro.mp4')]);
+  const [assets] = useAssets([require('@/assets/videos/intro.mp4')]);
 
   SplashScreen.hideAsync();
 
   return (
     <View style={styles.container}>
-      { assets && (
+      {assets && (
         <Video 
-        isMuted
-        isLooping
-        shouldPlay
-        source={{ uri: assets[0].uri }} style={styles.video}
-        resizeMode={ResizeMode.COVER} />
+          isMuted
+          isLooping
+          shouldPlay
+          source={{ uri: assets[0].uri }} 
+          style={styles.video}
+          resizeMode={ResizeMode.COVER} 
+        />
       )}
       <View style={{ marginTop: 80, padding: 20 }}>
         <Text style={styles.header}>
@@ -28,10 +30,10 @@ const Main = () => {
           Drive
         </Text>
         <Text style={styles.header2}>
-          Cloud Storge
+          Cloud Storage
         </Text>
         <Text style={styles.header2}>
-        platform
+          Platform
         </Text>
       </View>
       <View style={styles.buttons}>
