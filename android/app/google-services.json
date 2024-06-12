@@ -1,45 +1,45 @@
 {
   "project_info": {
-    "project_number": "477776755800",
-    "project_id": "camelldrive-febc1",
-    "storage_bucket": "camelldrive-febc1.appspot.com"
+    "project_number": "867810152911",
+    "project_id": "camelldrive-778f3",
+    "storage_bucket": "camelldrive-778f3.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:477776755800:android:fa0462eb4c17c3a5e69e2d",
+        "mobilesdk_app_id": "1:867810152911:android:5630c2e6fabceb7b1342ba",
         "android_client_info": {
           "package_name": "com.anonymous.CamellDrive"
         }
       },
       "oauth_client": [
         {
-          "client_id": "477776755800-s1f4b8iiqtq6p239d7iq1t8dnglh05tp.apps.googleusercontent.com",
+          "client_id": "867810152911-61ni54v50gcm11mmf8bl3stvsn9agbrv.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.anonymous.CamellDrive",
-            "certificate_hash": "9d2715813332d8a22ebd115dc298dbac03abb884"
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
           }
         },
         {
-          "client_id": "477776755800-b2k5atfkv4lieb5kro45av11vq6do12c.apps.googleusercontent.com",
+          "client_id": "867810152911-vfhigfejetbu3lqr2fe7e4d0c1hcm013.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyB5XvcP5kmFULfoBAi1kra5br0EZ3AP39g"
+          "current_key": "AIzaSyAV_wg9-d4KJk-4MIbANUf0YmRi9minm4M"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "477776755800-b2k5atfkv4lieb5kro45av11vq6do12c.apps.googleusercontent.com",
+              "client_id": "867810152911-vfhigfejetbu3lqr2fe7e4d0c1hcm013.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "477776755800-fnjlpq9v47unojc4ur6rrgj3mjdab9vm.apps.googleusercontent.com",
+              "client_id": "867810152911-g2oi0jukpk006jqo00inkk2ahnv1jo4k.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
                 "bundle_id": "com.anonymous.CamellDrive"

@@ -105,8 +105,9 @@ const styles = StyleSheet.create({
   viewModeButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 5
+    padding: 5,
   }
+
 });
 
 export default Tabs;

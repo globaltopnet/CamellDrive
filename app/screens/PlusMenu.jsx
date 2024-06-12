@@ -9,6 +9,8 @@ export default function PlusMenu({ walletAddress, currentFolder, onMediaUpload }
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isFolderDialogVisible, setIsFolderDialogVisible] = useState(false);
   const [folderName, setFolderName] = useState('');
+  const TOTAL_STORAGE_LIMIT = 10 * 1024 * 1024 * 1024; // 30GB를 바이트 단위로 변환 (30 * 1024 * 1024 * 1024 = 32,212,254,720 바이트)
+
 
   const handleSubmit = () => {
     alert('To be updated.');
@@ -22,12 +24,13 @@ export default function PlusMenu({ walletAddress, currentFolder, onMediaUpload }
     setIsModalVisible(false);
   };
 
+
   const createFolder = async () => {
     if (!walletAddress) {
       return;
     }
 
-    let folderNameToCreate = folderName.trim() || '새폴더';
+    let folderNameToCreate = folderName.trim() || 'New folder';
 
     const fullPath = currentFolder ? `${currentFolder}/${folderNameToCreate}` : folderNameToCreate;
     console.log("경로 :", fullPath);
@@ -46,7 +49,6 @@ export default function PlusMenu({ walletAddress, currentFolder, onMediaUpload }
 
       const data = await response.json();
       if (data.success) {
-        alert('The folder was successfully created.');
         setIsFolderDialogVisible(false);
         setFolderName('');
       } else {
@@ -58,6 +60,99 @@ export default function PlusMenu({ walletAddress, currentFolder, onMediaUpload }
     }
   };
 
+  const checkStorageAndUpload = async (fileUri, fileName, fileType) => {
+    try {
+      const response = await fetch(`http://13.124.248.7:2005/api/get-storage-usage?walletAddress=${walletAddress}`);
+      const data = await response.json();
+      if (data.totalSize !== undefined) {
+        const usedStorage = data.totalSize;
+        const fileInfo = await fetch(fileUri);
+        const fileBlob = await fileInfo.blob();
+        const fileSize = fileBlob.size;
+  
+        if (usedStorage + fileSize > TOTAL_STORAGE_LIMIT) {
+          Alert.alert('Storage limit exceeded', 'Cannot upload file as it exceeds the total storage limit.');
+          return;
+        }
+  
+        const formData = new FormData();
+        formData.append('fileContent', {
+          uri: fileUri,
+          type: fileType,
+          name: fileName,
+        });
+        formData.append('walletAddress', walletAddress);
+        formData.append('fileName', fileName);
+  
+        const uploadResponse = await fetch('http://13.124.248.7:2005/api/mediaupload-file', {
+          method: 'POST',
+          body: formData,
+        });
+  
+        const uploadData = await uploadResponse.json();
+        if (uploadData.success) {
+          onMediaUpload();
+        } else {
+          console.error('미디어 업로드 오류:', uploadData.error);
+          Alert.alert('Failed', `Media upload error: ${uploadData.error}`);
+        }
+      } else {
+        console.error('Error fetching storage usage:', data.error);
+      }
+    } catch (error) {
+      console.error('API 오류:', error.message);
+      Alert.alert('Error', `API error: ${error.message}`);
+    }
+  };
+  
+
+  const checkStorageAndUploadDoc = async (uri, fileName, mimeType) => {
+    try {
+      const response = await fetch(`http://13.124.248.7:2005/api/get-storage-usage?walletAddress=${walletAddress}`);
+      const data = await response.json();
+      if (data.totalSize !== undefined) {
+        const usedStorage = data.totalSize;
+        const fileInfo = await fetch(uri);
+        const fileBlob = await fileInfo.blob();
+        const fileSize = fileBlob.size;
+  
+        if (usedStorage + fileSize > TOTAL_STORAGE_LIMIT) {
+          console.log(usedStorage, fileSize, TOTAL_STORAGE_LIMIT)
+          Alert.alert('Storage limit exceeded', 'Cannot upload file as it exceeds the total storage limit.');
+          return;
+        }
+  
+        const formData = new FormData();
+        formData.append('file', {
+          uri,
+          type: mimeType,
+          name: fileName,
+        });
+        formData.append('walletAddress', walletAddress);
+        formData.append('folderPath', currentFolder || '');
+  
+        const uploadResponse = await fetch('http://13.124.248.7:8080/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+  
+        const uploadData = await uploadResponse.json();
+        if (uploadData.success) {
+          Alert.alert('Success', 'File uploaded successfully.');
+          onMediaUpload();
+        } else {
+          console.error('파일 업로드 오류:', uploadData.error);
+          Alert.alert('Failed', `File upload error: ${uploadData.error}`);
+        }
+      } else {
+        console.error('Error fetching storage usage:', data.error);
+      }
+    } catch (error) {
+      console.error('API 오류:', error.message);
+      Alert.alert('Error', `API error: ${error.message}`);
+    }
+  };
+  
   const selectDoc = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
@@ -67,62 +162,30 @@ export default function PlusMenu({ walletAddress, currentFolder, onMediaUpload }
         const uri = result.assets[0].uri;
         const fileName = result.assets[0].name;
         const mimeType = result.assets[0].mimeType;
-        const formData = new FormData();
-        formData.append('file', {
-          uri,
-          type: mimeType,
-          name: fileName,
-        });
-        formData.append('walletAddress', walletAddress);
-        formData.append('folderPath', currentFolder || '');
-
-        try {
-          const uploadResponse = await fetch('http://13.124.248.7:8080/api/upload', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-            body: formData,
-          });
-          const uploadData = await uploadResponse.json();
-          if (uploadData.success) {
-            Alert.alert('Success', 'File uploaded successfully.');
-            onMediaUpload();
-          } else {
-            console.error('파일 업로드 오류:', uploadData.error);
-            Alert.alert('Failed', `File upload error: ${uploadData.error}`);
-          }
-        } catch (error) {
-          console.error('API 오류:', error);
-          Alert.alert('Failed', 'File upload error.');
-        }
+        checkStorageAndUploadDoc(uri, fileName, mimeType);
       }
     } catch (err) {
       console.error("Error picking document:", err);
     }
   };
+  
 
-  const uploadMediaFile = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') {
-      alert('You need permission to access the gallery.');
-      return;
-    }
-
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!result.cancelled && result.assets && result.assets.length > 0) {
-      const asset = result.assets[0];
-      const uri = asset.uri;
-      const fileName = uri.split('/').pop();
-      const mimeType = asset.type;
-
-      try {
+  //ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+  const checkStorageAndUploadMedia = async (uri, fileName, mimeType) => {
+    try {
+      const response = await fetch(`http://13.124.248.7:2005/api/get-storage-usage?walletAddress=${walletAddress}`);
+      const data = await response.json();
+      if (data.totalSize !== undefined) {
+        const usedStorage = data.totalSize;
+        const fileInfo = await fetch(uri);
+        const fileBlob = await fileInfo.blob();
+        const fileSize = fileBlob.size;
+  
+        if (usedStorage + fileSize > TOTAL_STORAGE_LIMIT) {
+          Alert.alert('Storage limit exceeded', 'Cannot upload file as it exceeds the total storage limit.');
+          return;
+        }
+  
         const formData = new FormData();
         formData.append('fileContent', {
           uri,
@@ -130,33 +193,54 @@ export default function PlusMenu({ walletAddress, currentFolder, onMediaUpload }
           name: fileName,
         });
         formData.append('walletAddress', walletAddress);
-        formData.append('currentFolder', currentFolder || '');
         formData.append('fileName', fileName);
-
+  
         const uploadResponse = await fetch('http://13.124.248.7:2005/api/mediaupload-file', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
           body: formData,
         });
-
+  
         const uploadData = await uploadResponse.json();
         if (uploadData.success) {
-          Alert.alert('Success', 'Media file uploaded successfully.');
-          onMediaUpload(); // Refresh media list after successful upload
+          onMediaUpload();
         } else {
-          console.error('미디어 파일 업로드 오류:', uploadData.error);
-          Alert.alert('Failed', `Media File Upload Error: ${uploadData.error}`);
+          console.error('미디어 업로드 오류:', uploadData.error);
+          Alert.alert('Failed', `Media upload error: ${uploadData.error}`);
         }
-      } catch (error) {
-        console.error('API 오류:', error);
-        Alert.alert('Failed', 'Media File Upload Error.');
+      } else {
+        console.error('Error fetching storage usage:', data.error);
       }
-    } else {
-      console.log('취소')
+    } catch (error) {
+      console.error('API 오류:', error.message);
+      Alert.alert('Error', `API error: ${error.message}`);
     }
   };
+  
+  const selectMedia = async () => {
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+  
+    if (!permissionResult.granted) {
+      Alert.alert('Permission to access camera roll is required!');
+      return;
+    }
+  
+    const pickerResult = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+  
+    if (!pickerResult.canceled) {
+      const uri = pickerResult.assets[0].uri;
+      const fileName = uri.split('/').pop();
+      const mimeType = 'image/jpeg'; // Adjust as needed based on the actual file type
+      checkStorageAndUploadMedia(uri, fileName, mimeType);
+    }
+  };
+  
+  
+  // ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 
   const toggleFolderDialog = () => {
     setIsFolderDialogVisible(!isFolderDialogVisible);
@@ -188,9 +272,13 @@ export default function PlusMenu({ walletAddress, currentFolder, onMediaUpload }
               />
               <MenuItem
                 icon={<MaterialIcons name="add-photo-alternate" size={24} color="gray" />}
-                label="Uploade media"
-                onPress={uploadMediaFile}
+                label="Upload media"
+                onPress={async () => {
+                  await selectMedia();
+                  toggleMenuModal();
+                }}
               />
+
               <MenuItem
                 icon={<Foundation name="folder-add" size={22} color="gray" />}
                 label="Create folder"
@@ -215,21 +303,21 @@ export default function PlusMenu({ walletAddress, currentFolder, onMediaUpload }
         <View style={styles.dialogOverlay}>
           <View style={styles.dialog}>
             <View style={{ flex: 1.7 }}>
-              <Text>새 폴더</Text>
+              <Text> New folder</Text>
             </View>
             <TextInput
               style={styles.input}
-              placeholder="제목 없는 폴더"
+              placeholder="Folder name"
               value={folderName}
               onChangeText={setFolderName}
             />
             <View style={styles.dialogButtons}>
               <TouchableOpacity onPress={createFolder} style={styles.dialogButton}>
-                <Text style={styles.dialogbuttonText}>만들기</Text>
+                <Text style={styles.dialogbuttonText}>Create</Text>
               </TouchableOpacity>
 
               <TouchableOpacity onPress={toggleFolderDialog} style={styles.dialogButton}>
-                <Text style={styles.dialogbuttonText}>취소</Text>
+                <Text style={styles.dialogbuttonText}>Cancel</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -302,7 +390,7 @@ const styles = StyleSheet.create({
   },
   dialog: {
     width: '60%',
-    height: '16%',
+    height: 150,
     backgroundColor: '#fff',
     padding: 20,
     borderRadius: 10,
@@ -314,7 +402,7 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.themcolor,
     marginBottom: 20,
     fontSize: 16,
-    padding: 10,
+
   },
   dialogButtons: {
     flex: 1,

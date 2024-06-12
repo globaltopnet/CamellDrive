@@ -1,69 +1,66 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  ActivityIndicator
-} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import "react-native-gesture-handler";
 import { defaultStyles } from '@/constants/Styles';
-import { auth } from "../../firebaseConfig";
-import {
-  GoogleAuthProvider,
-  signInWithCredential,
-} from "firebase/auth";
+import auth from '@react-native-firebase/auth';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import * as WebBrowser from "expo-web-browser";
-import * as Google from "expo-auth-session/providers/google";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-WebBrowser.maybeCompleteAuthSession();
+import { useRouter } from 'expo-router';
 
 const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const [walletAddress, setWalletAddress] = useState(null);
-  const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
-    iosClientId: "795983066430-0d5a3vj9i2ncmt384icemckb714bcdqc.apps.googleusercontent.com",
-    androidClientId: "795983066430-dqnfl5gkppmlvs364sb4jhemmf2c9cq4.apps.googleusercontent.com"
-  });
+  const router = useRouter();
+
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId: '867810152911-4hasdjhkb07cs7c6aui6g2s9n7b5l6sb.apps.googleusercontent.com',
+    });
+    WebBrowser.maybeCompleteAuthSession();
+  }, []);
+
+  const onGoogleButtonPress = async () => {
+    try {
+      setLoading(true);
+      const { idToken } = await GoogleSignin.signIn();
+      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+      const userCredential = await auth().signInWithCredential(googleCredential);
+      const user = userCredential.user;
+      const email = user.email;
+      console.log('user Email is: ', email);
+      await AsyncStorage.setItem('userEmail', email);
+      await AsyncStorage.setItem('isLoggedIn', 'true'); // Save login status
+      try {
+        const response = await fetch('http://13.124.248.7:8080/api/create-wallet', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email }),
+        });
+        const data = await response.json();
+        console.log('API response', data);
+        if (data.success) {
+          setWalletAddress(data.walletAddress);
+          console.log('Wallet created with address: ', data.walletAddress);
+          router.replace('/navigation/navigation');
+        } else {
+          console.error('Failed to create wallet', data.error);
+        }
+      } catch (error) {
+        console.error('API error', error);
+      }
+    } catch (error) {
+      console.error('Google login error', error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   const handleSubmit = () => {
     alert('to be updated');
   };
-
-  useEffect(() => {
-    if (response?.type === "success") {
-      const { id_token } = response.params;
-      const credential = GoogleAuthProvider.credential(id_token);
-      setLoading(true);
-      signInWithCredential(auth, credential)
-        .then(async (userCredential) => {
-          const user = userCredential.user;
-          const email = user.email;
-          await AsyncStorage.setItem('userEmail', email);
-          try {
-            const response = await fetch('http://13.124.248.7:8080/api/create-wallet', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({ email }),
-            });
-            const data = await response.json();
-            if (data.success) {
-              setWalletAddress(data.walletAddress);
-              console.log('Wallet created with address:', data.walletAddress);
-            } else {
-              console.error('Error creating wallet:', data.error);
-            }
-          } catch (error) {
-            console.error('API error:', error);
-          }
-        })
-        .catch((error) => console.error("Firebase auth error: ", error))
-        .finally(() => setLoading(false));
-    }
-  }, [response]);
 
   if (loading) {
     return (
@@ -77,9 +74,6 @@ const LoginPage = () => {
     <View style={defaultStyles.container}>
       <Text style={defaultStyles.header}>Welcome Back to</Text>
       <Text style={defaultStyles.logo}>Camell Drive</Text>
-      {/* <Text style={defaultStyles.descriptionText}>
-        Camell Drive에 오신 것을 환영합니다.
-      </Text> */}
 
       {walletAddress && (
         <View>
@@ -101,7 +95,7 @@ const LoginPage = () => {
           marginTop: 20,
           backgroundColor: '#E1E4EC'
         }]}
-        onPress={() => promptAsync()}
+        onPress={onGoogleButtonPress}
       >
         <Image
           source={require('@/assets/icons/google-icon.png')}

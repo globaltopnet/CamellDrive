@@ -8,6 +8,11 @@ import { TextInput } from 'react-native-gesture-handler';
 import QRCode from 'react-native-qrcode-svg';
 import axios from 'axios';
 import { Link } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const handleSubmit = () => {
+  alert('To be updated.');
+};
 
 const buttonIcons = {
   Withdraw: 'exit-outline',
@@ -17,57 +22,74 @@ const buttonIcons = {
 };
 
 export default function WalletScreen({ navigation }) {
-
-  const [inputText, setInputText] = useState('');
-  
-
-  const [withdrawAmount, setWithdrawAmount] = useState('');  // 출금 금액 상태
-  const [targetAddress, setTargetAddress] = useState('');    // 대상 주소 상태
-  const minimumAmount = 10;  // 최소 출금 금액 설정
-
+  const [withdrawAmount, setWithdrawAmount] = useState(''); // 출금 금액 상태
+  const [targetAddress, setTargetAddress] = useState('');   // 대상 주소 상태
+  const [walletAddress, setWalletAddress] = useState(null);
   const [depositModalVisible, setDepositModalVisible] = useState(false);
   const [withdrawalModalVisible, setWithdrawalModalVisible] = useState(false);
-
   const [balance, setBalance] = useState('0');
+  const [transactions, setTransactions] = useState([]); // 트랜잭션 상태 추가
 
-  const [walletAddress, setWalletAddress] = useState('TMrNryRrEtYSTff3fp5RhKUjVWBgVtKRf3'); // 지갑주소
-
-  const handleSubmit = () => {
-    alert('To be updated');
-  };
-
-    // 지갑 잔액 코드
-    useEffect(() => {
-      if (walletAddress) {
-          axios.get(`http://43.201.64.232:5500/wallet-balance?wallet_address=${walletAddress}`)
-          .then(response => {
-              if (response.data.balance) {
-                  setBalance(response.data.balance.toString());
-              } else if (response.data.error) {
-                  Alert.alert('Error', response.data.error);
-              }
-          })
-          .catch(error => {
-              console.log("잔액을 불러오는데 실패했습니다.:", error);
-          });
+  useEffect(() => {
+    const fetchWalletAddress = async () => {
+      const email = await AsyncStorage.getItem('userEmail');
+      if (!email) {
+        console.error('No email found in storage');
+        return;
       }
+
+      try {
+        const response = await fetch('http://13.124.248.7:8080/api/get-wallet-address', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email }),
+        });
+        const data = await response.json();
+        if (data.success) {
+          setWalletAddress(data.address);
+        } else {
+          console.error('Error fetching wallet address:', data.error);
+        }
+      } catch (error) {
+        console.error('API error:', error);
+      }
+    };
+
+    fetchWalletAddress();
+  }, []);
+
+  useEffect(() => {
+    if (walletAddress) {
+      axios.get(`http://43.201.64.232:5500/wallet-balance?wallet_address=${walletAddress}`)
+        .then(response => {
+          if (response.data.balance) {
+            setBalance(response.data.balance.toString());
+          } else if (response.data.error) {
+            Alert.alert('Error', response.data.error);
+          }
+        })
+        .catch(error => {
+          console.log("잔액을 불러오는데 실패했습니다.:", error);
+        });
+    }
   }, [walletAddress]);
 
   useEffect(() => {
     if (walletAddress) {
       axios.get(`http://43.201.64.232:5500/wallet-transactions?wallet_address=${walletAddress}`)
-      .then(response => {
-        if (response.data.transactions) {
-          // setTransfers 대신 setTransactions 사용
-          setTransactions(response.data.transactions);
-        } else if (response.data.error) {
-          Alert.alert('Error', response.data.error);
-        }
-      })
-      .catch(error => {
-        console.error("Failed to fetch transactions:", error);
-        Alert.alert('Error', 'Failed to fetch transactions: ' + error.message);
-      });
+        .then(response => {
+          if (response.data.transactions) {
+            setTransactions(response.data.transactions); // setTransfers 대신 setTransactions 사용
+          } else if (response.data.error) {
+            Alert.alert('Error', response.data.error);
+          }
+        })
+        .catch(error => {
+          console.error("Failed to fetch transactions:", error);
+          Alert.alert('Error', 'Failed to fetch transactions: ' + error.message);
+        });
     }
   }, [walletAddress]);
 
@@ -189,7 +211,6 @@ const renderButton = (buttonText, iconName) => {
     { label: '(EUR)', value: 'EUR' }
   ];
 
-  const [transactions, setTransactions] = useState([]);
 
 
   const renderItem = ({ item }) => (
@@ -334,7 +355,7 @@ const renderButton = (buttonText, iconName) => {
       <View style={styles.address}>
         <Text style={{fontSize: 20, textAlign: 'center'}}>Wallet address</Text>
         <View style={{marginTop: 10}}>
-          <Text style={{fontSize: 17}}>TNDcxm95uDiensNHpfHfn7q5kt2x1vtMfD</Text>
+          <Text style={{fontSize: 17}}>{walletAddress}</Text>
           <View style={{alignItems: 'center', marginTop: 30,}}>
 
           <TouchableOpacity onPress={() => copyToClipboard(walletAddress)} style={styles.copyButton}>
@@ -415,11 +436,11 @@ const renderButton = (buttonText, iconName) => {
           <View style={styles.balanceBottom}>
 
                             {/*  백엔드 필요 !!  */}
-          <Text style={styles.Won}>₩23,600</Text>
+          <Text style={styles.Won}>₩0</Text>
           <View style={styles.balancePlusMinus}>
 
                                           {/*  백엔드 필요 !!  */}
-            <Text style={styles.PlusMinusValue}>+ 2.53%</Text>
+            <Text style={styles.PlusMinusValue}>+ 0.0%</Text>
           </View>
 
           </View>
@@ -688,7 +709,7 @@ PlusMinusValue: {
   textInput: {
     paddingLeft: 10,
     borderWidth: 0.2,
-    marginBottom: 20,
+    marginBottom: 30,
     borderRadius: 10,
     height: 45,
     marginTop: 5,

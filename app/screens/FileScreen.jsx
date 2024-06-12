@@ -17,6 +17,9 @@ const FileScreen = () => {
   const [isSelectionMode, setIsSelectionMode] = useState(false);
   const [fileNameToRename, setFileNameToRename] = useState('');
   const [newFileName, setNewFileName] = useState('');
+  const [isMenuVisible, setIsMenuVisible] = useState(false);
+  const [selectedFileName, setSelectedFileName] = useState('');
+
 
   const showShareModal = () => setIsShareModalVisible(true);
   const closeShareModal = () => setIsShareModalVisible(false);
@@ -98,7 +101,7 @@ const FileScreen = () => {
 
   const truncateName = (name) => {
     const maxLength = 20;
-    const ellipsis = '...';
+    const ellipsis = '..';
     const nameParts = name.split('.');
     const fileExtension = nameParts.length > 1 ? nameParts.pop() : '';
     const baseName = nameParts.join('.');
@@ -238,7 +241,7 @@ const FileScreen = () => {
       console.error('파일 이름 변경 오류:', error);
       Alert.alert('Error', 'File name change error.');
     }
-  }; 
+  };
 
   const renderFileItem = ({ item }) => {
     const isSelected = selectedItems.includes(item.key);
@@ -271,7 +274,7 @@ const FileScreen = () => {
             style={{ opacity: 0.8 }}
           />
         )}
-        <Text style={styles.fileName}>{item.type === 'back' ? '...' : truncateName(item.key)}</Text>
+        <Text style={styles.fileName}>{item.type === 'back' ? '..' : truncateName(item.key)}</Text>
         {isSelectionMode && (
           <View style={styles.selectionOverlay}>
             <Ionicons name={isSelected ? "checkmark-circle" : "ellipse-outline"} size={20} color={isSelected ? Colors.themcolor : "gray"} />
@@ -290,14 +293,8 @@ const FileScreen = () => {
   };
 
   const showMenu = (fileName) => {
-    Alert.alert("File Menu", `Actions for ${fileName}`, [
-      { text: 'Download', onPress: () => downloadFile(fileName) },
-      { text: 'Share', onPress: showShareModal },
-      { text: 'Favorite', onPress: () => console.log('Add to Favorites') },
-      { text: 'Trash', onPress: () => console.log('Move to Trash') },
-      { text: 'Rename', onPress: () => showRenameModal(fileName) },
-      { text: 'Cancel', onPress: () => console.log('Cancel'), style: 'cancel' },
-    ]);
+    setSelectedFileName(fileName);
+    setIsMenuVisible(true);
   };
 
   const goBack = () => {
@@ -410,6 +407,37 @@ const FileScreen = () => {
           </View>
         </View>
       </Modal>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isMenuVisible}
+        onRequestClose={() => setIsMenuVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Actions for {selectedFileName}</Text>
+            <TouchableOpacity onPress={() => { downloadFile(selectedFileName); setIsMenuVisible(false); }} style={styles.menuItem}>
+              <Text style={styles.menuText}>Download</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => { showShareModal(); setIsMenuVisible(false); }} style={styles.menuItem}>
+              <Text style={styles.menuText}>Share</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => { console.log('Add to Favorites'); setIsMenuVisible(false); }} style={styles.menuItem}>
+              <Text style={styles.menuText}>Favorite</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => { console.log('Move to Trash'); setIsMenuVisible(false); }} style={styles.menuItem}>
+              <Text style={styles.menuText}>Trash</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => { showRenameModal(selectedFileName); setIsMenuVisible(false); }} style={styles.menuItem}>
+              <Text style={styles.menuText}>Rename</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setIsMenuVisible(false)} style={[styles.menuItem, styles.cancelItem]}>
+              <Text style={styles.menuText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -417,7 +445,6 @@ const FileScreen = () => {
 const styles = StyleSheet.create({
   grid: {
     marginTop: 10,
-
     paddingTop: 10,
   },
   fileItem: {
@@ -518,7 +545,6 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   selectionOverlay: {
-
     position: 'absolute',
     top: 5,
     right: 5,
@@ -529,7 +555,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     padding: 10,
-    borderTopWidth: 1,
+    borderTopWidth: 0.2,
     borderTopColor: 'gray',
     backgroundColor: 'white',
   },
@@ -539,6 +565,37 @@ const styles = StyleSheet.create({
   selectionButtonText: {
     fontSize: 12,
     color: 'gray',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    width: '80%',
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  menuItem: {
+    paddingVertical: 10,
+    width: '100%',
+    alignItems: 'center',
+  },
+  menuText: {
+    fontSize: 16,
+  },
+  cancelItem: {
+    marginTop: 10,
+    backgroundColor: '#ddd',
+    borderRadius: 5,
   },
 });
 

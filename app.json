@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "CamellDrive",
+    "scheme": "kr.co.glotn",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/images/splash.png",
@@ -17,14 +17,15 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.CamellDrive"
+      "bundleIdentifier": "kr.co.glotn"
     },
     "android": {
+      "googleServicesFile": "./android/app/google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.CamellDrive"
+      "package": "kr.co.glotn"
     },
     "web": {
       "bundler": "metro",

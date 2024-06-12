@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
 import { View, Text, SafeAreaView, StyleSheet, Image, TouchableOpacity, Animated, Alert } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -6,6 +6,7 @@ import * as Progress from 'react-native-progress';
 import { Colors } from '../theme/color';
 import { signOut } from 'firebase/auth';
 import { auth } from '@/firebaseConfig';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import WalletScreen from '../screens/WalletScreen';
 import HelpScreen from '../screens/HelpScreen';
 import SettingScreen from '../screens/SettingScreen';
@@ -14,13 +15,17 @@ import Tabs from './Tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import ChartScreen from '../screens/ChartScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { router } from 'expo-router';
 
 const Drawer = createDrawerNavigator();
 
-const rate = 30;
+const totalStorage = 10;
+
 
 const DrawerMenu = () => {
-  const navigateWithAnimation = (navigation, screenName) => {
+
+
+  const navigateWithAnimation = (navigation, screenName) => {ㄴ
     Animated.timing(translateX, {
       toValue: 100,
       duration: 300,
@@ -102,6 +107,67 @@ const DrawerMenu = () => {
 };
 
 const CustomDrawerContent = (props) => {
+  const [storageUsage, setStorageUsage] = useState(0);
+  const [walletAddress, setWalletAddress] = useState(null);
+
+  const usedStorage = storageUsage / (1024 * 1024 * 1024); // Convert bytes to GB
+  const percentage = Math.round((usedStorage / totalStorage) * 100);
+
+  useEffect(() => {
+    const fetchWalletAddress = async () => {
+      const email = await AsyncStorage.getItem('userEmail');
+      if (!email) {
+        console.error('No email found in storage');
+        return;
+      }
+
+      try {
+        const response = await fetch('http://13.124.248.7:8080/api/get-wallet-address', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email }),
+        });
+        const data = await response.json();
+        if (data.success) {
+          setWalletAddress(data.address);
+        } else {
+          console.error('Error fetching wallet address:', data.error);
+        }
+      } catch (error) {
+        console.error('API error:', error);
+      }
+    };
+
+    fetchWalletAddress();
+  }, []);
+
+  useEffect(() => {
+    if (!walletAddress) return;
+
+    const fetchStorageUsage = async () => {
+      try {
+        const response = await fetch(`http://13.124.248.7:2005/api/get-storage-usage?walletAddress=${walletAddress}`);
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.indexOf("application/json") !== -1) {
+          const data = await response.json();
+          if (data.totalSize !== undefined) {
+            setStorageUsage(data.totalSize);
+          } else {
+            console.error('Error fetching storage usage:', data.error);
+          }
+        } else {
+          const errorText = await response.text();
+          console.error('Error fetching storage usage:', errorText);
+        }
+      } catch (error) {
+        console.error('API error:', error);
+      }
+    };
+
+    fetchStorageUsage();
+  }, [walletAddress]);
   const handleLogout = async () => {
     Alert.alert(
       "Logout",
@@ -115,8 +181,14 @@ const CustomDrawerContent = (props) => {
         {
           text: "Logout",
           onPress: async () => {
-            await signOut(auth);
-            await AsyncStorage.removeItem('@user');
+            try {
+              await GoogleSignin.signOut();
+              await AsyncStorage.removeItem('isLoggedIn');
+              console.log('success');
+              router.replace('/login/login')
+            } catch (error) {
+              console.error('Failed to sign out', error);
+            }
           },
         },
       ],
@@ -227,14 +299,14 @@ const CustomDrawerContent = (props) => {
         </View>
 
         <Progress.Bar
-          progress={rate / 100}
+          progress={percentage / 100}
           width={250}
           height={3}
           color={Colors.themcolor}
           style={{ marginTop: 5 }}
         />
         <View style={styles.progressItems}>
-          <Text style={styles.progressItemText}>10GB/30GB (30%)</Text>
+          <Text style={styles.progressItemText}>{usedStorage.toFixed(2)} / {totalStorage} ({percentage}%)</Text>
           <TouchableOpacity
           style={styles.upgradeButton}
           onPress={() => props.navigation.navigate('UpgradePlanScreen')}

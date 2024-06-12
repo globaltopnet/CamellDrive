@@ -1,24 +1,57 @@
-import Colors from '@/constants/Colors';
-import { defaultStyles } from '@/constants/Styles';
+import React, { useEffect, useState } from 'react';
+import Colors from '../constants/Colors';
+import { defaultStyles } from '../constants/Styles';
 import { useAssets } from 'expo-asset';
 import { ResizeMode, Video } from 'expo-av';
 import { Link, SplashScreen } from 'expo-router';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from 'expo-router';
 
 const Main = () => {
-  const [ assets ] = useAssets([require('@/assets/videos/intro.mp4')]);
+  const [assets] = useAssets([require('@/assets/videos/intro.mp4')]);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
-  SplashScreen.hideAsync();
+  useEffect(() => {
+    const checkUserLoggedIn = async () => {
+      try {
+        const isLoggedIn = await AsyncStorage.getItem('isLoggedIn');
+        if (isLoggedIn === 'true') {
+          // 자동 로그인 상태라면 홈 화면으로 이동
+          router.replace('/navigation/navigation');
+        } else {
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error('Error checking login status', error);
+        setLoading(false);
+      }
+    };
+
+    checkUserLoggedIn();
+    SplashScreen.hideAsync();
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={Colors.primary} />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
-      { assets && (
+      {assets && (
         <Video 
-        isMuted
-        isLooping
-        shouldPlay
-        source={{ uri: assets[0].uri }} style={styles.video}
-        resizeMode={ResizeMode.COVER} />
+          isMuted
+          isLooping
+          shouldPlay
+          source={{ uri: assets[0].uri }} 
+          style={styles.video}
+          resizeMode={ResizeMode.COVER} 
+        />
       )}
       <View style={{ marginTop: 80, padding: 20 }}>
         <Text style={styles.header}>
@@ -28,10 +61,10 @@ const Main = () => {
           Drive
         </Text>
         <Text style={styles.header2}>
-          Cloud Storge
+          Cloud Storage
         </Text>
         <Text style={styles.header2}>
-        platform
+          Platform
         </Text>
       </View>
       <View style={styles.buttons}>
@@ -73,6 +106,11 @@ const styles = StyleSheet.create({
     gap: 20,
     marginBottom: 60,
     paddingHorizontal: 20,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   }
 });
 
